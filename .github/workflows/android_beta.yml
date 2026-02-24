@@ -12,7 +12,6 @@ jobs:
     name: Build & Deploy Beta
     runs-on: ubuntu-latest
 
-    # Expose job status for notifications
     env:
       APP_NAME: TTStaffPro
       PACKAGE_NAME: com.ttstaffpro.hrapp
@@ -36,7 +35,6 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'latest'
           channel: 'stable'
           cache: true
 
@@ -72,11 +70,11 @@ jobs:
       - name: Increment Version Code
         id: version
         run: |
-          VERSION=$(grep 'version: ' pubspec.yaml | sed 's/version: //')
+          VERSION=$(grep 'version: ' pubspec.yaml | head -1 | sed 's/version: //')
           VERSION_NAME=$(echo $VERSION | cut -d '+' -f 1)
           VERSION_CODE=$GITHUB_RUN_NUMBER
           NEW_VERSION="$VERSION_NAME+$VERSION_CODE"
-          sed -i "s/version: .*/version: $NEW_VERSION/" pubspec.yaml
+          sed -i "s/^version: .*/version: $NEW_VERSION/" pubspec.yaml
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_OUTPUT
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_OUTPUT
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
@@ -111,7 +109,7 @@ jobs:
           mappingFile: build/app/outputs/mapping/release/mapping.txt
 
       # ─────────────────────────────────────────────
-      # 6. Build Summary (GitHub Actions UI)
+      # 6. Build Summary
       # ─────────────────────────────────────────────
       - name: Write Job Summary
         if: always()
@@ -120,11 +118,10 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|---|---|" >> $GITHUB_STEP_SUMMARY
-          echo "| **Status** | ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Status** | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Version** | ${{ steps.version.outputs.NEW_VERSION }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Track** | ${{ env.PLAY_TRACK }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Branch** | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Commit** | [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) |" >> $GITHUB_STEP_SUMMARY
           echo "| **Triggered by** | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Run** | [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
 
@@ -141,21 +138,16 @@ jobs:
               "blocks": [
                 {
                   "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "✅ Beta Deployment Successful",
-                    "emoji": true
-                  }
+                  "text": { "type": "plain_text", "text": "✅ Beta Deployment Successful", "emoji": true }
                 },
                 {
                   "type": "section",
                   "fields": [
                     { "type": "mrkdwn", "text": "*App:*\n${{ env.APP_NAME }}" },
                     { "type": "mrkdwn", "text": "*Version:*\n`${{ steps.version.outputs.NEW_VERSION }}`" },
-                    { "type": "mrkdwn", "text": "*Track:*\n${{ env.PLAY_TRACK }}" },
+                    { "type": "mrkdwn", "text": "*Track:*\nOpen Testing (Beta)" },
                     { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
-                    { "type": "mrkdwn", "text": "*Triggered by:*\n${{ github.actor }}" },
-                    { "type": "mrkdwn", "text": "*Commit:*\n<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>" }
+                    { "type": "mrkdwn", "text": "*By:*\n${{ github.actor }}" }
                   ]
                 },
                 {
@@ -184,24 +176,15 @@ jobs:
               "blocks": [
                 {
                   "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "❌ Beta Deployment Failed",
-                    "emoji": true
-                  }
+                  "text": { "type": "plain_text", "text": "❌ Beta Deployment Failed", "emoji": true }
                 },
                 {
                   "type": "section",
                   "fields": [
                     { "type": "mrkdwn", "text": "*App:*\n${{ env.APP_NAME }}" },
-                    { "type": "mrkdwn", "text": "*Version:*\n`${{ steps.version.outputs.NEW_VERSION }}`" },
                     { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
-                    { "type": "mrkdwn", "text": "*Triggered by:*\n${{ github.actor }}" }
+                    { "type": "mrkdwn", "text": "*By:*\n${{ github.actor }}" }
                   ]
-                },
-                {
-                  "type": "section",
-                  "text": { "type": "mrkdwn", "text": "⚠️ Please check the logs for details." }
                 },
                 {
                   "type": "actions",
@@ -221,16 +204,16 @@ jobs:
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       # ─────────────────────────────────────────────
-      # 8. Discord Notification
+      # 8. Discord Notification (only if secret exists)
       # ─────────────────────────────────────────────
       - name: Notify Discord — Success
-        if: success()
+        if: success() && secrets.DISCORD_WEBHOOK_URL != ''
         uses: Ilshidur/action-discord@0.3.2
         with:
           args: |
             ✅ **${{ env.APP_NAME }} Beta Deployed!**
             > **Version:** `${{ steps.version.outputs.NEW_VERSION }}`
-            > **Track:** `${{ env.PLAY_TRACK }}`
+            > **Track:** Open Testing (Beta)
             > **Branch:** `${{ github.ref_name }}`
             > **By:** ${{ github.actor }}
             > 🔗 [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
@@ -238,14 +221,13 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       - name: Notify Discord — Failure
-        if: failure()
+        if: failure() && secrets.DISCORD_WEBHOOK_URL != ''
         uses: Ilshidur/action-discord@0.3.2
         with:
           args: |
             ❌ **${{ env.APP_NAME }} Beta Deploy FAILED!**
             > **Branch:** `${{ github.ref_name }}`
             > **By:** ${{ github.actor }}
-            > ⚠️ Please check the logs for details.
             > 🔗 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
