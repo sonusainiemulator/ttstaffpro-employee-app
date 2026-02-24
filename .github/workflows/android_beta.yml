@@ -208,7 +208,7 @@ jobs:
       # ─────────────────────────────────────────────
       - name: Notify Discord — Success
         if: success() && secrets.DISCORD_WEBHOOK_URL != ''
-        uses: Ilshidur/action-discord@0.3.2
+        uses: Ilshidur/action-discord@0.4.0
         with:
           args: |
             ✅ **${{ env.APP_NAME }} Beta Deployed!**
@@ -222,7 +222,7 @@ jobs:
 
       - name: Notify Discord — Failure
         if: failure() && secrets.DISCORD_WEBHOOK_URL != ''
-        uses: Ilshidur/action-discord@0.3.2
+        uses: Ilshidur/action-discord@0.4.0
         with:
           args: |
             ❌ **${{ env.APP_NAME }} Beta Deploy FAILED!**
