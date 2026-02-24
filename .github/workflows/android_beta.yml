@@ -73,14 +73,14 @@ jobs:
              build/app/outputs/bundle/release/TTStaffPro-beta-v${{ steps.version.outputs.VERSION_NAME }}.aab
 
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: TTStaffPro-beta-APK
           path: build/app/outputs/flutter-apk/TTStaffPro-beta-v${{ steps.version.outputs.VERSION_NAME }}.apk
           retention-days: 30
 
       - name: Upload AAB Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: TTStaffPro-beta-AAB
           path: build/app/outputs/bundle/release/TTStaffPro-beta-v${{ steps.version.outputs.VERSION_NAME }}.aab
