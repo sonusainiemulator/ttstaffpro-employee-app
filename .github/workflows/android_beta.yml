@@ -1,0 +1,251 @@
+name: Android Beta CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - beta
+      - develop
+
+jobs:
+  build:
+    name: Build & Deploy Beta
+    runs-on: ubuntu-latest
+
+    # Expose job status for notifications
+    env:
+      APP_NAME: TTStaffPro
+      PACKAGE_NAME: com.ttstaffpro.hrapp
+      PLAY_TRACK: beta
+
+    steps:
+      # ─────────────────────────────────────────────
+      # 1. Setup
+      # ─────────────────────────────────────────────
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+          channel: 'stable'
+          cache: true
+
+      # ─────────────────────────────────────────────
+      # 2. Dependencies & Tests
+      # ─────────────────────────────────────────────
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run Unit Tests
+        run: flutter test --reporter=expanded
+
+      - name: Build Runner (if needed)
+        run: |
+          if grep -q "build_runner" pubspec.yaml; then
+            flutter pub run build_runner build --delete-conflicting-outputs
+          fi
+
+      # ─────────────────────────────────────────────
+      # 3. Signing & Version
+      # ─────────────────────────────────────────────
+      - name: Download Keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release-key.jks
+
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=release-key.jks" >> android/key.properties
+
+      - name: Increment Version Code
+        id: version
+        run: |
+          VERSION=$(grep 'version: ' pubspec.yaml | sed 's/version: //')
+          VERSION_NAME=$(echo $VERSION | cut -d '+' -f 1)
+          VERSION_CODE=$GITHUB_RUN_NUMBER
+          NEW_VERSION="$VERSION_NAME+$VERSION_CODE"
+          sed -i "s/version: .*/version: $NEW_VERSION/" pubspec.yaml
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_OUTPUT
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "✅ New Version: $NEW_VERSION"
+
+      # ─────────────────────────────────────────────
+      # 4. Build
+      # ─────────────────────────────────────────────
+      - name: Build App Bundle (AAB)
+        run: flutter build appbundle --release
+
+      - name: Upload AAB as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-${{ steps.version.outputs.VERSION_CODE }}
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 14
+
+      # ─────────────────────────────────────────────
+      # 5. Deploy to Google Play Open Testing
+      # ─────────────────────────────────────────────
+      - name: Upload to Google Play (Open Testing)
+        id: deploy
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonKeyData: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ env.PACKAGE_NAME }}
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: ${{ env.PLAY_TRACK }}
+          status: completed
+          whatsNewDirectory: distribution/whatsnew
+          mappingFile: build/app/outputs/mapping/release/mapping.txt
+
+      # ─────────────────────────────────────────────
+      # 6. Build Summary (GitHub Actions UI)
+      # ─────────────────────────────────────────────
+      - name: Write Job Summary
+        if: always()
+        run: |
+          echo "## 🚀 ${{ env.APP_NAME }} Beta Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Status** | ${{ job.status == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Version** | ${{ steps.version.outputs.NEW_VERSION }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Track** | ${{ env.PLAY_TRACK }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Triggered by** | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Run** | [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+
+      # ─────────────────────────────────────────────
+      # 7. Slack Notification
+      # ─────────────────────────────────────────────
+      - name: Notify Slack — Success
+        if: success()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "✅ *${{ env.APP_NAME }}* beta deploy succeeded!",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "✅ Beta Deployment Successful",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*App:*\n${{ env.APP_NAME }}" },
+                    { "type": "mrkdwn", "text": "*Version:*\n`${{ steps.version.outputs.NEW_VERSION }}`" },
+                    { "type": "mrkdwn", "text": "*Track:*\n${{ env.PLAY_TRACK }}" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*Triggered by:*\n${{ github.actor }}" },
+                    { "type": "mrkdwn", "text": "*Commit:*\n<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>" }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "🔍 View Run" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - name: Notify Slack — Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "❌ *${{ env.APP_NAME }}* beta deploy FAILED!",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "❌ Beta Deployment Failed",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*App:*\n${{ env.APP_NAME }}" },
+                    { "type": "mrkdwn", "text": "*Version:*\n`${{ steps.version.outputs.NEW_VERSION }}`" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*Triggered by:*\n${{ github.actor }}" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": { "type": "mrkdwn", "text": "⚠️ Please check the logs for details." }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "🔍 View Logs" },
+                      "style": "danger",
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      # ─────────────────────────────────────────────
+      # 8. Discord Notification
+      # ─────────────────────────────────────────────
+      - name: Notify Discord — Success
+        if: success()
+        uses: Ilshidur/action-discord@0.3.2
+        with:
+          args: |
+            ✅ **${{ env.APP_NAME }} Beta Deployed!**
+            > **Version:** `${{ steps.version.outputs.NEW_VERSION }}`
+            > **Track:** `${{ env.PLAY_TRACK }}`
+            > **Branch:** `${{ github.ref_name }}`
+            > **By:** ${{ github.actor }}
+            > 🔗 [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+      - name: Notify Discord — Failure
+        if: failure()
+        uses: Ilshidur/action-discord@0.3.2
+        with:
+          args: |
+            ❌ **${{ env.APP_NAME }} Beta Deploy FAILED!**
+            > **Branch:** `${{ github.ref_name }}`
+            > **By:** ${{ github.actor }}
+            > ⚠️ Please check the logs for details.
+            > 🔗 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}

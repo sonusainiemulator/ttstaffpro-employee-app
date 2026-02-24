@@ -1,0 +1,52 @@
+# CodeRabbit Configuration File
+# Documentation: https://coderabbit.ai/docs/configure-coderabbit
+
+language: "en-US"
+
+# Review Settings
+reviews:
+  profile: "standard" # Options: "chill", "standard", "assertive"
+  request_changes_workflow: false
+  high_level_summary: true
+  auto_review:
+    enabled: true
+    ignore_title_keywords:
+      - "WIP"
+      - "wip"
+      - "Draft"
+      - "draft"
+    drafts: false # Do not review draft PRs automatically
+  
+  # tools: 
+  #   - "ast-grep" 
+  #   - "dart-analyzer" # If available in future
+
+# Chat Settings
+chat:
+  auto_reply: true # Allow the bot to reply to comments
+
+# Knowledge Base
+knowledge_base:
+  learnings: true # Enable learning from previous PRs
+
+# File Patterns to Ignore
+# Exclude generated files and assets from AI review to save tokens and noise
+path_filters:
+  - "!**/*.g.dart"
+  - "!**/*.freezed.dart"
+  - "!**/pubspec.lock"
+  - "!**/*.gen.dart"
+  - "!**/assets/**"
+  - "!**/build/**"
+  - "!**/.dart_tool/**"
+  - "!**/*.png"
+  - "!**/*.jpg"
+  - "!**/*.svg"
+
+# Custom Instructions
+instructions: |
+  This is a Flutter mobile application.
+  - Pay attention to widget performance (e.g., const constructors).
+  - Ensure state management (Provider/Riverpod/Bloc) is used correctly.
+  - Check for responsiveness in UI code.
+  - Enforce strict typing where possible.

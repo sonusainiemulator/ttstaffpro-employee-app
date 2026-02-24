@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "349274996591",
+    "project_id": "ttstaffpro-c9a20",
+    "storage_bucket": "ttstaffpro-c9a20.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:349274996591:android:e29b3577f17ea244c9329a",
+        "android_client_info": {
+          "package_name": "com.ttstaffpro.hrapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClsqhqpjWDM53P7ok92NnXAVnG5OfGXts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
