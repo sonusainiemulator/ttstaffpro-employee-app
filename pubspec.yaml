@@ -46,7 +46,7 @@ dependencies:
 
   #Device
   device_info_plus: ^11.4.0
-  connectivity_plus: ^6.1.4
+  connectivity_plus: ^7.0.0
 
   #Base
   cupertino_icons: ^1.0.8
