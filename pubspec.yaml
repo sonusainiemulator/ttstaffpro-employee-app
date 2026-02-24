@@ -75,7 +75,7 @@ dependencies:
 
   # IMAGES
   image_picker: ^1.1.2
-  file_picker: ^8.1.7
+  file_picker: ^10.3.10
   photo_view: ^0.15.0
   flutter_svg: ^2.1.0
 
