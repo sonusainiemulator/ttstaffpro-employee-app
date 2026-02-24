@@ -47,12 +47,6 @@ jobs:
       - name: Run Unit Tests
         run: flutter test --reporter=expanded
 
-      - name: Build Runner (if needed)
-        run: |
-          if grep -q "build_runner" pubspec.yaml; then
-            flutter pub run build_runner build --delete-conflicting-outputs
-          fi
-
       # ─────────────────────────────────────────────
       # 3. Signing & Version
       # ─────────────────────────────────────────────
@@ -67,10 +61,10 @@ jobs:
           echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
           echo "storeFile=release-key.jks" >> android/key.properties
 
-      - name: Increment Version Code
+      - name: Set Version Code
         id: version
         run: |
-          VERSION=$(grep 'version: ' pubspec.yaml | head -1 | sed 's/version: //')
+          VERSION=$(grep '^version: ' pubspec.yaml | head -1 | sed 's/version: //')
           VERSION_NAME=$(echo $VERSION | cut -d '+' -f 1)
           VERSION_CODE=$GITHUB_RUN_NUMBER
           NEW_VERSION="$VERSION_NAME+$VERSION_CODE"
@@ -78,26 +72,73 @@ jobs:
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_OUTPUT
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_OUTPUT
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "✅ New Version: $NEW_VERSION"
+          echo "✅ Version set to: $NEW_VERSION"
 
       # ─────────────────────────────────────────────
-      # 4. Build
+      # 4. Build APK + AAB
       # ─────────────────────────────────────────────
+      - name: Build Release APK
+        run: flutter build apk --release
+
       - name: Build App Bundle (AAB)
         run: flutter build appbundle --release
 
-      - name: Upload AAB as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release-${{ steps.version.outputs.VERSION_CODE }}
-          path: build/app/outputs/bundle/release/app-release.aab
-          retention-days: 14
+      - name: Rename APK
+        run: |
+          mv build/app/outputs/flutter-apk/app-release.apk \
+             build/app/outputs/flutter-apk/TTStaffPro-beta-${{ steps.version.outputs.NEW_VERSION }}.apk
 
       # ─────────────────────────────────────────────
-      # 5. Deploy to Google Play Open Testing
+      # 5. Upload Artifacts (always available)
+      # ─────────────────────────────────────────────
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TTStaffPro-beta-apk-${{ steps.version.outputs.VERSION_CODE }}
+          path: build/app/outputs/flutter-apk/TTStaffPro-beta-${{ steps.version.outputs.NEW_VERSION }}.apk
+          retention-days: 30
+
+      - name: Upload AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TTStaffPro-beta-aab-${{ steps.version.outputs.VERSION_CODE }}
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      # ─────────────────────────────────────────────
+      # 6. Create GitHub Release (downloadable from Releases page)
+      # ─────────────────────────────────────────────
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: beta-v${{ steps.version.outputs.NEW_VERSION }}
+          name: "Beta v${{ steps.version.outputs.NEW_VERSION }}"
+          body: |
+            ## 🚀 TTStaffPro Beta Release v${{ steps.version.outputs.NEW_VERSION }}
+
+            ### What's New
+            - Beta v${{ steps.version.outputs.VERSION_NAME }} — Open Testing Release
+            - Attendance management with GPS tracking
+            - Leave & holiday management
+            - Chat and notification support
+            - Bug fixes and performance improvements
+
+            ### Downloads
+            - **APK** → Install directly on Android (recommended for testers)
+            - **AAB** → Upload to Play Store
+
+            > ⚠️ To install the APK: Enable "Install from unknown sources" in Android settings
+          prerelease: true
+          files: |
+            build/app/outputs/flutter-apk/TTStaffPro-beta-${{ steps.version.outputs.NEW_VERSION }}.apk
+            build/app/outputs/bundle/release/app-release.aab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ─────────────────────────────────────────────
+      # 7. Deploy to Google Play Open Testing
       # ─────────────────────────────────────────────
       - name: Upload to Google Play (Open Testing)
-        id: deploy
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonKeyData: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
@@ -109,24 +150,22 @@ jobs:
           mappingFile: build/app/outputs/mapping/release/mapping.txt
 
       # ─────────────────────────────────────────────
-      # 6. Build Summary
+      # 8. Build Summary
       # ─────────────────────────────────────────────
       - name: Write Job Summary
         if: always()
         run: |
           echo "## 🚀 ${{ env.APP_NAME }} Beta Deployment" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|---|---|" >> $GITHUB_STEP_SUMMARY
           echo "| **Status** | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
           echo "| **Version** | ${{ steps.version.outputs.NEW_VERSION }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Track** | ${{ env.PLAY_TRACK }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Track** | Open Testing (Beta) |" >> $GITHUB_STEP_SUMMARY
           echo "| **Branch** | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Triggered by** | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Run** | [#${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Download** | [GitHub Releases](https://github.com/${{ github.repository }}/releases) |" >> $GITHUB_STEP_SUMMARY
 
       # ─────────────────────────────────────────────
-      # 7. Slack Notification
+      # 9. Slack Notification
       # ─────────────────────────────────────────────
       - name: Notify Slack — Success
         if: success()
@@ -134,11 +173,11 @@ jobs:
         with:
           payload: |
             {
-              "text": "✅ *${{ env.APP_NAME }}* beta deploy succeeded!",
+              "text": "✅ *${{ env.APP_NAME }}* Beta v${{ steps.version.outputs.NEW_VERSION }} deployed!",
               "blocks": [
                 {
                   "type": "header",
-                  "text": { "type": "plain_text", "text": "✅ Beta Deployment Successful", "emoji": true }
+                  "text": { "type": "plain_text", "text": "✅ Beta Build Successful", "emoji": true }
                 },
                 {
                   "type": "section",
@@ -146,13 +185,17 @@ jobs:
                     { "type": "mrkdwn", "text": "*App:*\n${{ env.APP_NAME }}" },
                     { "type": "mrkdwn", "text": "*Version:*\n`${{ steps.version.outputs.NEW_VERSION }}`" },
                     { "type": "mrkdwn", "text": "*Track:*\nOpen Testing (Beta)" },
-                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
-                    { "type": "mrkdwn", "text": "*By:*\n${{ github.actor }}" }
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" }
                   ]
                 },
                 {
                   "type": "actions",
                   "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "⬇️ Download APK" },
+                      "url": "https://github.com/${{ github.repository }}/releases"
+                    },
                     {
                       "type": "button",
                       "text": { "type": "plain_text", "text": "🔍 View Run" },
@@ -172,11 +215,11 @@ jobs:
         with:
           payload: |
             {
-              "text": "❌ *${{ env.APP_NAME }}* beta deploy FAILED!",
+              "text": "❌ *${{ env.APP_NAME }}* beta build FAILED on `${{ github.ref_name }}`",
               "blocks": [
                 {
                   "type": "header",
-                  "text": { "type": "plain_text", "text": "❌ Beta Deployment Failed", "emoji": true }
+                  "text": { "type": "plain_text", "text": "❌ Beta Build Failed", "emoji": true }
                 },
                 {
                   "type": "section",
@@ -202,32 +245,3 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-
-      # ─────────────────────────────────────────────
-      # 8. Discord Notification (only if secret exists)
-      # ─────────────────────────────────────────────
-      - name: Notify Discord — Success
-        if: success() && secrets.DISCORD_WEBHOOK_URL != ''
-        uses: Ilshidur/action-discord@0.3.2
-        with:
-          args: |
-            ✅ **${{ env.APP_NAME }} Beta Deployed!**
-            > **Version:** `${{ steps.version.outputs.NEW_VERSION }}`
-            > **Track:** Open Testing (Beta)
-            > **Branch:** `${{ github.ref_name }}`
-            > **By:** ${{ github.actor }}
-            > 🔗 [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-
-      - name: Notify Discord — Failure
-        if: failure() && secrets.DISCORD_WEBHOOK_URL != ''
-        uses: Ilshidur/action-discord@0.3.2
-        with:
-          args: |
-            ❌ **${{ env.APP_NAME }} Beta Deploy FAILED!**
-            > **Branch:** `${{ github.ref_name }}`
-            > **By:** ${{ github.actor }}
-            > 🔗 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
