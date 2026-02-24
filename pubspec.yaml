@@ -118,7 +118,7 @@ dependencies:
   path_provider: ^2.1.5
   dio: ^5.8.0+1
   google_static_maps_controller: ^1.1.0
-  flutter_sharing_intent: ^1.1.1
+  flutter_sharing_intent: ^2.0.4
   uuid: ^4.5.1
   socket_io_client: ^3.0.1
 
