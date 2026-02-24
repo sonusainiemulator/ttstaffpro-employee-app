@@ -1,3 +1,6 @@
-- Automated beta release for testing across Phones, Tablets, Chrome OS, and Android XR.
-- Comprehensive unit and integration tests performed.
-- Version bump and signed build.
+Beta v5.0.1 — Open Testing Release
+- Initial open testing build for Phones, Tablets, Chrome OS, and Android XR
+- Attendance management with GPS tracking
+- Leave & holiday management
+- Chat and notification support
+- Bug fixes and performance improvements
