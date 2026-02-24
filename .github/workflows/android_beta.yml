@@ -9,18 +9,10 @@ on:
 
 jobs:
   build:
-    name: Build & Deploy Beta
+    name: Build and Deploy Beta
     runs-on: ubuntu-latest
 
-    env:
-      APP_NAME: TTStaffPro
-      PACKAGE_NAME: com.ttstaffpro.hrapp
-      PLAY_TRACK: beta
-
     steps:
-      # ─────────────────────────────────────────────
-      # 1. Setup
-      # ─────────────────────────────────────────────
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -29,151 +21,111 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: zulu
           java-version: '17'
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: stable
           cache: true
 
-      # ─────────────────────────────────────────────
-      # 2. Dependencies & Tests
-      # ─────────────────────────────────────────────
       - name: Install Dependencies
         run: flutter pub get
 
       - name: Run Unit Tests
-        run: flutter test --reporter=expanded
+        run: flutter test
 
-      # ─────────────────────────────────────────────
-      # 3. Signing & Version
-      # ─────────────────────────────────────────────
-      - name: Download Keystore
+      - name: Decode Keystore
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release-key.jks
+
+      - name: Write key.properties
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release-key.jks
+          cat > android/key.properties <<EOF
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=release-key.jks
+          EOF
 
-      - name: Create key.properties
-        run: |
-          echo "storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" > android/key.properties
-          echo "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" >> android/key.properties
-          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" >> android/key.properties
-          echo "storeFile=release-key.jks" >> android/key.properties
-
-      - name: Set Version Code
+      - name: Set Version
         id: version
         run: |
-          VERSION=$(grep '^version: ' pubspec.yaml | head -1 | sed 's/version: //')
-          VERSION_NAME=$(echo $VERSION | cut -d '+' -f 1)
+          VERSION_NAME=$(grep '^version:' pubspec.yaml | head -1 | awk '{print $2}' | cut -d'+' -f1)
           VERSION_CODE=$GITHUB_RUN_NUMBER
-          NEW_VERSION="$VERSION_NAME+$VERSION_CODE"
-          sed -i "s/^version: .*/version: $NEW_VERSION/" pubspec.yaml
-          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_OUTPUT
-          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_OUTPUT
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
-          echo "✅ Version set to: $NEW_VERSION"
+          echo "VERSION_NAME=${VERSION_NAME}" >> $GITHUB_OUTPUT
+          echo "VERSION_CODE=${VERSION_CODE}" >> $GITHUB_OUTPUT
+          echo "TAG=beta-v${VERSION_NAME}-${VERSION_CODE}" >> $GITHUB_OUTPUT
+          sed -i "s/^version:.*/version: ${VERSION_NAME}+${VERSION_CODE}/" pubspec.yaml
+          echo "Building version: ${VERSION_NAME}+${VERSION_CODE}"
 
-      # ─────────────────────────────────────────────
-      # 4. Build APK + AAB
-      # ─────────────────────────────────────────────
       - name: Build Release APK
         run: flutter build apk --release
 
-      - name: Build App Bundle (AAB)
+      - name: Build Release AAB
         run: flutter build appbundle --release
 
-      - name: Rename APK
+      - name: Rename output files
         run: |
-          mv build/app/outputs/flutter-apk/app-release.apk \
-             build/app/outputs/flutter-apk/TTStaffPro-beta-${{ steps.version.outputs.NEW_VERSION }}.apk
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             build/app/outputs/flutter-apk/TTStaffPro-beta-v${{ steps.version.outputs.VERSION_NAME }}.apk
+          cp build/app/outputs/bundle/release/app-release.aab \
+             build/app/outputs/bundle/release/TTStaffPro-beta-v${{ steps.version.outputs.VERSION_NAME }}.aab
 
-      # ─────────────────────────────────────────────
-      # 5. Upload Artifacts (always available)
-      # ─────────────────────────────────────────────
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TTStaffPro-beta-apk-${{ steps.version.outputs.VERSION_CODE }}
-          path: build/app/outputs/flutter-apk/TTStaffPro-beta-${{ steps.version.outputs.NEW_VERSION }}.apk
+          name: TTStaffPro-beta-APK
+          path: build/app/outputs/flutter-apk/TTStaffPro-beta-v${{ steps.version.outputs.VERSION_NAME }}.apk
           retention-days: 30
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TTStaffPro-beta-aab-${{ steps.version.outputs.VERSION_CODE }}
-          path: build/app/outputs/bundle/release/app-release.aab
+          name: TTStaffPro-beta-AAB
+          path: build/app/outputs/bundle/release/TTStaffPro-beta-v${{ steps.version.outputs.VERSION_NAME }}.aab
           retention-days: 30
 
-      # ─────────────────────────────────────────────
-      # 6. Create GitHub Release (downloadable from Releases page)
-      # ─────────────────────────────────────────────
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: beta-v${{ steps.version.outputs.NEW_VERSION }}
-          name: "Beta v${{ steps.version.outputs.NEW_VERSION }}"
+          tag: ${{ steps.version.outputs.TAG }}
+          name: Beta v${{ steps.version.outputs.VERSION_NAME }} (Build ${{ steps.version.outputs.VERSION_CODE }})
           body: |
-            ## 🚀 TTStaffPro Beta Release v${{ steps.version.outputs.NEW_VERSION }}
+            ## TTStaffPro Beta Release
 
-            ### What's New
-            - Beta v${{ steps.version.outputs.VERSION_NAME }} — Open Testing Release
-            - Attendance management with GPS tracking
-            - Leave & holiday management
-            - Chat and notification support
-            - Bug fixes and performance improvements
+            **Version:** ${{ steps.version.outputs.VERSION_NAME }}+${{ steps.version.outputs.VERSION_CODE }}
+            **Branch:** ${{ github.ref_name }}
+            **Built by:** ${{ github.actor }}
 
             ### Downloads
-            - **APK** → Install directly on Android (recommended for testers)
-            - **AAB** → Upload to Play Store
+            - **TTStaffPro-beta-APK** → Install directly on Android device
+            - **TTStaffPro-beta-AAB** → Upload to Google Play Store
 
-            > ⚠️ To install the APK: Enable "Install from unknown sources" in Android settings
+            > To install APK: enable "Install from unknown sources" in Android Settings
+          artifacts: |
+            build/app/outputs/flutter-apk/TTStaffPro-beta-v${{ steps.version.outputs.VERSION_NAME }}.apk
+            build/app/outputs/bundle/release/TTStaffPro-beta-v${{ steps.version.outputs.VERSION_NAME }}.aab
           prerelease: true
-          files: |
-            build/app/outputs/flutter-apk/TTStaffPro-beta-${{ steps.version.outputs.NEW_VERSION }}.apk
-            build/app/outputs/bundle/release/app-release.aab
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      # ─────────────────────────────────────────────
-      # 7. Deploy to Google Play Open Testing
-      # ─────────────────────────────────────────────
-      - name: Upload to Google Play (Open Testing)
+      - name: Upload to Google Play Open Testing
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonKeyData: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: ${{ env.PACKAGE_NAME }}
+          packageName: com.ttstaffpro.hrapp
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
-          track: ${{ env.PLAY_TRACK }}
+          track: beta
           status: completed
           whatsNewDirectory: distribution/whatsnew
-          mappingFile: build/app/outputs/mapping/release/mapping.txt
 
-      # ─────────────────────────────────────────────
-      # 8. Build Summary
-      # ─────────────────────────────────────────────
-      - name: Write Job Summary
-        if: always()
-        run: |
-          echo "## 🚀 ${{ env.APP_NAME }} Beta Deployment" >> $GITHUB_STEP_SUMMARY
-          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
-          echo "| **Status** | ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Version** | ${{ steps.version.outputs.NEW_VERSION }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Track** | Open Testing (Beta) |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Branch** | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Download** | [GitHub Releases](https://github.com/${{ github.repository }}/releases) |" >> $GITHUB_STEP_SUMMARY
-
-      # ─────────────────────────────────────────────
-      # 9. Slack Notification
-      # ─────────────────────────────────────────────
-      - name: Notify Slack — Success
+      - name: Notify Slack on Success
         if: success()
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          payload: |
+          payload: >
             {
-              "text": "✅ *${{ env.APP_NAME }}* Beta v${{ steps.version.outputs.NEW_VERSION }} deployed!",
+              "text": "✅ TTStaffPro Beta v${{ steps.version.outputs.VERSION_NAME }} deployed to Play Store!",
               "blocks": [
                 {
                   "type": "header",
@@ -182,25 +134,17 @@ jobs:
                 {
                   "type": "section",
                   "fields": [
-                    { "type": "mrkdwn", "text": "*App:*\n${{ env.APP_NAME }}" },
-                    { "type": "mrkdwn", "text": "*Version:*\n`${{ steps.version.outputs.NEW_VERSION }}`" },
+                    { "type": "mrkdwn", "text": "*Version:*\n`${{ steps.version.outputs.VERSION_NAME }}+${{ steps.version.outputs.VERSION_CODE }}`" },
                     { "type": "mrkdwn", "text": "*Track:*\nOpen Testing (Beta)" },
-                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" }
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*By:*\n${{ github.actor }}" }
                   ]
                 },
                 {
                   "type": "actions",
                   "elements": [
-                    {
-                      "type": "button",
-                      "text": { "type": "plain_text", "text": "⬇️ Download APK" },
-                      "url": "https://github.com/${{ github.repository }}/releases"
-                    },
-                    {
-                      "type": "button",
-                      "text": { "type": "plain_text", "text": "🔍 View Run" },
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
+                    { "type": "button", "text": { "type": "plain_text", "text": "⬇️ Download APK" }, "url": "https://github.com/${{ github.repository }}/releases/latest" },
+                    { "type": "button", "text": { "type": "plain_text", "text": "🔍 View Run" }, "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" }
                   ]
                 }
               ]
@@ -209,13 +153,13 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-      - name: Notify Slack — Failure
+      - name: Notify Slack on Failure
         if: failure()
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          payload: |
+          payload: >
             {
-              "text": "❌ *${{ env.APP_NAME }}* beta build FAILED on `${{ github.ref_name }}`",
+              "text": "❌ TTStaffPro Beta build FAILED on `${{ github.ref_name }}`",
               "blocks": [
                 {
                   "type": "header",
@@ -224,7 +168,6 @@ jobs:
                 {
                   "type": "section",
                   "fields": [
-                    { "type": "mrkdwn", "text": "*App:*\n${{ env.APP_NAME }}" },
                     { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
                     { "type": "mrkdwn", "text": "*By:*\n${{ github.actor }}" }
                   ]
@@ -232,12 +175,7 @@ jobs:
                 {
                   "type": "actions",
                   "elements": [
-                    {
-                      "type": "button",
-                      "text": { "type": "plain_text", "text": "🔍 View Logs" },
-                      "style": "danger",
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    }
+                    { "type": "button", "text": { "type": "plain_text", "text": "🔍 View Logs" }, "style": "danger", "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" }
                   ]
                 }
               ]
