@@ -29,6 +29,8 @@ class _OrgChooseScreenState extends State<OrgChooseScreen> {
     super.initState();
     if (getIsDemoMode()) {
       _orgController.text = 'acme';
+    } else {
+      _orgController.text = 'jim';
     }
   }
 

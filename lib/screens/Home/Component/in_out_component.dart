@@ -35,6 +35,9 @@ class _InOutComponentState extends State<InOutComponent> {
   final earlyCheckOutReasonController = TextEditingController();
   final earlyCheckOutReasonFocus = FocusNode();
 
+  bool isOvertimeTask = false;
+  final overtimeNoteController = TextEditingController();
+
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
 
   //Local Auth
@@ -508,6 +511,9 @@ class _InOutComponentState extends State<InOutComponent> {
         return;
       }
 
+      // No strict enforcement - just proceed to checkout confirmation.
+      // The backend auto-tracks timing against shift config (late, early, overtime)
+      // for the Actual Time Report.
       AlertDialog checkOutAlert = AlertDialog(
         title: Text(language.lblCheckOut),
         content: Text(language.lblAreYouSureYouWantToCheckOut),
@@ -535,7 +541,16 @@ class _InOutComponentState extends State<InOutComponent> {
             onPressed: () async {
               Navigator.of(context).pop();
               _showLoadingDialog('${language.lblCheckOut}...');
-              await globalAttendanceStore.checkInOut(AttendanceStatus.checkOut);
+              await globalAttendanceStore.checkInOut(
+                AttendanceStatus.checkOut,
+                earlyCheckoutReason: earlyCheckOutReasonController.text.isNotEmpty
+                    ? earlyCheckOutReasonController.text
+                    : null,
+                overtimeTask: isOvertimeTask,
+                overtimeTaskNote: overtimeNoteController.text.isNotEmpty
+                    ? overtimeNoteController.text
+                    : null,
+              );
               if (mounted) {
                 await _hideLoadingDialog();
               }
@@ -555,6 +570,7 @@ class _InOutComponentState extends State<InOutComponent> {
       toast(language.lblSomethingWentWrong);
     }
   }
+
 
   void startBreak() async {
     if (!isBreakModuleEnabled) {
@@ -611,24 +627,65 @@ class _InOutComponentState extends State<InOutComponent> {
   void earlyCheckOutReason() async {
     AlertDialog alert = AlertDialog(
       title: Text(language.lblEarlyCheckOut),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(language.lblPleaseEnterYourEarlyCheckOutReason),
-          10.height,
-          TextFormField(
-            controller: earlyCheckOutReasonController,
-            focusNode: earlyCheckOutReasonFocus,
-            style: TextStyle(
-                fontSize: fontSizeLargeMedium,
-                fontFamily: fontRegular,
-                color: appStore.textPrimaryColor),
-            onChanged: (value) => {},
-            decoration: newEditTextDecoration(
-                Icons.text_fields, language.lblEarlyCheckOutReason,
-                borderColor: white, bgColor: white),
-          ),
-        ],
+      content: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(language.lblPleaseEnterYourEarlyCheckOutReason),
+                10.height,
+                TextFormField(
+                  controller: earlyCheckOutReasonController,
+                  focusNode: earlyCheckOutReasonFocus,
+                  style: TextStyle(
+                      fontSize: fontSizeLargeMedium,
+                      fontFamily: fontRegular,
+                      color: appStore.textPrimaryColor),
+                  decoration: newEditTextDecoration(
+                      Icons.text_fields, language.lblEarlyCheckOutReason,
+                      borderColor: appStore.isDarkModeOn ? white : Colors.grey.shade300, 
+                      bgColor: appStore.isDarkModeOn ? Colors.transparent : white),
+                ),
+                20.height,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Is Overtime Task?',
+                        style: boldTextStyle(color: appStore.textPrimaryColor),
+                      ),
+                    ),
+                    Switch(
+                      value: isOvertimeTask,
+                      onChanged: (val) {
+                        setState(() {
+                          isOvertimeTask = val;
+                        });
+                      },
+                      activeColor: appStore.appColorPrimary,
+                    ),
+                  ],
+                ),
+                if (isOvertimeTask) ...[
+                  10.height,
+                  TextFormField(
+                    controller: overtimeNoteController,
+                    style: TextStyle(
+                        fontSize: fontSizeLargeMedium,
+                        fontFamily: fontRegular,
+                        color: appStore.textPrimaryColor),
+                    decoration: newEditTextDecoration(
+                        Icons.notes, 'Overtime Note',
+                        borderColor: appStore.isDarkModeOn ? white : Colors.grey.shade300, 
+                        bgColor: appStore.isDarkModeOn ? Colors.transparent : white),
+                  ),
+                ]
+              ],
+            ),
+          );
+        },
       ),
       actions: [
         TextButton(
@@ -640,13 +697,25 @@ class _InOutComponentState extends State<InOutComponent> {
               return;
             }
 
-            var result = await globalAttendanceStore
+            _showLoadingDialog('${language.lblCheckOut}...');
+            var setReasonResult = await globalAttendanceStore
                 .setEarlyCheckoutReason(earlyCheckOutReasonController.text);
-            if (!mounted) return;
-            if (result) {
-              globalAttendanceStore.checkInOut(AttendanceStatus.checkOut);
+            if (!mounted) {
+              await _hideLoadingDialog();
+              return;
             }
-            Navigator.of(context).pop();
+            if (setReasonResult) {
+              await globalAttendanceStore.checkInOut(
+                AttendanceStatus.checkOut,
+                earlyCheckoutReason: earlyCheckOutReasonController.text,
+                overtimeTask: isOvertimeTask,
+                overtimeTaskNote: overtimeNoteController.text,
+              );
+            }
+            await _hideLoadingDialog();
+            if (mounted) {
+              Navigator.of(context).pop();
+            }
           },
         ),
         TextButton(

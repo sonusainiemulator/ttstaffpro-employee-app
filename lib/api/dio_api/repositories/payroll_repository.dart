@@ -1,133 +1,96 @@
 import 'package:dio/dio.dart';
+import 'package:open_core_hr/api/api_routes.dart';
 import '../base_repository.dart';
 import '../../../models/payslip_model.dart';
 import '../../../models/payroll_record_model.dart';
 
-/// Repository for payroll and payslip related API calls
+/// Repository for payroll and payslip related API calls.
 ///
-/// This repository handles all payroll-related operations including:
-/// - Payroll records management
-/// - Salary structure information
-/// - Payroll statistics
-/// - Payslip viewing and downloading
-/// - Salary adjustments
+/// Endpoint reference:
+///   GET /api/V1/payroll                    → payroll list (mobile-optimised, skip/take)
+///   GET /api/V1/payroll/payslip/{id}       → payslip detail
+///   GET /api/V1/payroll/salary-structure   → active salary structure
+///   GET /api/V1/payroll/modifiers          → salary modifiers
+///   GET /api/V1/payroll/statistics         → payroll statistics
 class PayrollRepository extends BaseRepository {
-  // ===== Payroll Records =====
+  // ── Payroll List ──────────────────────────────────────────────────────────
 
-  /// Get paginated list of payroll records
+  /// Fetch paginated payroll list from GET /payroll.
   ///
-  /// [page] - Page number (1-based indexing, default: 1)
-  /// [perPage] - Number of records per page (default: 15)
-  /// [status] - Filter by status: pending, processed, paid (optional)
-  /// [period] - Filter by period string (optional)
-  /// [fromDate] - Filter from date (optional)
-  /// [toDate] - Filter to date (optional)
+  /// Always use this endpoint for the list screen (fields are properly typed).
   ///
-  /// Returns a Map containing:
-  /// - totalCount: Total number of records
-  /// - values: List of PayrollRecordModel objects
-  /// - currentPage: Current page number
-  /// - lastPage: Last page number
-  Future<Map<String, dynamic>> getMyPayrollRecords({
-    int page = 1,
-    int perPage = 15,
+  /// Returns a [PayrollListResponse] with `total`, `skip`, `take`, `items`.
+  Future<PayrollListResponse> getMyPayrollRecords({
+    int skip = 0,
+    int take = 15,
     String? status,
-    String? period,
+    String? period, // optional, sent as month_year filter if provided
     String? fromDate,
     String? toDate,
   }) async {
-    final queryParams = <String, dynamic>{
-      'page': page,
-      'per_page': perPage,
+    final params = <String, dynamic>{
+      'skip': skip,
+      'take': take,
     };
-
-    if (status != null) queryParams['status'] = status;
-    if (period != null) queryParams['period'] = period;
-    if (fromDate != null) queryParams['from_date'] = fromDate;
-    if (toDate != null) queryParams['to_date'] = toDate;
+    if (status != null) params['status'] = status;
+    if (period != null) params['month_year'] = period;
+    if (fromDate != null) params['from_date'] = fromDate;
+    if (toDate != null) params['to_date'] = toDate;
 
     return await safeApiCall(
-      () => dioClient.get('payroll/my-records', queryParameters: queryParams),
+      () => dioClient.get(APIRoutes.payrollList, queryParameters: params),
       parser: (data) {
-        final records = (data['data']['records'] as List<dynamic>?)
-                ?.map((item) => PayrollRecordModel.fromJson(item as Map<String, dynamic>))
-                .toList() ??
-            [];
-
-        final pagination = data['data']['pagination'] as Map<String, dynamic>?;
-
-        return {
-          'totalCount': pagination?['total'] ?? 0,
-          'values': records,
-          'currentPage': pagination?['current_page'] ?? 1,
-          'lastPage': pagination?['last_page'] ?? 1,
-        };
+        // Response envelope: { total, skip, take, items: [...] }
+        final envelope = data['data'] as Map<String, dynamic>? ?? data as Map<String, dynamic>;
+        return PayrollListResponse.fromJson(envelope);
       },
     );
   }
 
-  /// Get single payroll record details
-  ///
-  /// [id] - Payroll record ID
-  ///
-  /// Returns PayrollRecordDetailModel with complete breakdown
-  Future<PayrollRecordDetailModel?> getPayrollRecordDetails(int id) async {
+  // ── Payslip Detail ────────────────────────────────────────────────────────
+
+  /// Get full payslip detail from GET /payroll/payslip/{id}.
+  Future<PayslipDetailModel?> getPayrollRecordDetails(int id) async {
     return await safeApiCall(
-      () => dioClient.get('payroll/my-records/$id'),
-      parser: (data) => PayrollRecordDetailModel.fromJson(data['data'] as Map<String, dynamic>),
+      () => dioClient.get('${APIRoutes.payrollDetail}/$id'),
+      parser: (data) {
+        final body = data['data'] as Map<String, dynamic>? ?? data as Map<String, dynamic>;
+        return PayslipDetailModel.fromJson(body);
+      },
     );
   }
 
-  // ===== Salary Structure =====
+  // ── Salary Structure ──────────────────────────────────────────────────────
 
-  /// Get employee's salary structure
-  ///
-  /// Returns salary structure data including:
-  /// - Basic salary
-  /// - Allowances
-  /// - Deductions
-  /// - Tax information
-  Future<Map<String, dynamic>?> getMySalaryStructure() async {
+  /// Get employee's active salary structure from GET /payroll/salary-structure.
+  Future<SalaryStructureModel?> getMySalaryStructure() async {
     return await safeApiCall(
-      () => dioClient.get('payroll/my-salary-structure'),
-      parser: (data) => data['data'] as Map<String, dynamic>,
+      () => dioClient.get(APIRoutes.salaryStructure),
+      parser: (data) {
+        final body = data['data'] as Map<String, dynamic>? ?? data as Map<String, dynamic>;
+        return SalaryStructureModel.fromJson(body);
+      },
     );
   }
 
-  // ===== Payroll Statistics =====
+  // ── Statistics ────────────────────────────────────────────────────────────
 
-  /// Get payroll statistics for the employee
-  ///
-  /// [year] - Filter by year (optional)
-  ///
-  /// Returns statistics including:
-  /// - Total earnings
-  /// - Total deductions
-  /// - Net pay
-  /// - Monthly breakdown
   Future<Map<String, dynamic>?> getMyPayrollStatistics({int? year}) async {
     return await safeApiCall(
       () => dioClient.get(
-        'payroll/my-statistics',
-        queryParameters: year != null ? {'year': year} : null,
+        APIRoutes.getMyPayrollStatistics,
+        queryParameters: year != null ? {'year': year, 'months': 12} : {'months': 12}, // Default to 12 months for trend
       ),
-      parser: (data) => data['data'] as Map<String, dynamic>,
+      parser: (data) => data['data'] as Map<String, dynamic>? ?? data as Map<String, dynamic>? ?? {},
     );
   }
 
-  // ===== Payslips =====
+  // ── Payslips (legacy wrapper — uses PayslipModel for existing payslip list screen) ──
 
-  /// Get paginated list of payslips
+  /// Get paginated list of payslips.
   ///
-  /// [skip] - Number of records to skip for pagination (default: 0)
-  /// [take] - Number of records to fetch per page (default: 20)
-  /// [year] - Filter by year (optional)
-  /// [month] - Filter by month (optional)
-  /// [status] - Filter by status (optional)
-  ///
-  /// Returns a Map containing:
-  /// - totalCount: Total number of payslips
-  /// - values: List of payslips (as dynamic maps)
+  /// This wraps [getMyPayrollRecords] and converts the items to [PayslipModel]
+  /// so existing payslip-list screens continue to work without change.
   Future<Map<String, dynamic>> getMyPayslips({
     int skip = 0,
     int take = 20,
@@ -135,67 +98,41 @@ class PayrollRepository extends BaseRepository {
     int? month,
     String? status,
   }) async {
-    final queryParams = <String, dynamic>{
+    final params = <String, dynamic>{
       'skip': skip,
       'take': take,
     };
-
-    if (year != null) queryParams['year'] = year;
-    if (month != null) queryParams['month'] = month;
-    if (status != null) queryParams['status'] = status;
+    if (year != null) params['year'] = year;
+    if (month != null) params['month'] = month;
+    if (status != null) params['status'] = status;
+    if (year != null && month != null) {
+      final m = month.toString().padLeft(2, '0');
+      params['month_year'] = '$year-$m';
+    }
 
     return await safeApiCall(
-      () => dioClient.get('payroll/my-payslips', queryParameters: queryParams),
+      () => dioClient.get(APIRoutes.payrollList, queryParameters: params),
       parser: (data) {
-        final values = (data['data']['payslips'] as List<dynamic>?)
-                ?.map((item) => PayslipModel.fromJson(item as Map<String, dynamic>))
-                .toList() ??
-            [];
-
-        final pagination = data['data']['pagination'] as Map<String, dynamic>?;
-
+        final envelope = data['data'] as Map<String, dynamic>? ?? data as Map<String, dynamic>;
+        final items = (envelope['items'] as List<dynamic>? ?? [])
+            .map((e) => _payrollItemToPayslipModel(e as Map<String, dynamic>))
+            .toList();
         return {
-          'totalCount': pagination?['total'] ?? 0,
-          'values': values,
+          'totalCount': envelope['total'] ?? items.length,
+          'values': items,
         };
       },
     );
   }
 
-  /// Get single payslip details
-  ///
-  /// [id] - Payslip ID
-  ///
-  /// Returns the payslip data including:
-  /// - Earnings breakdown
-  /// - Deductions breakdown
-  /// - Net pay
-  /// - Payment date
+  /// Get single payslip by ID — wraps [getPayrollRecordDetails] and returns [PayslipModel].
   Future<PayslipModel?> getPayslipDetails(int id) async {
-    return await safeApiCall(
-      () => dioClient.get('payroll/my-payslips/$id'),
-      parser: (data) => PayslipModel.fromJson(data['data'] as Map<String, dynamic>),
-    );
+    final detail = await getPayrollRecordDetails(id);
+    if (detail == null) return null;
+    return _payslipDetailToLegacyModel(detail);
   }
 
-  /// Download payslip as PDF
-  ///
-  /// [id] - Payslip ID
-  /// [savePath] - Local file path where the PDF will be saved
-  /// [onProgress] - Optional callback for download progress (0.0 to 1.0)
-  /// [cancelToken] - Optional token to cancel the download
-  ///
-  /// Returns the response from the download operation
-  ///
-  /// Example:
-  /// ```dart
-  /// final savePath = '/storage/emulated/0/Download/payslip_${id}.pdf';
-  /// await payrollRepository.downloadPayslip(
-  ///   123,
-  ///   savePath,
-  ///   onProgress: (progress) => print('Download: ${(progress * 100).toStringAsFixed(0)}%'),
-  /// );
-  /// ```
+  /// Download payslip as PDF file.
   Future<Response> downloadPayslip(
     int id,
     String savePath, {
@@ -203,13 +140,11 @@ class PayrollRepository extends BaseRepository {
     CancelToken? cancelToken,
   }) async {
     return await dioClient.downloadFile(
-      'payroll/download-payslip/$id',
+      '${APIRoutes.downloadPayslipPdf}/$id',
       savePath,
       onReceiveProgress: onProgress != null
           ? (received, total) {
-              if (total != -1) {
-                onProgress(received / total);
-              }
+              if (total != -1) onProgress(received / total);
             }
           : null,
       cancelToken: cancelToken,
@@ -221,135 +156,125 @@ class PayrollRepository extends BaseRepository {
     );
   }
 
-  /// Get payslip PDF download URL
-  ///
-  /// [id] - Payslip ID
-  ///
-  /// Returns the URL string for the payslip PDF
-  /// This can be used for opening the PDF in a web view or external app
+  /// Returns the download URL for a payslip PDF.
   String getPayslipDownloadUrl(int id) {
-    final baseUrl = dioClient.dio.options.baseUrl;
-    return '${baseUrl}payroll/download-payslip/$id';
+    final base = dioClient.dio.options.baseUrl;
+    return '$base${APIRoutes.downloadPayslipPdf}/$id';
   }
 
-  // ===== Salary Modifiers =====
+  // ── Salary Modifiers ──────────────────────────────────────────────────────
 
-  /// Get list of salary modifiers
-  ///
-  /// Returns a list of modifier records grouped by payroll period
-  /// Each record contains earnings and deductions applied in that period
-  ///
-  /// Note: This endpoint returns ALL modifier records (not paginated)
-  /// The backend returns modifiers grouped by payroll period
-  ///
-  /// Returns a List of ModifierRecord objects
   Future<List<dynamic>> getMyAdjustments() async {
     return await safeApiCall(
-      () => dioClient.get('payroll/my-modifiers'),
+      () => dioClient.get(APIRoutes.getMyAdjustments),
       parser: (data) {
-        // Backend returns an array of modifier records directly in data
-        final records = data['data'] as List<dynamic>? ?? [];
-        return records;
+        final envelope = data['data'] as Map<String, dynamic>? ?? data as Map<String, dynamic>;
+        // Section 6.1: items list should contain the modifiers
+        return envelope['items'] as List<dynamic>? ?? (data['data'] is List ? data['data'] as List : []);
       },
     );
   }
 
-  // ===== Utility Methods =====
+  // ── Wrapper methods for store compatibility ────────────────────────────────
 
-  /// Get payslips for a specific month and year
-  ///
-  /// Convenience method to fetch payslips for a specific month
-  Future<Map<String, dynamic>> getPayslipsForMonth({
-    required int year,
-    required int month,
-  }) async {
-    return await getMyPayslips(
+  Future<Map<String, dynamic>> getPayslips({
+    int skip = 0,
+    int take = 20,
+    int? year,
+    String? status,
+  }) =>
+      getMyPayslips(skip: skip, take: take, year: year, status: status);
+
+  Future<PayslipModel?> getPayslipById(int id) => getPayslipDetails(id);
+
+  Future<SalaryStructureModel?> getSalaryStructure() => getMySalaryStructure();
+
+  Future<Map<String, dynamic>?> getPayrollStatistics({int? year}) =>
+      getMyPayrollStatistics(year: year);
+
+  Future<String?> downloadPayslipPdf(int id) async {
+    throw UnimplementedError('downloadPayslipPdf: provide a save path first.');
+  }
+
+  // Convenience helpers
+
+  Future<Map<String, dynamic>> getPayslipsForMonth(
+      {required int year, required int month}) =>
+      getMyPayslips(year: year, month: month, take: 10);
+
+  Future<Map<String, dynamic>> getCurrentYearPayslips() =>
+      getMyPayslips(year: DateTime.now().year, take: 12);
+
+  Future<Map<String, dynamic>> getCurrentMonthPayslip() {
+    final now = DateTime.now();
+    return getMyPayslips(year: now.year, month: now.month, take: 1);
+  }
+
+  Future<Map<String, dynamic>> getPayrollRecordsForMonth(
+      {required int year, required int month}) {
+    return getMyPayslips(
       year: year,
       month: month,
       take: 10,
     );
   }
 
-  /// Get current year's payslips
-  ///
-  /// Convenience method to fetch all payslips for current year
-  Future<Map<String, dynamic>> getCurrentYearPayslips() async {
-    final currentYear = DateTime.now().year;
-    return await getMyPayslips(
-      year: currentYear,
-      take: 12,
+  // ── Private helpers ───────────────────────────────────────────────────────
+
+  /// Convert a /payroll `items` entry into the legacy [PayslipModel].
+  PayslipModel _payrollItemToPayslipModel(Map<String, dynamic> json) {
+    return PayslipModel(
+      id: json['id'] as int?,
+      code: json['monthYear'] as String?,
+      basicSalary: _num(json['basicSalary']),
+      netSalary: _num(json['netSalary']),
+      totalDeductions: null,
+      totalBenefits: null,
+      totalWorkedDays: null,
+      totalAbsentDays: null,
+      totalLeaveDays: null,
+      totalLateDays: null,
+      totalEarlyCheckoutDays: null,
+      totalOvertimeDays: null,
+      totalHolidays: null,
+      totalWeekends: null,
+      totalWorkingDays: null,
+      payrollModifiers: [],
+      status: json['status'] as String?,
+      payrollPeriod: json['month'] as String?,
+      createdAt: json['paymentDate'] as String?,
     );
   }
 
-  /// Get current month's payslip
-  ///
-  /// Convenience method to fetch payslip for current month
-  Future<Map<String, dynamic>> getCurrentMonthPayslip() async {
-    final now = DateTime.now();
-    return await getPayslipsForMonth(
-      year: now.year,
-      month: now.month,
+  /// Convert [PayslipDetailModel] into the legacy [PayslipModel].
+  PayslipModel _payslipDetailToLegacyModel(PayslipDetailModel d) {
+    return PayslipModel(
+      id: d.id,
+      code: d.month,
+      basicSalary: d.basicSalary,
+      netSalary: d.netSalary,
+      totalDeductions: d.totalDeductions,
+      totalBenefits: d.totalEarnings,
+      totalWorkedDays: d.attendance?.effectiveDays,
+      totalAbsentDays: d.attendance?.absentDays.toDouble(),
+      totalLeaveDays: d.attendance?.leaveDays.toDouble(),
+      totalLateDays: d.attendance?.lateDays.toDouble(),
+      totalEarlyCheckoutDays: null,
+      totalOvertimeDays: null,
+      totalHolidays: null,
+      totalWeekends: null,
+      totalWorkingDays: d.attendance?.totalWorkingDays.toDouble(),
+      payrollModifiers: [],
+      status: d.status,
+      payrollPeriod: d.month,
+      createdAt: d.paymentDate,
     );
   }
 
-  // ===== Wrapper Methods for Store Compatibility =====
-
-  /// Wrapper method for getMyPayslips (for store compatibility)
-  Future<Map<String, dynamic>> getPayslips({
-    int skip = 0,
-    int take = 20,
-    int? year,
-    String? status,
-  }) async {
-    return await getMyPayslips(
-      skip: skip,
-      take: take,
-      year: year,
-      status: status,
-    );
+  static num? _num(dynamic v) {
+    if (v == null) return null;
+    if (v is num) return v;
+    if (v is String) return double.tryParse(v.replaceAll(',', ''));
+    return null;
   }
-
-  /// Wrapper method for getPayslipDetails (for store compatibility)
-  Future<PayslipModel?> getPayslipById(int id) async {
-    return await getPayslipDetails(id);
-  }
-
-  /// Wrapper method for getMySalaryStructure (for store compatibility)
-  Future<Map<String, dynamic>?> getSalaryStructure() async {
-    return await getMySalaryStructure();
-  }
-
-  /// Wrapper method for getMyPayrollStatistics (for store compatibility)
-  Future<Map<String, dynamic>?> getPayrollStatistics({int? year}) async {
-    return await getMyPayrollStatistics(year: year);
-  }
-
-  /// Wrapper method for downloadPayslip with simplified signature (for store compatibility)
-  Future<String?> downloadPayslipPdf(int id) async {
-    // This is a simplified version - actual implementation should handle file paths
-    // For now, return null to indicate not implemented
-    // TODO: Implement proper file download with path handling
-    throw UnimplementedError('downloadPayslipPdf needs proper file path implementation');
-  }
-
-  /// Get payroll records for a specific month and year
-  ///
-  /// Convenience method to fetch payroll records for a specific month
-  Future<Map<String, dynamic>> getPayrollRecordsForMonth({
-    required int year,
-    required int month,
-  }) async {
-    // Format period string as "MonthName Year" (e.g., "January 2024")
-    final monthNames = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    final period = '${monthNames[month - 1]} $year';
-
-    return await getMyPayrollRecords(
-      period: period,
-      perPage: 10,
-    );
-  }
-
 }

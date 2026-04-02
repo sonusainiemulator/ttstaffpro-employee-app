@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:open_core_hr/locale/language_id.dart';
+import 'language_id.dart';
 
 import 'language_ar.dart';
 import 'language_bn.dart';

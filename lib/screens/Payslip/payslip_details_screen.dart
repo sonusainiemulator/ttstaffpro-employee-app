@@ -10,10 +10,7 @@ import '../../main.dart';
 
 class PayslipDetailsScreen extends StatefulWidget {
   final PayslipModel payslip;
-  const PayslipDetailsScreen({
-    super.key,
-    required this.payslip,
-  });
+  const PayslipDetailsScreen({super.key, required this.payslip});
 
   @override
   State<PayslipDetailsScreen> createState() => _PayslipDetailsScreenState();
@@ -114,7 +111,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
           _buildBreakdownSection(
             title: language.lblEarnings,
             icon: Iconsax.wallet_add,
-            details: widget.payslip.payrollAdjustments!
+            details: (widget.payslip.payrollModifiers ?? [])
                 .where((e) => e.type == 'benefit')
                 .toList(),
             color: Colors.green,
@@ -124,7 +121,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
           _buildBreakdownSection(
             title: language.lblDeductions,
             icon: Iconsax.wallet_minus,
-            details: widget.payslip.payrollAdjustments!
+            details: (widget.payslip.payrollModifiers ?? [])
                 .where((e) => e.type == 'deduction')
                 .toList(),
             color: Colors.red,
@@ -175,11 +172,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
               ),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(
-              Iconsax.document,
-              color: Colors.white,
-              size: 30,
-            ),
+            child: const Icon(Iconsax.document, color: Colors.white, size: 30),
           ),
           const SizedBox(height: 16),
           Text(
@@ -289,11 +282,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 20,
-              ),
+              child: Icon(icon, color: Colors.white, size: 20),
             ),
             const SizedBox(height: 12),
             Text(
@@ -358,10 +347,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  color.withOpacity(0.1),
-                  color.withOpacity(0.05),
-                ],
+                colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
               ),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
@@ -375,20 +361,13 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
                   height: 40,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [
-                        color.withOpacity(0.8),
-                        color,
-                      ],
+                      colors: [color.withOpacity(0.8), color],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Icon(
-                    icon,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  child: Icon(icon, color: Colors.white, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Text(
@@ -409,9 +388,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: isDark
-                        ? Colors.grey[800]!
-                        : const Color(0xFFF3F4F6),
+                    color: isDark ? Colors.grey[800]! : const Color(0xFFF3F4F6),
                     width: 1,
                   ),
                 ),
@@ -431,7 +408,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
                   Text(
                     detail.amount != null
                         ? getStringAsync(appCurrencySymbolPref) +
-                            detail.amount.toString()
+                              detail.amount.toString()
                         : '${detail.percentage}%',
                     style: TextStyle(
                       fontSize: 14,

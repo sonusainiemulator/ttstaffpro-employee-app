@@ -20,7 +20,7 @@ enum BottomNavigationBarType {
 
 class BottomNavigationBar extends StatefulWidget {
   BottomNavigationBar({
-    Key? key,
+    super.key,
     required this.items,
     this.onTap,
     this.currentIndex = 0,
@@ -39,23 +39,20 @@ class BottomNavigationBar extends StatefulWidget {
     this.unselectedLabelStyle,
     this.showSelectedLabels = true,
     bool? showUnselectedLabels,
-  })  : assert(items.length >= 2),
-        /*assert(
-        items.every((T4BottomNavigationBarItem item) => item.title != null) == true,
-        'Every item must have a non-null title',
-        ),*/
-        assert(0 <= currentIndex && currentIndex < items.length),
-        assert(elevation >= 0.0),
-        assert(iconSize >= 0.0),
-        assert(selectedItemColor == null || fixedColor == null,
-            'Either selectedItemColor or fixedColor can be specified, but not both'),
-        assert(selectedFontSize >= 0.0),
-        assert(unselectedFontSize >= 0.0),
-        type = _type(type, items),
-        selectedItemColor = selectedItemColor ?? fixedColor,
-        showUnselectedLabels =
-            showUnselectedLabels ?? _defaultShowUnselected(_type(type, items)),
-        super(key: key);
+  }) : assert(items.length >= 2),
+       assert(0 <= currentIndex && currentIndex < items.length),
+       assert(elevation >= 0.0),
+       assert(iconSize >= 0.0),
+       assert(
+         selectedItemColor == null || fixedColor == null,
+         'Either selectedItemColor or fixedColor can be specified, but not both',
+       ),
+       assert(selectedFontSize >= 0.0),
+       assert(unselectedFontSize >= 0.0),
+       type = _type(type, items),
+       selectedItemColor = selectedItemColor ?? fixedColor,
+       showUnselectedLabels =
+           showUnselectedLabels ?? _defaultShowUnselected(_type(type, items));
 
   /// Defines the appearance of the button items that are arrayed within the
   /// bottom navigation bar.
@@ -197,7 +194,7 @@ class BottomNavigationBar extends StatefulWidget {
   }
 
   @override
-  _BottomNavigationBarState createState() => _BottomNavigationBarState();
+  State<BottomNavigationBar> createState() => _BottomNavigationBarState();
 }
 
 // This represents a single tile in the bottom navigation bar. It is intended
@@ -251,12 +248,16 @@ class _BottomNavigationTile extends StatelessWidget {
     final double unselectedIconSize = unselectedIconTheme.size ?? iconSize;
     // The amount that the selected icon is bigger than the unselected icons,
     // (or zero if the selected icon is not bigger than the unselected icons).
-    final double selectedIconDiff =
-        math.max(selectedIconSize - unselectedIconSize, 0);
+    final double selectedIconDiff = math.max(
+      selectedIconSize - unselectedIconSize,
+      0,
+    );
     // The amount that the unselected icons are bigger than the selected icon,
     // (or zero if the unselected icons are not any bigger than the selected icon).
-    final double unselectedIconDiff =
-        math.max(unselectedIconSize - selectedIconSize, 0);
+    final double unselectedIconDiff = math.max(
+      unselectedIconSize - selectedIconSize,
+      0,
+    );
 
     // Defines the padding for the animating icons + labels.
     //
@@ -325,8 +326,10 @@ class _BottomNavigationTile extends StatelessWidget {
             InkResponse(
               onTap: onTap,
               child: Padding(
-                padding:
-                    EdgeInsets.only(top: topPadding, bottom: bottomPadding),
+                padding: EdgeInsets.only(
+                  top: topPadding,
+                  bottom: bottomPadding,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -356,9 +359,7 @@ class _BottomNavigationTile extends StatelessWidget {
                 ),
               ),
             ),
-            Semantics(
-              label: indexLabel,
-            ),
+            Semantics(label: indexLabel),
           ],
         ),
       ),
@@ -368,7 +369,7 @@ class _BottomNavigationTile extends StatelessWidget {
 
 class _TileIcon extends StatelessWidget {
   const _TileIcon({
-    Key? key,
+    super.key,
     required this.colorTween,
     required this.animation,
     required this.iconSize,
@@ -376,7 +377,7 @@ class _TileIcon extends StatelessWidget {
     required this.item,
     required this.selectedIconTheme,
     required this.unselectedIconTheme,
-  }) : super(key: key);
+  });
 
   final ColorTween? colorTween;
   final Animation<double> animation;
@@ -391,18 +392,19 @@ class _TileIcon extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       heightFactor: 1.0,
-      child: SvgPicture.asset(item.icon,
-          width: selectedIconTheme.size,
-          height: selectedIconTheme.size,
-          color:
-              selected ? selectedIconTheme.color : unselectedIconTheme.color),
+      child: SvgPicture.asset(
+        item.icon,
+        width: selectedIconTheme.size,
+        height: selectedIconTheme.size,
+        color: selected ? selectedIconTheme.color : unselectedIconTheme.color,
+      ),
     );
   }
 }
 
 class _Label extends StatelessWidget {
   const _Label({
-    Key? key,
+    super.key,
     required this.colorTween,
     required this.animation,
     required this.item,
@@ -410,7 +412,7 @@ class _Label extends StatelessWidget {
     required this.unselectedLabelStyle,
     required this.showSelectedLabels,
     required this.showUnselectedLabels,
-  }) : super(key: key);
+  });
 
   final ColorTween colorTween;
   final Animation<double> animation;
@@ -454,11 +456,7 @@ class _Label extends StatelessWidget {
 
     if (!showUnselectedLabels && !showSelectedLabels) {
       // Never show any labels.
-      text = Opacity(
-        alwaysIncludeSemantics: true,
-        opacity: 0.0,
-        child: text,
-      );
+      text = Opacity(alwaysIncludeSemantics: true, opacity: 0.0, child: text);
     } else if (!showUnselectedLabels) {
       // Fade selected labels in.
       text = FadeTransition(
@@ -495,8 +493,10 @@ class _BottomNavigationBarState extends State<BottomNavigationBar>
   // animation is complete.
   Color? _backgroundColor;
 
-  static final Animatable<double> _flexTween =
-      Tween<double>(begin: 1.0, end: 1.5);
+  static final Animatable<double> _flexTween = Tween<double>(
+    begin: 1.0,
+    end: 1.5,
+  );
 
   void _resetState() {
     for (AnimationController controller in _controllers) {
@@ -507,15 +507,15 @@ class _BottomNavigationBarState extends State<BottomNavigationBar>
     }
     _circles.clear();
 
-    _controllers =
-        List<AnimationController>.generate(widget.items.length, (int index) {
-      return AnimationController(
-        duration: kThemeAnimationDuration,
-        vsync: this,
-      )..addListener(_rebuild);
+    _controllers = List<AnimationController>.generate(widget.items.length, (
+      int index,
+    ) {
+      return AnimationController(duration: kThemeAnimationDuration, vsync: this)
+        ..addListener(_rebuild);
     });
-    _animations =
-        List<CurvedAnimation>.generate(widget.items.length, (int index) {
+    _animations = List<CurvedAnimation>.generate(widget.items.length, (
+      int index,
+    ) {
       return CurvedAnimation(
         parent: _controllers[index],
         curve: Curves.fastOutSlowIn,
@@ -557,27 +557,26 @@ class _BottomNavigationBarState extends State<BottomNavigationBar>
     if (widget.items[index].backgroundColor != null) {
       _circles.add(
         _Circle(
-          state: this,
-          index: index,
-          color: widget.items[index].backgroundColor!,
-          vsync: this,
-        )..controller.addStatusListener(
-            (AnimationStatus status) {
-              switch (status) {
-                case AnimationStatus.completed:
-                  setState(() {
-                    final _Circle circle = _circles.removeFirst();
-                    _backgroundColor = circle.color;
-                    circle.dispose();
-                  });
-                  break;
-                case AnimationStatus.dismissed:
-                case AnimationStatus.forward:
-                case AnimationStatus.reverse:
-                  break;
-              }
-            },
-          ),
+            state: this,
+            index: index,
+            color: widget.items[index].backgroundColor!,
+            vsync: this,
+          )
+          ..controller.addStatusListener((AnimationStatus status) {
+            switch (status) {
+              case AnimationStatus.completed:
+                setState(() {
+                  final _Circle circle = _circles.removeFirst();
+                  _backgroundColor = circle.color;
+                  circle.dispose();
+                });
+                break;
+              case AnimationStatus.dismissed:
+              case AnimationStatus.forward:
+              case AnimationStatus.reverse:
+                break;
+            }
+          }),
       );
     }
   }
@@ -621,15 +620,20 @@ class _BottomNavigationBarState extends State<BottomNavigationBar>
   }
 
   List<Widget> _createTiles() {
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(context);
+    final MaterialLocalizations localizations = MaterialLocalizations.of(
+      context,
+    );
 
     final ThemeData themeData = Theme.of(context);
 
-    final TextStyle? effectiveSelectedLabelStyle =
-        _effectiveTextStyle(widget.selectedLabelStyle, widget.selectedFontSize);
+    final TextStyle? effectiveSelectedLabelStyle = _effectiveTextStyle(
+      widget.selectedLabelStyle,
+      widget.selectedFontSize,
+    );
     final TextStyle? effectiveUnselectedLabelStyle = _effectiveTextStyle(
-        widget.unselectedLabelStyle, widget.unselectedFontSize);
+      widget.unselectedLabelStyle,
+      widget.unselectedFontSize,
+    );
 
     Color? themeColor;
     switch (themeData.brightness) {
@@ -659,26 +663,30 @@ class _BottomNavigationBarState extends State<BottomNavigationBar>
 
     final List<Widget> tiles = <Widget>[];
     for (int i = 0; i < widget.items.length; i++) {
-      tiles.add(_BottomNavigationTile(
-        widget.type,
-        widget.items[i],
-        _animations[i],
-        widget.iconSize,
-        selectedIconTheme: widget.selectedIconTheme,
-        unselectedIconTheme: widget.unselectedIconTheme,
-        selectedLabelStyle: effectiveSelectedLabelStyle!,
-        unselectedLabelStyle: effectiveUnselectedLabelStyle!,
-        onTap: () {
-          if (widget.onTap != null) widget.onTap!(i);
-        },
-        colorTween: colorTween,
-        flex: _evaluateFlex(_animations[i]),
-        selected: i == widget.currentIndex,
-        showSelectedLabels: widget.showSelectedLabels,
-        showUnselectedLabels: widget.showUnselectedLabels,
-        indexLabel: localizations.tabLabel(
-            tabIndex: i + 1, tabCount: widget.items.length),
-      ));
+      tiles.add(
+        _BottomNavigationTile(
+          widget.type,
+          widget.items[i],
+          _animations[i],
+          widget.iconSize,
+          selectedIconTheme: widget.selectedIconTheme,
+          unselectedIconTheme: widget.unselectedIconTheme,
+          selectedLabelStyle: effectiveSelectedLabelStyle!,
+          unselectedLabelStyle: effectiveUnselectedLabelStyle!,
+          onTap: () {
+            if (widget.onTap != null) widget.onTap!(i);
+          },
+          colorTween: colorTween,
+          flex: _evaluateFlex(_animations[i]),
+          selected: i == widget.currentIndex,
+          showSelectedLabels: widget.showSelectedLabels,
+          showUnselectedLabels: widget.showUnselectedLabels,
+          indexLabel: localizations.tabLabel(
+            tabIndex: i + 1,
+            tabCount: widget.items.length,
+          ),
+        ),
+      );
     }
     return tiles;
   }
@@ -701,8 +709,9 @@ class _BottomNavigationBarState extends State<BottomNavigationBar>
 
     // Labels apply up to _bottomMargin padding. Remainder is media padding.
     final double additionalBottomPadding = math.max(
-        MediaQuery.of(context).padding.bottom - widget.selectedFontSize / 2.0,
-        0.0);
+      MediaQuery.of(context).padding.bottom - widget.selectedFontSize / 2.0,
+      0.0,
+    );
     Color? backgroundColor;
     switch (widget.type) {
       case BottomNavigationBarType.fixed:
@@ -781,8 +790,9 @@ class _Circle {
 
     final double allWeights = weightSum(state._animations);
     // These weights sum to the start edge of the indexed item.
-    final double leadingWeights =
-        weightSum(state._animations.sublist(0, index));
+    final double leadingWeights = weightSum(
+      state._animations.sublist(0, index),
+    );
 
     // Add half of its flex value in order to get to the center.
     return (leadingWeights +
@@ -797,10 +807,7 @@ class _Circle {
 
 // Paints the animating color splash circles.
 class _RadialPainter extends CustomPainter {
-  _RadialPainter({
-    required this.circles,
-    required this.textDirection,
-  });
+  _RadialPainter({required this.circles, required this.textDirection});
 
   final List<_Circle> circles;
   final TextDirection textDirection;
@@ -841,8 +848,10 @@ class _RadialPainter extends CustomPainter {
           leftFraction = circle.horizontalLeadingOffset;
           break;
       }
-      final Offset center =
-          Offset(leftFraction * size.width, size.height / 2.0);
+      final Offset center = Offset(
+        leftFraction * size.width,
+        size.height / 2.0,
+      );
       final Tween<double> radiusTween = Tween<double>(
         begin: 0.0,
         end: _maxRadius(center, size),

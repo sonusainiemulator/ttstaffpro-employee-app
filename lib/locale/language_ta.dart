@@ -1027,6 +1027,9 @@ class LanguageTa extends BaseLanguage {
   String get lblSearchByAddress => 'முகவரி மூலம் தேடவும்';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => 'இங்கே தேடவும்';
 
   @override
@@ -2119,6 +2122,9 @@ class LanguageTa extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => 'வருகை';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
   String get lblTaskSystem => 'பணி அமைப்பு';
@@ -3488,6 +3494,10 @@ class LanguageTa extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'ஒதுக்கீட்டு வரலாறு';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'சிக்கல் விவரம்';
   @override
   String get lblSubmitReport => 'அறிக்கை சமர்ப்பிக்கவும்';
@@ -4028,3 +4038,6 @@ class LanguageTa extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'கொள்கை கிடைக்கவில்லை';
 }
+
+
+

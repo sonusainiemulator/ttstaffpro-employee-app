@@ -1461,6 +1461,9 @@ class LanguageTe extends BaseLanguage {
   String get lblSearchByAddress => 'చిరునామా ద్వారా వెతకండి';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => 'ఇక్కడ వెతకండి';
 
   @override
@@ -2097,6 +2100,9 @@ class LanguageTe extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => 'హాజరు';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
   String get lblTaskSystem => 'టాస్క్ సిస్టమ్';
@@ -3481,6 +3487,10 @@ class LanguageTe extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'కేటాయింపు చరిత్ర';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'సమస్య వివరణ';
   @override
   String get lblSubmitReport => 'నివేదిక సమర్పించండి';
@@ -4021,3 +4031,6 @@ class LanguageTe extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'విధానం కనుగొనబడలేదు';
 }
+
+
+

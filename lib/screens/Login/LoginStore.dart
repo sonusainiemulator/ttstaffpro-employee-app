@@ -156,7 +156,17 @@ abstract class LoginStoreBase with Store {
     ApiResponseModel apiResponse = ApiResponseModel.fromJson(data);
 
     if (statusCode == 200) {
+      log('Login API Response Body: ${response.body}');
       var user = UserModel.fromJSON(apiResponse.data);
+      if (user.token == null || user.token!.isEmpty) {
+        log('WARNING: Token is missing from UserModel! Attempting to parse from root...');
+        if (data is Map && data.containsKey('token')) {
+            user.token = data['token'].toString();
+            log('Recovered token from root JSON.');
+        } else if (data is Map && data['data'] is Map && data['data'].containsKey('token')) {
+            user.token = data['data']['token'].toString();
+        }
+      }
 
       await setValue(isLoggedInPref, true);
       await setValue(isDeviceVerifiedPref, false);

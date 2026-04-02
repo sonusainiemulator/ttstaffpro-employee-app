@@ -4,8 +4,9 @@ import 'package:mobx/mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:public_ip_address/public_ip_address.dart';
 
+import '../api/result.dart';
 import '../main.dart';
-import '../models/status/status_response.dart';
+import 'package:open_core_hr/models/status/status_response.dart';
 
 part 'global_attendance_store.g.dart';
 
@@ -252,20 +253,23 @@ abstract class GlobalAttendanceStoreBase with Store {
   }
 
   @action
-  Future checkInOut(AttendanceStatus status,
-      {String? lateCheckInReason}) async {
+  Future<Result> checkInOut(AttendanceStatus status,
+      {String? lateCheckInReason, String? earlyCheckoutReason, bool? overtimeTask, String? overtimeTaskNote}) async {
     isInOutBtnLoading = true;
 
     var location = await locationService.getLocation();
     if (location.latitude == null || location.longitude == null) {
       toast('Unable to get device location');
-      return false;
+      return Result()..message = 'Unable to get device location'..isSuccess = false;
     }
 
     var connectivityResult = await (Connectivity().checkConnectivity());
     Map req = {
       "status": status == AttendanceStatus.checkIn ? 'checkin' : 'checkout',
       "lateReason": lateCheckInReason,
+      "earlyCheckoutReason": earlyCheckoutReason,
+      "overtimeTask": overtimeTask,
+      "overtimeTaskNote": overtimeTaskNote,
       "latitude": location.latitude,
       "longitude": location.longitude,
       "altitude": location.altitude ?? 0,
@@ -285,7 +289,8 @@ abstract class GlobalAttendanceStoreBase with Store {
     var result = await apiService.checkInOut(req);
     if (!result.isSuccess) {
       toast(result.message);
-      return false;
+      isInOutBtnLoading = false;
+      return result;
     }
     var statusResult = await apiService.checkAttendanceStatus();
     if (statusResult != null) {
@@ -294,7 +299,7 @@ abstract class GlobalAttendanceStoreBase with Store {
     toast(
         'Successfully ${status == AttendanceStatus.checkIn ? 'checked in' : 'checked out'}');
     isInOutBtnLoading = false;
-    return true;
+    return result;
   }
 
 }

@@ -3,7 +3,6 @@ import '../api/dio_api/repositories/payroll_repository.dart';
 import '../api/dio_api/exceptions/api_exceptions.dart';
 import '../models/payslip_model.dart';
 import '../models/payroll_record_model.dart';
-import '../models/salary_structure_model.dart';
 import '../models/payroll/modifier_record.dart';
 
 part 'payroll_store.g.dart';
@@ -172,7 +171,7 @@ abstract class _PayrollStore with Store {
       if (year != null) selectedYear = year;
       if (status != null) selectedStatus = status;
 
-      final result = await _repository.getPayslips(
+      final result = await _repository.getMyPayslips(
         skip: skip,
         take: take,
         year: year ?? selectedYear,
@@ -239,12 +238,7 @@ abstract class _PayrollStore with Store {
     try {
       isLoading = true;
       error = null;
-      final data = await _repository.getSalaryStructure();
-      if (data != null) {
-        salaryStructure = SalaryStructureModel.fromJson(data);
-      } else {
-        salaryStructure = null;
-      }
+      salaryStructure = await _repository.getSalaryStructure();
     } catch (e) {
       _handleError(e);
     } finally {
@@ -273,7 +267,7 @@ abstract class _PayrollStore with Store {
     try {
       isLoading = true;
       error = null;
-      payrollStatistics = await _repository.getPayrollStatistics(
+      payrollStatistics = await _repository.getMyPayrollStatistics(
         year: year ?? selectedYear,
       );
     } catch (e) {
@@ -301,9 +295,9 @@ abstract class _PayrollStore with Store {
 
       final records = await _repository.getMyAdjustments();
 
-      // Parse the records into ModifierRecord objects
+      // Parse the records into ModifierRecord objects (grouped by period)
       modifiers = ObservableList.of(
-        records.map((json) => ModifierRecord.fromJson(json as Map<String, dynamic>)).toList(),
+        ModifierRecord.fromFlatV1List(records),
       );
     } catch (e) {
       _handleError(e);
@@ -563,27 +557,26 @@ abstract class _PayrollStore with Store {
       }
       error = null;
 
-      final result = await _repository.getMyPayrollRecords(
-        page: page,
-        perPage: perPage,
+      // Convert page-based to skip/take
+      final skip = (page - 1) * perPage;
+      final listResp = await _repository.getMyPayrollRecords(
+        skip: skip,
+        take: perPage,
         status: status,
         period: period,
       );
 
-      totalPayrollRecordsCount = result['totalCount'];
-      final recordsList = (result['values'] as List).cast<PayrollRecordModel>();
-      final lastPage = result['lastPage'] as int;
+      totalPayrollRecordsCount = listResp.total;
 
       if (loadMore) {
-        payrollRecords.addAll(recordsList);
+        payrollRecords.addAll(listResp.items);
         currentPayrollRecordsPage++;
       } else {
-        payrollRecords = ObservableList.of(recordsList);
+        payrollRecords = ObservableList.of(listResp.items);
         currentPayrollRecordsPage = page;
       }
 
-      // Update hasMore flag
-      hasMorePayrollRecords = currentPayrollRecordsPage < lastPage;
+      hasMorePayrollRecords = listResp.hasMore;
     } catch (e) {
       _handleError(e);
     } finally {

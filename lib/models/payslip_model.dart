@@ -83,8 +83,17 @@ class PayslipModel {
   static num? _extractAmount(dynamic value) {
     if (value == null) return null;
     if (value is num) return value;
+    if (value is String) {
+      final cleanVal = value.replaceAll(',', '');
+      return double.tryParse(cleanVal);
+    }
     if (value is Map<String, dynamic>) {
-      return value['amount'] as num?;
+      final amount = value['amount'];
+      if (amount is num) return amount;
+      if (amount is String) {
+        final cleanVal = amount.replaceAll(',', '');
+        return double.tryParse(cleanVal);
+      }
     }
     return null;
   }

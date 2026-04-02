@@ -101,6 +101,20 @@ mixin _$AttendanceHistoryStore on AttendanceHistoryStoreBase, Store {
         .run(() => super.getAttendanceHistory(pageKey));
   }
 
+  late final _$AttendanceHistoryStoreBaseActionController =
+      ActionController(name: 'AttendanceHistoryStoreBase', context: context);
+
+  @override
+  void init() {
+    final _$actionInfo = _$AttendanceHistoryStoreBaseActionController
+        .startAction(name: 'AttendanceHistoryStoreBase.init');
+    try {
+      return super.init();
+    } finally {
+      _$AttendanceHistoryStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

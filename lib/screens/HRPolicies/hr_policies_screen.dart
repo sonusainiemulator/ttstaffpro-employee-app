@@ -712,6 +712,18 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: IconButton(
+                          icon: const Icon(Iconsax.chart_2, color: Colors.white),
+                          tooltip: language.lblPolicyStatistics,
+                          onPressed: () => _showPolicyStats(context),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: IconButton(
                           icon: const Icon(Iconsax.filter, color: Colors.white),
                           tooltip: language.lblFilterByCategory,
                           onPressed: () => _showCategoryFilter(context),

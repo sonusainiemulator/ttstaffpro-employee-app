@@ -4,23 +4,12 @@ import 'package:iconsax/iconsax.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../main.dart';
-import '../../models/salary_structure_model.dart';
+import '../../models/payroll_record_model.dart';
 
 /// Salary Structure Screen
 ///
-/// Displays the employee's salary structure breakdown including:
-/// - Earnings components (benefits, allowances, etc.)
-/// - Deductions components (taxes, PF, etc.)
-/// - Component details (name, code, type, value)
-/// - Calculation types (fixed amount or percentage)
-/// - Effective dates
-///
-/// Features:
-/// - Pull to refresh
-/// - Loading skeleton states
-/// - Error handling with retry
-/// - Dark mode support
-/// - Beautiful gradient cards matching app theme
+/// Displays the employee's salary structure breakdown using the new
+/// SalaryStructureModel from GET /api/V1/payroll/salary-structure.
 class SalaryStructureScreen extends StatefulWidget {
   const SalaryStructureScreen({super.key});
 
@@ -39,6 +28,8 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
     await payrollStore.fetchSalaryStructure();
   }
 
+  String _fmt(double v) => '₹${v.toStringAsFixed(2)}';
+
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -56,10 +47,7 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
           child: SafeArea(
             child: Column(
               children: [
-                // Simple Header
                 _buildSimpleHeader(),
-
-                // Main Content with rounded top corners
                 Expanded(
                   child: ClipRRect(
                     borderRadius: const BorderRadius.only(
@@ -84,12 +72,13 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
     );
   }
 
+  // ── Header ────────────────────────────────────────────────────────────────
+
   Widget _buildSimpleHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Row(
         children: [
-          // Back button
           Container(
             width: 40,
             height: 40,
@@ -99,17 +88,11 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
             ),
             child: IconButton(
               onPressed: () => Navigator.pop(context),
-              icon: const Icon(
-                Iconsax.arrow_left,
-                color: Colors.white,
-                size: 20,
-              ),
+              icon: const Icon(Iconsax.arrow_left, color: Colors.white, size: 20),
               padding: EdgeInsets.zero,
             ),
           ),
           const SizedBox(width: 12),
-
-          // Title
           Expanded(
             child: Text(
               language.lblSalaryStructure,
@@ -120,8 +103,6 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
               ),
             ),
           ),
-
-          // Refresh button
           Container(
             width: 40,
             height: 40,
@@ -131,11 +112,7 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
             ),
             child: IconButton(
               onPressed: _loadSalaryStructure,
-              icon: const Icon(
-                Iconsax.refresh,
-                color: Colors.white,
-                size: 20,
-              ),
+              icon: const Icon(Iconsax.refresh, color: Colors.white, size: 20),
               padding: EdgeInsets.zero,
             ),
           ),
@@ -144,6 +121,8 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
     );
   }
 
+  // ── Content ───────────────────────────────────────────────────────────────
+
   Widget _buildContent() {
     return Observer(
       builder: (_) {
@@ -151,13 +130,13 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
           return _buildLoadingSkeleton();
         }
 
-        if (payrollStore.error != null &&
-            payrollStore.salaryStructure == null) {
+        if (payrollStore.error != null && payrollStore.salaryStructure == null) {
           return _buildErrorState();
         }
 
-        if (payrollStore.salaryStructure == null ||
-            !payrollStore.salaryStructure!.hasComponents) {
+        final structure = payrollStore.salaryStructure;
+        if (structure == null ||
+            (structure.earnings.isEmpty && structure.deductions.isEmpty)) {
           return _buildEmptyState();
         }
 
@@ -169,43 +148,36 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Summary Card
-                _buildSummaryCard(),
+                _buildSummaryCard(structure),
                 const SizedBox(height: 20),
 
                 // Earnings Section
-                if (payrollStore.salaryStructure!.hasEarnings) ...[
+                if (structure.activeEarnings.isNotEmpty) ...[
                   _buildSectionHeader(
                     language.lblEarnings,
-                    payrollStore.salaryStructure!.totalEarnings,
+                    structure.activeEarnings.length,
                     Colors.green,
                     Iconsax.arrow_up,
                   ),
                   const SizedBox(height: 12),
-                  ...payrollStore.salaryStructure!.earnings!
-                      .map((component) => _buildComponentCard(
-                            component,
-                            Colors.green,
-                          ))
-                      .toList(),
+                  ...structure.activeEarnings.map(
+                    (c) => _buildComponentCard(c, Colors.green),
+                  ),
                   const SizedBox(height: 20),
                 ],
 
                 // Deductions Section
-                if (payrollStore.salaryStructure!.hasDeductions) ...[
+                if (structure.activeDeductions.isNotEmpty) ...[
                   _buildSectionHeader(
                     language.lblDeductions,
-                    payrollStore.salaryStructure!.totalDeductions,
+                    structure.activeDeductions.length,
                     Colors.orange,
                     Iconsax.arrow_down,
                   ),
                   const SizedBox(height: 12),
-                  ...payrollStore.salaryStructure!.deductions!
-                      .map((component) => _buildComponentCard(
-                            component,
-                            Colors.orange,
-                          ))
-                      .toList(),
+                  ...structure.activeDeductions.map(
+                    (c) => _buildComponentCard(c, Colors.orange),
+                  ),
                   const SizedBox(height: 20),
                 ],
               ],
@@ -216,9 +188,9 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
     );
   }
 
-  Widget _buildSummaryCard() {
-    final structure = payrollStore.salaryStructure!;
+  // ── Summary Card ──────────────────────────────────────────────────────────
 
+  Widget _buildSummaryCard(SalaryStructureModel s) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -246,20 +218,16 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
                   color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
-                  Iconsax.wallet_3,
-                  color: Colors.white,
-                  size: 28,
-                ),
+                child: const Icon(Iconsax.wallet_3, color: Colors.white, size: 28),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      language.lblTotalComponents,
-                      style: const TextStyle(
+                    const Text(
+                      'Salary Breakdown',
+                      style: TextStyle(
                         fontSize: 14,
                         color: Colors.white70,
                         fontWeight: FontWeight.w500,
@@ -267,32 +235,21 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      language.lblYourSalaryBreakdown,
+                      _fmt(s.grossSalary),
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 22,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    Text(
+                      'Effective from ${s.effectiveFrom}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white70,
+                      ),
+                    ),
                   ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  '${structure.totalComponents}',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
                 ),
               ),
             ],
@@ -303,19 +260,15 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.15),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.3),
-                width: 1,
-              ),
+              border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
             ),
             child: Row(
               children: [
                 Expanded(
-                  child: _buildSummaryItem(
+                  child: _summaryItem(
                     language.lblEarnings,
-                    '${structure.totalEarnings}',
+                    _fmt(s.totalEarningsAmount),
                     Iconsax.arrow_up,
-                    Colors.white,
                   ),
                 ),
                 Container(
@@ -324,11 +277,22 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
                   color: Colors.white.withOpacity(0.3),
                 ),
                 Expanded(
-                  child: _buildSummaryItem(
+                  child: _summaryItem(
                     language.lblDeductions,
-                    '${structure.totalDeductions}',
+                    _fmt(s.totalDeductionsAmount),
                     Iconsax.arrow_down,
-                    Colors.white,
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 40,
+                  color: Colors.white.withOpacity(0.3),
+                ),
+                Expanded(
+                  child: _summaryItem(
+                    language.lblNetSalary,
+                    _fmt(s.netSalary),
+                    Iconsax.wallet_money,
                   ),
                 ),
               ],
@@ -339,39 +303,30 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
     );
   }
 
-  Widget _buildSummaryItem(
-    String label,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+  Widget _summaryItem(String label, String value, IconData icon) {
+    return Column(
       children: [
-        Icon(icon, color: color, size: 18),
-        const SizedBox(width: 8),
-        Column(
-          children: [
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: color.withOpacity(0.8),
-              ),
-            ),
-          ],
+        Icon(icon, color: Colors.white70, size: 18),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 11, color: Colors.white70),
+          textAlign: TextAlign.center,
         ),
       ],
     );
   }
+
+  // ── Section Header ────────────────────────────────────────────────────────
 
   Widget _buildSectionHeader(
     String title,
@@ -420,10 +375,9 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
     );
   }
 
-  Widget _buildComponentCard(
-    SalaryStructureComponent component,
-    Color accentColor,
-  ) {
+  // ── Component Card ────────────────────────────────────────────────────────
+
+  Widget _buildComponentCard(SalaryStructureComponent c, Color accent) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -439,150 +393,35 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            // Component Header
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: accentColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    component.displayCode,
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: accent.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(Iconsax.wallet_3, color: accent, size: 20),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    c.name,
                     style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: accentColor,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    component.displayName,
-                    style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: appStore.isDarkModeOn
                           ? Colors.white
                           : const Color(0xFF111827),
                     ),
                   ),
-                ),
-                if (component.component?.isTaxable == true)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(4),
-                      border: Border.all(
-                        color: Colors.blue.withOpacity(0.3),
-                        width: 1,
-                      ),
-                    ),
-                    child: Text(
-                      language.lblTaxable,
-                      style: const TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-
-            // Description
-            if (component.component?.description != null &&
-                component.component!.description!.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(
-                component.component!.description!,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: appStore.isDarkModeOn
-                      ? Colors.grey[400]
-                      : const Color(0xFF6B7280),
-                ),
-              ),
-            ],
-
-            const SizedBox(height: 12),
-            Divider(
-              color: appStore.isDarkModeOn
-                  ? Colors.grey[700]
-                  : const Color(0xFFE5E7EB),
-            ),
-            const SizedBox(height: 12),
-
-            // Component Details
-            Row(
-              children: [
-                Expanded(
-                  child: _buildDetailItem(
-                    language.lblType,
-                    component.isPercentage ? language.lblPercentage : language.lblFixed,
-                    Iconsax.setting_2,
-                  ),
-                ),
-                Container(
-                  width: 1,
-                  height: 40,
-                  color: appStore.isDarkModeOn
-                      ? Colors.grey[700]
-                      : const Color(0xFFE5E7EB),
-                ),
-                Expanded(
-                  child: _buildDetailItem(
-                    language.lblValue,
-                    component.displayValue,
-                    Iconsax.wallet_3,
-                    valueColor: accentColor,
-                  ),
-                ),
-              ],
-            ),
-
-            // Effective Dates
-            if (component.effectiveFrom != null) ...[
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: appStore.isDarkModeOn
-                      ? const Color(0xFF111827)
-                      : const Color(0xFFF9FAFB),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: appStore.isDarkModeOn
-                        ? Colors.grey[700]!
-                        : const Color(0xFFE5E7EB),
-                    width: 1,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Iconsax.calendar,
-                      size: 16,
-                      color: appStore.isDarkModeOn
-                          ? Colors.grey[400]
-                          : const Color(0xFF6B7280),
-                    ),
-                    const SizedBox(width: 8),
+                  if (c.rateLabel != null) ...[
+                    const SizedBox(height: 4),
                     Text(
-                      '${language.lblEffectiveFrom} ${component.effectiveFrom}',
+                      c.rateLabel!,
                       style: TextStyle(
                         fontSize: 12,
                         color: appStore.isDarkModeOn
@@ -590,108 +429,40 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
                             : const Color(0xFF6B7280),
                       ),
                     ),
-                    if (!component.isActive) ...[
-                      const SizedBox(width: 4),
-                      Text(
-                        '${language.lblEffectiveTo} ${component.effectiveTo}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: appStore.isDarkModeOn
-                              ? Colors.grey[400]
-                              : const Color(0xFF6B7280),
-                        ),
-                      ),
-                    ],
-                    const Spacer(),
-                    if (component.isActive)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          language.lblActive,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.green,
-                          ),
-                        ),
-                      )
-                    else
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          language.lblInactive,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
                   ],
-                ),
+                ],
               ),
-            ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  _fmt(c.amount),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: accent,
+                  ),
+                ),
+                if (c.percentage != null)
+                  Text(
+                    '${c.percentage!.toStringAsFixed(1)}%',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: appStore.isDarkModeOn
+                          ? Colors.grey[400]
+                          : const Color(0xFF6B7280),
+                    ),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDetailItem(
-    String label,
-    String value,
-    IconData icon, {
-    Color? valueColor,
-  }) {
-    return Column(
-      children: [
-        Icon(
-          icon,
-          size: 18,
-          color: appStore.isDarkModeOn
-              ? Colors.grey[400]
-              : const Color(0xFF9CA3AF),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: appStore.isDarkModeOn
-                ? Colors.grey[400]
-                : const Color(0xFF6B7280),
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: valueColor ??
-                (appStore.isDarkModeOn
-                    ? Colors.white
-                    : const Color(0xFF111827)),
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    );
-  }
+  // ── States ────────────────────────────────────────────────────────────────
 
   Widget _buildEmptyState() {
     return Center(
@@ -700,21 +471,12 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: appStore.isDarkModeOn
-                    ? const Color(0xFF1F2937)
-                    : const Color(0xFFF3F4F6),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Icon(
-                Iconsax.wallet_3,
-                size: 64,
-                color: appStore.isDarkModeOn
-                    ? Colors.grey[600]
-                    : const Color(0xFF9CA3AF),
-              ),
+            Icon(
+              Iconsax.wallet_3,
+              size: 64,
+              color: appStore.isDarkModeOn
+                  ? Colors.grey[600]
+                  : const Color(0xFF9CA3AF),
             ),
             const SizedBox(height: 24),
             Text(
@@ -751,18 +513,7 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Icon(
-                Iconsax.warning_2,
-                size: 48,
-                color: Colors.red,
-              ),
-            ),
+            const Icon(Iconsax.warning_2, size: 48, color: Colors.red),
             const SizedBox(height: 16),
             Text(
               language.lblErrorLoadingSalaryStructure,
@@ -809,27 +560,23 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
   Widget _buildLoadingSkeleton() {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
-      itemCount: 6,
-      itemBuilder: (context, index) {
-        return Shimmer.fromColors(
-          baseColor: appStore.isDarkModeOn
-              ? Colors.grey[800]!
-              : const Color(0xFFE5E7EB),
-          highlightColor: appStore.isDarkModeOn
-              ? Colors.grey[700]!
-              : const Color(0xFFF9FAFB),
-          child: Container(
-            height: index == 0 ? 180 : 140,
-            margin: const EdgeInsets.only(bottom: 16),
-            decoration: BoxDecoration(
-              color: appStore.isDarkModeOn
-                  ? Colors.grey[800]
-                  : const Color(0xFFE5E7EB),
-              borderRadius: BorderRadius.circular(12),
-            ),
+      itemCount: 5,
+      itemBuilder: (_, __) => Shimmer.fromColors(
+        baseColor: appStore.isDarkModeOn
+            ? Colors.grey[800]!
+            : const Color(0xFFE5E7EB),
+        highlightColor: appStore.isDarkModeOn
+            ? Colors.grey[700]!
+            : const Color(0xFFF9FAFB),
+        child: Container(
+          height: 80,
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

@@ -1025,6 +1025,9 @@ class LanguageEs extends BaseLanguage {
   String get lblSearchByAddress => 'Buscar por dirección';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => 'Busca aquí';
 
   @override
@@ -2106,6 +2109,9 @@ class LanguageEs extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => 'Asistencia';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
   String get lblTaskSystem => 'Sistema de tareas';
@@ -3541,6 +3547,10 @@ class LanguageEs extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'Historial de Asignación';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'Descripción del Problema';
   @override
   String get lblSubmitReport => 'Enviar Reporte';
@@ -4081,3 +4091,6 @@ class LanguageEs extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'Política no encontrada';
 }
+
+
+

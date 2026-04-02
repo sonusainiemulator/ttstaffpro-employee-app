@@ -39,12 +39,12 @@ abstract class BaseLanguage {
   String get lblThisDeviceIsNotRegisteredClickOnRegisterToAddItToYourAccount;
 
   String
-      get lblThisDeviceIsAlreadyRegisteredWithOtherAccountPleaseContactAdministrator;
+  get lblThisDeviceIsAlreadyRegisteredWithOtherAccountPleaseContactAdministrator;
 
   String get lblEnterYourPhoneNumberToSendAnOTP;
 
   String
-      get lblWeHaveSendA4DigitVerificationCodeToYourPhonePleaseEnterTheCodeBelowTtoVerifyItsYou;
+  get lblWeHaveSendA4DigitVerificationCodeToYourPhonePleaseEnterTheCodeBelowTtoVerifyItsYou;
 
   String get lblPasswordSuccessfullyChanged;
 
@@ -63,10 +63,10 @@ abstract class BaseLanguage {
   String get lblToProcessTheSalary;
 
   String
-      get lblLocationWillBeTrackedTnTheBackgroundAndAlsoEvenWhenTheAppIsClosedOrNotInUse;
+  get lblLocationWillBeTrackedTnTheBackgroundAndAlsoEvenWhenTheAppIsClosedOrNotInUse;
 
   String
-      get lblImportantGiveLocationAccuracyToPreciseAndAllowAllTheTimeSoThatTheAppCanFunctionProperly;
+  get lblImportantGiveLocationAccuracyToPreciseAndAllowAllTheTimeSoThatTheAppCanFunctionProperly;
 
   String get lblCollectsPhysicalActivityData;
 
@@ -81,7 +81,7 @@ abstract class BaseLanguage {
   String get lblYourDeviceHasAdditionalBatteryOptimization;
 
   String
-      get lblFollowTheStepsAndDisableTheOptimizationsToAllowSmoothFunctioningOfThisApp;
+  get lblFollowTheStepsAndDisableTheOptimizationsToAllowSmoothFunctioningOfThisApp;
 
   String get lblAreYouSureYouWantToCheckOut;
 
@@ -142,6 +142,8 @@ abstract class BaseLanguage {
   String get lblRefreshAppConfiguration;
 
   String get lblSettingsRefreshed;
+
+  String get lblComingSoon;
 
   //Ends
 
@@ -664,7 +666,7 @@ abstract class BaseLanguage {
   String get lblCall;
 
   String
-      get lblForAnyQueriesCustomizationsInstallationOrFeedbackPleaseContactUsAt;
+  get lblForAnyQueriesCustomizationsInstallationOrFeedbackPleaseContactUsAt;
 
   String get lblThisWillOnlyTakeAFewSeconds;
 
@@ -701,22 +703,22 @@ abstract class BaseLanguage {
   String get lblTarget;
 
   String
-      get lblNotificationPermissionEnsuresYouReceiveUpdatesOnAttendanceTasksAndOtherImportantEventsInRealTime;
+  get lblNotificationPermissionEnsuresYouReceiveUpdatesOnAttendanceTasksAndOtherImportantEventsInRealTime;
 
   String get lblEnableNotificationsToKeepYouUpdatedWithImportantUpdates;
 
   String
-      get lblActivityPermissionIsUsedToDetectYourPhysicalMovementsAndTravelEnablingTheAppToTrackAttendanceVisitsAndActivityStates;
+  get lblActivityPermissionIsUsedToDetectYourPhysicalMovementsAndTravelEnablingTheAppToTrackAttendanceVisitsAndActivityStates;
 
   String get lblAllowAccessToYourActivityForAttendanceAndTravelTracking;
 
   String
-      get lblLocationPermissionIsRequiredForTrackingAttendanceRecordingClientVisitsAndCalculatingDistancesTraveledEvenWhenTheAppIsNotInUse;
+  get lblLocationPermissionIsRequiredForTrackingAttendanceRecordingClientVisitsAndCalculatingDistancesTraveledEvenWhenTheAppIsNotInUse;
 
   String get lblToEnsureProperFunctionalityTheFollowingPermissionsAreRequired;
 
   String
-      get lblAllowAccessToYourLocationForAttendanceAndTravelTrackingEvenWhenTheAppIsClosed;
+  get lblAllowAccessToYourLocationForAttendanceAndTravelTrackingEvenWhenTheAppIsClosed;
 
   String get lblNext;
 
@@ -1139,7 +1141,7 @@ abstract class BaseLanguage {
   String get lblYouAreInOfflineMode;
 
   String
-      get lblOptionsWillBeLimitedUntilYouAreBackOnlinePleaseCheckYourInternetConnection;
+  get lblOptionsWillBeLimitedUntilYouAreBackOnlinePleaseCheckYourInternetConnection;
 
   String get lblOrderId;
 
@@ -1458,6 +1460,7 @@ abstract class BaseLanguage {
   String get lblRegularization;
 
   String get lblPayroll;
+  String get lblManageYour;
 
   String get lblAssets;
 
@@ -1523,7 +1526,6 @@ abstract class BaseLanguage {
 
   // Leave Requests Filter Keys
   String get lblFilterLeaveRequests;
-
 
   String get lblResetFilters;
 
@@ -1831,7 +1833,6 @@ abstract class BaseLanguage {
 
   String get lblAll;
 
-
   // Expense Management Keys (additional)
   String get lblExpenseDetails;
 
@@ -1915,7 +1916,6 @@ abstract class BaseLanguage {
 
   String get lblAllYears;
 
-
   String get lblWithdrawn;
 
   String get lblProcessed;
@@ -1927,7 +1927,6 @@ abstract class BaseLanguage {
   String get lblFilterPayrollRecords;
 
   String get lblFilterPayslips;
-
 
   // Attendance Regularization
   String get lblNoRegularizationRequestsFound;
@@ -2290,6 +2289,8 @@ abstract class BaseLanguage {
   String get lblReturned;
   String get lblMyAssets;
   String get lblAssignmentHistory;
+  String get lblNoAssignmentHistory;
+  String get lblFailedToLoadHistory;
   String get lblIssueDescription;
   String get lblSubmitReport;
   String get lblNoAssetsFound;

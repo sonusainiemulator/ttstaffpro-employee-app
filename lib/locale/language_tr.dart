@@ -1020,6 +1020,9 @@ class LanguageTr extends BaseLanguage {
   String get lblSearchByAddress => 'Adrese Göre Arama';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => 'Burada Ara';
 
   @override
@@ -2081,6 +2084,9 @@ class LanguageTr extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => 'Devam';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
   String get lblTaskSystem => 'Görev sistemi';
@@ -3705,6 +3711,10 @@ class LanguageTr extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'Atama Geçmişi';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'Sorun Açıklaması';
   @override
   String get lblSubmitReport => 'Rapor Gönder';
@@ -4175,3 +4185,6 @@ class LanguageTr extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'Politika bulunamadı';
 }
+
+
+

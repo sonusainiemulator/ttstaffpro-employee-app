@@ -8,13 +8,8 @@ import '../../models/payroll_record_model.dart';
 
 /// Payroll Record Detail Screen
 ///
-/// Displays complete breakdown of a payroll record including:
-/// - Basic salary, gross salary, net salary
-/// - Tax information
-/// - Earnings breakdown
-/// - Deductions breakdown
-/// - Attendance summary
-/// - Payroll cycle information
+/// Displays complete breakdown of a payslip (PayslipDetailModel) using the
+/// new /payroll/payslip/{id} API structure.
 class PayrollRecordDetailScreen extends StatefulWidget {
   final int recordId;
 
@@ -39,6 +34,8 @@ class _PayrollRecordDetailScreenState
   Future<void> _loadRecordDetails() async {
     await payrollStore.fetchPayrollRecordById(widget.recordId);
   }
+
+  String _fmt(double v) => '₹${v.toStringAsFixed(2)}';
 
   @override
   Widget build(BuildContext context) {
@@ -76,16 +73,21 @@ class _PayrollRecordDetailScreenState
                       children: [
                         _buildSalarySummaryCard(record),
                         const SizedBox(height: 16),
-                        _buildAttendanceCard(record),
-                        const SizedBox(height: 16),
+                        if (record.attendance != null)
+                          _buildAttendanceCard(record.attendance!),
+                        if (record.attendance != null)
+                          const SizedBox(height: 16),
                         _buildEarningsCard(record),
                         const SizedBox(height: 16),
                         _buildDeductionsCard(record),
-                        const SizedBox(height: 16),
-                        _buildPayrollCycleCard(record),
-                        const SizedBox(height: 16),
-                        if (record.rejectionReason != null)
-                          _buildRejectionCard(record),
+                        if (record.payPeriod != null) ...[
+                          const SizedBox(height: 16),
+                          _buildPeriodCard(record),
+                        ],
+                        if (record.notes != null && record.notes!.isNotEmpty) ...[
+                          const SizedBox(height: 16),
+                          _buildNotesCard(record.notes!),
+                        ],
                         const SizedBox(height: 24),
                       ],
                     ),
@@ -99,23 +101,10 @@ class _PayrollRecordDetailScreenState
     );
   }
 
-  Widget _buildSliverAppBar(PayrollRecordDetailModel record) {
-    // Parse status color
-    Color statusColor = Colors.grey;
-    switch (record.status.toLowerCase()) {
-      case 'paid':
-        statusColor = Colors.green;
-        break;
-      case 'processed':
-        statusColor = Colors.blue;
-        break;
-      case 'pending':
-        statusColor = Colors.orange;
-        break;
-      case 'draft':
-        statusColor = Colors.grey;
-        break;
-    }
+  // ── App Bar ───────────────────────────────────────────────────────────────
+
+  Widget _buildSliverAppBar(PayslipDetailModel record) {
+    Color statusColor = _statusColor(record.status);
 
     return SliverAppBar(
       expandedHeight: 200,
@@ -125,7 +114,7 @@ class _PayrollRecordDetailScreenState
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
         title: Text(
-          record.period,
+          record.month,
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w600,
@@ -164,7 +153,7 @@ class _PayrollRecordDetailScreenState
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              record.netSalary.formatted,
+                              _fmt(record.netSalary),
                               style: const TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -184,7 +173,7 @@ class _PayrollRecordDetailScreenState
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          record.status.toUpperCase(),
+                          record.statusLabel ?? record.status.toUpperCase(),
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -203,77 +192,54 @@ class _PayrollRecordDetailScreenState
     );
   }
 
-  Widget _buildSalarySummaryCard(PayrollRecordDetailModel record) {
-    return Container(
-      decoration: BoxDecoration(
-        color: appStore.isDarkModeOn ? const Color(0xFF1F2937) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color:
-                Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+  // ── Salary Summary ────────────────────────────────────────────────────────
+
+  Widget _buildSalarySummaryCard(PayslipDetailModel record) {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _cardHeader(Iconsax.wallet_money, const Color(0xFF696CFF),
+              language.lblSalaryBreakdown),
+          const SizedBox(height: 16),
+          _salaryRow(language.lblBasicSalary, _fmt(record.basicSalary)),
+          const SizedBox(height: 12),
+          _salaryRow(language.lblGrossSalary, _fmt(record.grossSalary)),
+          const SizedBox(height: 12),
+          _salaryRow(language.lblTotalDeductions, _fmt(record.totalDeductions),
+              isNegative: true),
+          const SizedBox(height: 12),
+          Divider(
+            color: appStore.isDarkModeOn
+                ? Colors.grey[700]
+                : const Color(0xFFE5E7EB),
           ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          const SizedBox(height: 12),
+          _salaryRow(language.lblNetSalary, _fmt(record.netSalary),
+              isHighlighted: true, isLarge: true),
+          if (record.paymentDate != null) ...[
+            const SizedBox(height: 12),
             Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF696CFF).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Iconsax.wallet_money,
-                    color: Color(0xFF696CFF),
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
+                Icon(Iconsax.calendar_tick, size: 16, color: Colors.green[600]),
+                const SizedBox(width: 8),
                 Text(
-                  language.lblSalaryBreakdown,
+                  'Paid on ${record.paymentDate}',
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: appStore.isDarkModeOn
-                        ? Colors.white
-                        : const Color(0xFF111827),
+                    fontSize: 13,
+                    color: Colors.green[600],
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            _buildSalaryRow(language.lblBasicSalary, record.basicSalary.formatted,
-                isHighlighted: false),
-            const SizedBox(height: 12),
-            _buildSalaryRow(language.lblGrossSalary, record.grossSalary.formatted,
-                isHighlighted: false),
-            const SizedBox(height: 12),
-            _buildSalaryRow(language.lblTaxAmount, record.taxAmount.formatted,
-                isNegative: true),
-            const SizedBox(height: 12),
-            Divider(
-              color: appStore.isDarkModeOn
-                  ? Colors.grey[700]
-                  : const Color(0xFFE5E7EB),
-            ),
-            const SizedBox(height: 12),
-            _buildSalaryRow(language.lblNetSalary, record.netSalary.formatted,
-                isHighlighted: true, isLarge: true),
           ],
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildSalaryRow(
+  Widget _salaryRow(
     String label,
     String amount, {
     bool isHighlighted = false,
@@ -313,104 +279,68 @@ class _PayrollRecordDetailScreenState
     );
   }
 
-  Widget _buildAttendanceCard(PayrollRecordDetailModel record) {
-    return Container(
-      decoration: BoxDecoration(
-        color: appStore.isDarkModeOn ? const Color(0xFF1F2937) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color:
-                Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+  // ── Attendance ────────────────────────────────────────────────────────────
+
+  Widget _buildAttendanceCard(PayslipAttendance att) {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _cardHeader(
+              Iconsax.calendar, const Color(0xFF696CFF), language.lblAttendanceSummary),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _attStat(Iconsax.tick_circle, Colors.green,
+                    att.effectiveDays.toStringAsFixed(1), language.lblWorkedDays),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _attStat(Iconsax.close_circle, Colors.red,
+                    '${att.absentDays}', language.lblAbsentDays),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF696CFF).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Iconsax.calendar,
-                    color: Color(0xFF696CFF),
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  language.lblAttendanceSummary,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: appStore.isDarkModeOn
-                        ? Colors.white
-                        : const Color(0xFF111827),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildAttendanceStat(
-                    Iconsax.tick_circle,
-                    Colors.green,
-                    record.totalWorkedDays.toStringAsFixed(0),
-                    language.lblWorkedDays,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildAttendanceStat(
-                    Iconsax.close_circle,
-                    Colors.red,
-                    record.totalAbsentDays.toStringAsFixed(0),
-                    language.lblAbsentDays,
-                  ),
-                ),
-              ],
-            ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _attStat(Iconsax.note_remove, Colors.orange,
+                    '${att.leaveDays}', language.lblLeaveDays),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _attStat(Iconsax.clock, Colors.blue,
+                    att.overtimeHours.toStringAsFixed(1), language.lblOvertimeHours),
+              ),
+            ],
+          ),
+          if (att.halfDays > 0 || att.lateDays > 0) ...[
             const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(
-                  child: _buildAttendanceStat(
-                    Iconsax.note_remove,
-                    Colors.orange,
-                    record.totalLeaveDays.toStringAsFixed(0),
-                    language.lblLeaveDays,
+                if (att.halfDays > 0)
+                  Expanded(
+                    child: _attStat(Iconsax.sun_1, Colors.amber,
+                        '${att.halfDays}', 'Half Days'),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildAttendanceStat(
-                    Iconsax.clock,
-                    Colors.blue,
-                    record.overtimeHours.toStringAsFixed(1),
-                    language.lblOvertimeHours,
+                if (att.halfDays > 0 && att.lateDays > 0)
+                  const SizedBox(width: 12),
+                if (att.lateDays > 0)
+                  Expanded(
+                    child: _attStat(Iconsax.timer_pause, Colors.deepOrange,
+                        '${att.lateDays}', 'Late Days'),
                   ),
-                ),
               ],
             ),
           ],
-        ),
+        ],
       ),
     );
   }
 
-  Widget _buildAttendanceStat(
-      IconData icon, Color color, String value, String label) {
+  Widget _attStat(IconData icon, Color color, String value, String label) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -449,10 +379,155 @@ class _PayrollRecordDetailScreenState
     );
   }
 
-  Widget _buildEarningsCard(PayrollRecordDetailModel record) {
-    final earnings = record.adjustments.earnings;
+  // ── Earnings ──────────────────────────────────────────────────────────────
 
+  Widget _buildEarningsCard(PayslipDetailModel record) {
+    final items = record.nonZeroEarnings;
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  _iconBox(Iconsax.add_circle, Colors.green),
+                  const SizedBox(width: 12),
+                  Text(
+                    language.lblEarnings,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: appStore.isDarkModeOn
+                          ? Colors.white
+                          : const Color(0xFF111827),
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                _fmt(record.totalEarnings),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (items.isEmpty)
+            _emptyLine(language.lblNoEarningsRecorded)
+          else
+            ...items.map((e) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _lineItem(e.name, _fmt(e.amount), Colors.green),
+                )),
+        ],
+      ),
+    );
+  }
+
+  // ── Deductions ────────────────────────────────────────────────────────────
+
+  Widget _buildDeductionsCard(PayslipDetailModel record) {
+    final items = record.nonZeroDeductions;
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  _iconBox(Iconsax.minus_cirlce, Colors.red),
+                  const SizedBox(width: 12),
+                  Text(
+                    language.lblDeductions,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: appStore.isDarkModeOn
+                          ? Colors.white
+                          : const Color(0xFF111827),
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                _fmt(record.totalDeductions),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (items.isEmpty)
+            _emptyLine(language.lblNoDeductionsRecorded)
+          else
+            ...items.map((d) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _lineItem(d.name, _fmt(d.amount), Colors.red),
+                )),
+        ],
+      ),
+    );
+  }
+
+  // ── Pay Period ────────────────────────────────────────────────────────────
+
+  Widget _buildPeriodCard(PayslipDetailModel record) {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _cardHeader(Iconsax.calendar_1, const Color(0xFF696CFF),
+              language.lblPayrollCycle),
+          const SizedBox(height: 16),
+          if (record.payPeriod != null)
+            _infoRow('Period', record.payPeriod!),
+          if (record.paymentMethod != null) ...[
+            const SizedBox(height: 10),
+            _infoRow('Payment Method', record.paymentMethod!),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // ── Notes ─────────────────────────────────────────────────────────────────
+
+  Widget _buildNotesCard(String notes) {
+    return _card(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _cardHeader(Iconsax.note_text, Colors.amber, 'Notes'),
+          const SizedBox(height: 12),
+          Text(
+            notes,
+            style: TextStyle(
+              fontSize: 14,
+              color: appStore.isDarkModeOn
+                  ? Colors.grey[300]
+                  : const Color(0xFF374151),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Common helpers ────────────────────────────────────────────────────────
+
+  Widget _card({required Widget child}) {
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
         color: appStore.isDarkModeOn ? const Color(0xFF1F2937) : Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -465,185 +540,41 @@ class _PayrollRecordDetailScreenState
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Iconsax.add_circle,
-                        color: Colors.green,
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      language.lblEarnings,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: appStore.isDarkModeOn
-                            ? Colors.white
-                            : const Color(0xFF111827),
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  record.adjustments.totalEarnings,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            if (earnings.isEmpty)
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(
-                    language.lblNoEarningsRecorded,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: appStore.isDarkModeOn
-                          ? Colors.grey[400]
-                          : const Color(0xFF6B7280),
-                    ),
-                  ),
-                ),
-              )
-            else
-              ...earnings.map((earning) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _buildAdjustmentItem(
-                      earning.name,
-                      earning.code,
-                      earning.amount.formatted,
-                      earning.percentage,
-                      Colors.green,
-                    ),
-                  )),
-          ],
-        ),
-      ),
+      padding: const EdgeInsets.all(16),
+      child: child,
     );
   }
 
-  Widget _buildDeductionsCard(PayrollRecordDetailModel record) {
-    final deductions = record.adjustments.deductions;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: appStore.isDarkModeOn ? const Color(0xFF1F2937) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
+  Widget _cardHeader(IconData icon, Color color, String title) {
+    return Row(
+      children: [
+        _iconBox(icon, color),
+        const SizedBox(width: 12),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
             color:
-                Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+                appStore.isDarkModeOn ? Colors.white : const Color(0xFF111827),
           ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.red.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Iconsax.minus_cirlce,
-                        color: Colors.red,
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      language.lblDeductions,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: appStore.isDarkModeOn
-                            ? Colors.white
-                            : const Color(0xFF111827),
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  record.adjustments.totalDeductions,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            if (deductions.isEmpty)
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(
-                    language.lblNoDeductionsRecorded,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: appStore.isDarkModeOn
-                          ? Colors.grey[400]
-                          : const Color(0xFF6B7280),
-                    ),
-                  ),
-                ),
-              )
-            else
-              ...deductions.map((deduction) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: _buildAdjustmentItem(
-                      deduction.name,
-                      deduction.code,
-                      deduction.amount.formatted,
-                      deduction.percentage,
-                      Colors.red,
-                    ),
-                  )),
-          ],
         ),
-      ),
+      ],
     );
   }
 
-  Widget _buildAdjustmentItem(
-    String name,
-    String code,
-    String amount,
-    double? percentage,
-    Color color,
-  ) {
+  Widget _iconBox(IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(icon, color: color, size: 20),
+    );
+  }
+
+  Widget _lineItem(String name, String amount, Color color) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -656,129 +587,48 @@ class _PayrollRecordDetailScreenState
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: appStore.isDarkModeOn
-                        ? Colors.white
-                        : const Color(0xFF111827),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  code,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: appStore.isDarkModeOn
-                        ? Colors.grey[400]
-                        : const Color(0xFF6B7280),
-                  ),
-                ),
-              ],
+            child: Text(
+              name,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: appStore.isDarkModeOn
+                    ? Colors.white
+                    : const Color(0xFF111827),
+              ),
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                amount,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-              ),
-              if (percentage != null)
-                Text(
-                  '${percentage.toStringAsFixed(1)}%',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: appStore.isDarkModeOn
-                        ? Colors.grey[400]
-                        : const Color(0xFF6B7280),
-                  ),
-                ),
-            ],
+          Text(
+            amount,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPayrollCycleCard(PayrollRecordDetailModel record) {
-    if (record.payrollCycleDetail == null) return const SizedBox.shrink();
-
-    final cycle = record.payrollCycleDetail!;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: appStore.isDarkModeOn ? const Color(0xFF1F2937) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color:
-                Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+  Widget _emptyLine(String msg) {
+    return Center(
       child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF696CFF).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    Iconsax.calendar_1,
-                    color: Color(0xFF696CFF),
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  language.lblPayrollCycle,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: appStore.isDarkModeOn
-                        ? Colors.white
-                        : const Color(0xFF111827),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildInfoRow(language.lblCycleName, cycle.name),
-            const SizedBox(height: 10),
-            _buildInfoRow(language.lblCycleCode, cycle.code),
-            const SizedBox(height: 10),
-            _buildInfoRow(language.lblFrequency, cycle.frequency.toUpperCase()),
-            const SizedBox(height: 10),
-            _buildInfoRow(language.lblPeriodStart, cycle.payPeriodStart),
-            const SizedBox(height: 10),
-            _buildInfoRow(language.lblPeriodEnd, cycle.payPeriodEnd),
-            const SizedBox(height: 10),
-            _buildInfoRow(language.lblPayDate, cycle.payDate),
-          ],
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          msg,
+          style: TextStyle(
+            fontSize: 14,
+            color: appStore.isDarkModeOn
+                ? Colors.grey[400]
+                : const Color(0xFF6B7280),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _infoRow(String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -805,77 +655,36 @@ class _PayrollRecordDetailScreenState
     );
   }
 
-  Widget _buildRejectionCard(PayrollRecordDetailModel record) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.red.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.red.withOpacity(0.3)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Iconsax.warning_2, color: Colors.red, size: 20),
-                const SizedBox(width: 12),
-                Text(
-                  language.lblRejectionReason,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.red.shade700,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              record.rejectionReason!,
-              style: TextStyle(
-                fontSize: 14,
-                color: appStore.isDarkModeOn
-                    ? Colors.red.shade200
-                    : Colors.red.shade800,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  Color _statusColor(String s) {
+    switch (s.toLowerCase()) {
+      case 'paid':
+        return Colors.green;
+      case 'approved':
+        return Colors.blue;
+      case 'pending':
+        return Colors.orange;
+      case 'partially_paid':
+        return Colors.lightGreen;
+      default:
+        return Colors.grey;
+    }
   }
 
+  // ── Loading / Error / Empty ───────────────────────────────────────────────
+
   Widget _buildLoadingState() {
-    return Scaffold(
-      backgroundColor: appStore.isDarkModeOn
-          ? const Color(0xFF111827)
-          : const Color(0xFFF3F4F6),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF696CFF),
-        foregroundColor: Colors.white,
-        title: Text(language.lblPayrollRecord),
-      ),
-      body: ListView(
+    return Shimmer.fromColors(
+      baseColor: appStore.isDarkModeOn ? Colors.grey[800]! : const Color(0xFFE5E7EB),
+      highlightColor: appStore.isDarkModeOn ? Colors.grey[700]! : const Color(0xFFF9FAFB),
+      child: ListView.builder(
         padding: const EdgeInsets.all(16),
-        children: List.generate(
-          5,
-          (index) => Shimmer.fromColors(
-            baseColor: appStore.isDarkModeOn
-                ? Colors.grey[800]!
-                : const Color(0xFFE5E7EB),
-            highlightColor: appStore.isDarkModeOn
-                ? Colors.grey[700]!
-                : const Color(0xFFF9FAFB),
-            child: Container(
-              height: 150,
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
+        itemCount: 4,
+        itemBuilder: (_, __) => Container(
+          height: 160,
+          margin: const EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),
@@ -883,90 +692,41 @@ class _PayrollRecordDetailScreenState
   }
 
   Widget _buildErrorState() {
-    return Scaffold(
-      backgroundColor: appStore.isDarkModeOn
-          ? const Color(0xFF111827)
-          : const Color(0xFFF3F4F6),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF696CFF),
-        foregroundColor: Colors.white,
-        title: Text(language.lblPayrollRecord),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Iconsax.warning_2, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text(
-                language.lblErrorLoadingRecord,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: appStore.isDarkModeOn
-                      ? Colors.white
-                      : const Color(0xFF111827),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                payrollStore.error ?? language.lblUnexpectedError,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: appStore.isDarkModeOn
-                      ? Colors.grey[400]
-                      : const Color(0xFF6B7280),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: _loadRecordDetails,
-                icon: const Icon(Iconsax.refresh),
-                label: Text(language.lblRetry),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF696CFF),
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Scaffold(
-      backgroundColor: appStore.isDarkModeOn
-          ? const Color(0xFF111827)
-          : const Color(0xFFF3F4F6),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF696CFF),
-        foregroundColor: Colors.white,
-        title: Text(language.lblPayrollRecord),
-      ),
-      body: Center(
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Iconsax.wallet_money, size: 64, color: Colors.grey),
+            const Icon(Iconsax.warning_2, size: 48, color: Colors.red),
             const SizedBox(height: 16),
             Text(
-              language.lblRecordNotFound,
+              payrollStore.error ?? language.lblSomethingWentWrong,
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontSize: 14,
                 color: appStore.isDarkModeOn
-                    ? Colors.white
-                    : const Color(0xFF111827),
+                    ? Colors.grey[400]
+                    : const Color(0xFF6B7280),
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
+              onPressed: _loadRecordDetails,
+              icon: const Icon(Iconsax.refresh),
+              label: Text(language.lblRetry),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF696CFF),
+                foregroundColor: Colors.white,
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildEmptyState() {
+    return const Center(child: Text('No payslip found.'));
   }
 }

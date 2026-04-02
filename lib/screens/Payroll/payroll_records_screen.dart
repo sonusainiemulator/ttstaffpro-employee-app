@@ -292,21 +292,22 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
   }
 
   Widget _buildPayrollRecordCard(PayrollRecordModel record) {
-    // Parse status color
-    Color statusColor = Colors.grey;
+    Color statusColor;
     switch (record.status.toLowerCase()) {
       case 'paid':
         statusColor = Colors.green;
         break;
-      case 'processed':
+      case 'approved':
         statusColor = Colors.blue;
         break;
       case 'pending':
         statusColor = Colors.orange;
         break;
-      case 'draft':
-        statusColor = Colors.grey;
+      case 'partially_paid':
+        statusColor = Colors.lightGreen;
         break;
+      default:
+        statusColor = Colors.grey;
     }
 
     return Container(
@@ -338,7 +339,6 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header row with period and status
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -364,7 +364,7 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                record.period,
+                                record.month,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -373,10 +373,10 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                                       : const Color(0xFF111827),
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              if (record.payrollCycle != null)
+                              if (record.paymentDate != null) ...[
+                                const SizedBox(height: 4),
                                 Text(
-                                  record.payrollCycle!.name,
+                                  'Paid: ${record.paymentDate}',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: appStore.isDarkModeOn
@@ -384,6 +384,7 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                                         : const Color(0xFF6B7280),
                                   ),
                                 ),
+                              ],
                             ],
                           ),
                         ),
@@ -400,7 +401,9 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      record.status.toUpperCase(),
+                      record.statusLabel.isNotEmpty
+                          ? record.statusLabel
+                          : record.status.toUpperCase(),
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -411,8 +414,6 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-
-              // Divider
               Divider(
                 color: appStore.isDarkModeOn
                     ? Colors.grey[700]
@@ -420,8 +421,6 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                 height: 1,
               ),
               const SizedBox(height: 16),
-
-              // Salary details
               Row(
                 children: [
                   Expanded(
@@ -439,7 +438,7 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          record.grossSalary.formatted,
+                          '₹${record.grossSalary.toStringAsFixed(2)}',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -466,7 +465,7 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          record.netSalary.formatted,
+                          '₹${record.netSalary.toStringAsFixed(2)}',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -478,31 +477,6 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-
-              // Attendance summary
-              Row(
-                children: [
-                  _buildInfoChip(
-                    Iconsax.clock,
-                    '${record.totalWorkedDays.toStringAsFixed(0)} ${language.lblDays}',
-                    language.lblWorked,
-                  ),
-                  const SizedBox(width: 8),
-                  _buildInfoChip(
-                    Iconsax.note_remove,
-                    '${record.totalLeaveDays.toStringAsFixed(0)} ${language.lblDays}',
-                    language.lblLeave,
-                  ),
-                  const SizedBox(width: 8),
-                  if (record.adjustmentsCount > 0)
-                    _buildInfoChip(
-                      Iconsax.document,
-                      '${record.adjustmentsCount}',
-                      language.lblModifiers,
-                    ),
-                ],
-              ),
             ],
           ),
         ),
@@ -510,40 +484,6 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
     );
   }
 
-  Widget _buildInfoChip(IconData icon, String value, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-      decoration: BoxDecoration(
-        color: appStore.isDarkModeOn
-            ? const Color(0xFF374151)
-            : const Color(0xFFF3F4F6),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 14,
-            color: appStore.isDarkModeOn
-                ? Colors.grey[400]
-                : const Color(0xFF6B7280),
-          ),
-          const SizedBox(width: 4),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: appStore.isDarkModeOn
-                  ? Colors.white
-                  : const Color(0xFF111827),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildEmptyState() {
     return Center(

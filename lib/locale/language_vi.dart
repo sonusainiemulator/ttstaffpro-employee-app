@@ -2092,6 +2092,9 @@ class LanguageVi extends BaseLanguage {
   String get lblAttendance => 'Điểm danh';
 
   @override
+  String get lblManageYour => 'Manage Your';
+
+  @override
   String get lblTaskSystem => 'Hệ thống nhiệm vụ';
 
   @override
@@ -3715,6 +3718,10 @@ class LanguageVi extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'Lịch sử giao nhận';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'Mô tả sự cố';
   @override
   String get lblSubmitReport => 'Gửi báo cáo';
@@ -4184,4 +4191,10 @@ class LanguageVi extends BaseLanguage {
   String get lblDueInDays => 'Còn %d ngày';
   @override
   String get lblPolicyNotFound => 'Không tìm thấy chính sách';
+	@override
+  String get lblComingSoon => 'Coming Soon';
 }
+
+
+
+

@@ -16,7 +16,7 @@ class AppDesignSystem {
   // Success Colors
   static const Color successColor = Color(0xFF22D97A);
   static const Color successLight = Color(0xFF5FE39A);
-  
+
   // Neutral Colors (Slate/Gray Palette)
   static const Color neutral900 = Color(0xFF111827);
   static const Color neutral800 = Color(0xFF1F2937);
@@ -203,7 +203,7 @@ class AppDesignSystem {
 
   static List<BoxShadow> shadowSmall = [
     BoxShadow(
-      color: Colors.black.withOpacity(0.05),
+      color: Colors.black.withValues(alpha: 0.05),
       offset: const Offset(0, 1),
       blurRadius: 2,
     ),
@@ -211,13 +211,13 @@ class AppDesignSystem {
 
   static List<BoxShadow> shadowMedium = [
     BoxShadow(
-      color: Colors.black.withOpacity(0.08),
+      color: Colors.black.withValues(alpha: 0.08),
       offset: const Offset(0, 4),
       blurRadius: 6,
       spreadRadius: -1,
     ),
     BoxShadow(
-      color: Colors.black.withOpacity(0.03),
+      color: Colors.black.withValues(alpha: 0.03),
       offset: const Offset(0, 2),
       blurRadius: 4,
       spreadRadius: -2,
@@ -226,13 +226,13 @@ class AppDesignSystem {
 
   static List<BoxShadow> shadowLarge = [
     BoxShadow(
-      color: Colors.black.withOpacity(0.1),
+      color: Colors.black.withValues(alpha: 0.1),
       offset: const Offset(0, 10),
       blurRadius: 15,
       spreadRadius: -3,
     ),
     BoxShadow(
-      color: Colors.black.withOpacity(0.05),
+      color: Colors.black.withValues(alpha: 0.05),
       offset: const Offset(0, 4),
       blurRadius: 6,
       spreadRadius: -4,
@@ -241,13 +241,13 @@ class AppDesignSystem {
 
   static List<BoxShadow> shadowXLarge = [
     BoxShadow(
-      color: Colors.black.withOpacity(0.1),
+      color: Colors.black.withValues(alpha: 0.1),
       offset: const Offset(0, 20),
       blurRadius: 25,
       spreadRadius: -5,
     ),
     BoxShadow(
-      color: Colors.black.withOpacity(0.04),
+      color: Colors.black.withValues(alpha: 0.04),
       offset: const Offset(0, 8),
       blurRadius: 10,
       spreadRadius: -6,

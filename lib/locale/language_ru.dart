@@ -1,4 +1,4 @@
-import 'package:open_core_hr/locale/languages.dart';
+import 'languages.dart';
 
 class LanguageRu extends BaseLanguage {
   @override
@@ -1010,6 +1010,9 @@ class LanguageRu extends BaseLanguage {
 
   @override
   String get lblSearchByAddress => 'Поиск по адресу';
+
+  @override
+  String get lblComingSoon => 'Coming Soon';
 
   @override
   String get lblSearchHere => 'Поищи здесь';
@@ -2086,6 +2089,9 @@ class LanguageRu extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => 'Посещаемость';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
     String get lblTaskSystem => 'Система задач';
@@ -3696,6 +3702,10 @@ class LanguageRu extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'История назначений';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'Описание проблемы';
   @override
   String get lblSubmitReport => 'Отправить отчет';
@@ -4166,3 +4176,6 @@ class LanguageRu extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'Политика не найдена';
 }
+
+
+

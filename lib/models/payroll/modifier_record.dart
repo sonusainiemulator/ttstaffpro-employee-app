@@ -1,8 +1,10 @@
 /// Model for modifier record from API
 /// Represents a payroll period with its associated modifiers
+/// Refactored to support V1 Modifier History (Section 6.5)
 class ModifierRecord {
   final int payrollRecordId;
   final String period;
+  final String? monthYear;
   final PayrollCycleInfo? payrollCycle;
   final ModifiersList modifiers;
   final AmountInfo totalEarnings;
@@ -11,6 +13,7 @@ class ModifierRecord {
   ModifierRecord({
     required this.payrollRecordId,
     required this.period,
+    this.monthYear,
     this.payrollCycle,
     required this.modifiers,
     required this.totalEarnings,
@@ -18,42 +21,87 @@ class ModifierRecord {
   });
 
   factory ModifierRecord.fromJson(Map<String, dynamic> json) {
+    // Check for nested V1 History item or direct envelope
+    if (json.containsKey('payroll_record_id') || json.containsKey('payrollId')) {
+      final payrollId = json['payroll_record_id'] ?? json['payrollId'] ?? 0;
+      final month = json['month'] ?? '';
+      
+      return ModifierRecord(
+        payrollRecordId: payrollId,
+        period: month,
+        monthYear: json['monthYear'],
+        payrollCycle: json['paymentDate'] != null 
+            ? PayrollCycleInfo(name: 'Paid on', payDate: json['paymentDate']) 
+            : null,
+        modifiers: ModifiersList.fromJson(json['modifiers'] ?? json['adjustments'] ?? json),
+        totalEarnings: AmountInfo.fromJson(json['total_earnings'] ?? {'amount': 0.0}),
+        totalDeductions: AmountInfo.fromJson(json['total_deductions'] ?? {'amount': 0.0}),
+      );
+    }
+    
+    // Default fallback
     return ModifierRecord(
-      payrollRecordId: json['payroll_record_id'] ?? 0,
-      period: json['period'] ?? '',
-      payrollCycle: json['payroll_cycle'] != null
-          ? PayrollCycleInfo.fromJson(json['payroll_cycle'])
-          : null,
-      modifiers: ModifiersList.fromJson(json['modifiers'] ?? json['adjustments'] ?? {}),
-      totalEarnings: AmountInfo.fromJson(json['total_earnings'] ?? {}),
-      totalDeductions: AmountInfo.fromJson(json['total_deductions'] ?? {}),
+      payrollRecordId: 0,
+      period: 'Unknown',
+      modifiers: ModifiersList(earnings: [], deductions: []),
+      totalEarnings: AmountInfo(amount: 0, formatted: '₹0'),
+      totalDeductions: AmountInfo(amount: 0, formatted: '₹0'),
     );
+  }
+
+  /// Groups flat V1 history items (Section 6.5) into a list of ModifierRecords (one per month)
+  static List<ModifierRecord> fromFlatV1List(List<dynamic> items) {
+    final Map<String, List<Map<String, dynamic>>> grouped = {};
+    
+    for (final item in items) {
+      if (item is Map<String, dynamic>) {
+        final key = item['monthYear'] ?? item['month'] ?? 'Other';
+        if (!grouped.containsKey(key)) grouped[key] = [];
+        grouped[key]!.add(item);
+      }
+    }
+
+    return grouped.entries.map((entry) {
+      final periodItems = entry.value;
+      final first = periodItems.first;
+      
+      final earnings = periodItems
+          .where((i) => i['type'] == 'earning' || i['type'] == 'benefit')
+          .map((i) => ModifierItem.fromV1Json(i))
+          .toList();
+          
+      final deductions = periodItems
+          .where((i) => i['type'] == 'deduction')
+          .map((i) => ModifierItem.fromV1Json(i))
+          .toList();
+
+      final totalE = earnings.fold(0.0, (sum, i) => sum + i.amount.amount);
+      final totalD = deductions.fold(0.0, (sum, i) => sum + i.amount.amount);
+
+      return ModifierRecord(
+        payrollRecordId: first['payrollId'] ?? 0,
+        period: first['month'] ?? entry.key,
+        monthYear: entry.key,
+        payrollCycle: first['paymentDate'] != null 
+            ? PayrollCycleInfo(name: 'Paid on', payDate: first['paymentDate']) 
+            : null,
+        modifiers: ModifiersList(earnings: earnings, deductions: deductions),
+        totalEarnings: AmountInfo(amount: totalE, formatted: '₹${totalE.toStringAsFixed(2)}'),
+        totalDeductions: AmountInfo(amount: totalD, formatted: '₹${totalD.toStringAsFixed(2)}'),
+      );
+    }).toList();
   }
 
   Map<String, dynamic> toJson() {
     return {
       'payroll_record_id': payrollRecordId,
       'period': period,
-      'payroll_cycle': payrollCycle?.toJson(),
+      'monthYear': monthYear,
+      'payrollCycle': payrollCycle?.toJson(),
       'modifiers': modifiers.toJson(),
       'total_earnings': totalEarnings.toJson(),
       'total_deductions': totalDeductions.toJson(),
     };
-  }
-
-  /// Get all modifiers (earnings + deductions) as a flat list
-  List<ModifierItem> get allModifiers {
-    return [...modifiers.earnings, ...modifiers.deductions];
-  }
-
-  /// Get total count of modifiers
-  int get totalModifiersCount {
-    return modifiers.earnings.length + modifiers.deductions.length;
-  }
-
-  /// Check if has any modifiers
-  bool get hasModifiers {
-    return totalModifiersCount > 0;
   }
 }
 
@@ -111,12 +159,6 @@ class ModifiersList {
       'deductions': deductions.map((e) => e.toJson()).toList(),
     };
   }
-
-  /// Get total count of all modifiers
-  int get totalCount => earnings.length + deductions.length;
-
-  /// Check if has any modifiers
-  bool get hasModifiers => totalCount > 0;
 }
 
 /// Model for individual modifier item
@@ -139,17 +181,28 @@ class ModifierItem {
     this.applicability,
   });
 
-  factory ModifierItem.fromJson(Map<String, dynamic> json, String type) {
+  factory ModifierItem.fromJson(Map<String, dynamic> json, String defaultType) {
     return ModifierItem(
       id: json['id'],
       name: json['name'] ?? '',
       code: json['code'] ?? '',
-      amount: AmountInfo.fromJson(json['amount'] ?? {}),
-      percentage: json['percentage'] != null
-          ? _parseDouble(json['percentage'])
-          : null,
-      type: type,
+      amount: AmountInfo.fromJson(json['amount'] is Map ? json['amount'] : {'amount': json['amount']}),
+      percentage: json['percentage'] != null ? _parseDouble(json['percentage']) : null,
+      type: json['type'] ?? defaultType,
       applicability: json['applicability'],
+    );
+  }
+
+  factory ModifierItem.fromV1Json(Map<String, dynamic> json) {
+    final rawAmount = _parseDouble(json['amount']);
+    return ModifierItem(
+      id: json['id'],
+      name: json['name'] ?? '',
+      code: json['code'] ?? '',
+      amount: AmountInfo(amount: rawAmount, formatted: '₹${rawAmount.toStringAsFixed(2)}'),
+      type: json['type'] ?? 'earning',
+      percentage: 0,
+      applicability: null,
     );
   }
 
@@ -165,26 +218,12 @@ class ModifierItem {
     };
   }
 
-  /// Check if this is a benefit/earning
-  bool get isBenefit => type == 'benefit';
-
-  /// Check if this is a deduction
-  bool get isDeduction => type == 'deduction';
-
   /// Get display text with percentage if available
   String get displayValue {
     if (percentage != null && percentage! > 0) {
       return '${amount.formatted} (${percentage!.toStringAsFixed(1)}%)';
     }
     return amount.formatted;
-  }
-
-  static double _parseDouble(dynamic value) {
-    if (value == null) return 0.0;
-    if (value is double) return value;
-    if (value is int) return value.toDouble();
-    if (value is String) return double.tryParse(value) ?? 0.0;
-    return 0.0;
   }
 }
 
@@ -199,9 +238,10 @@ class AmountInfo {
   });
 
   factory AmountInfo.fromJson(Map<String, dynamic> json) {
+    final val = _parseDouble(json['amount'] ?? json['value'] ?? 0);
     return AmountInfo(
-      amount: _parseDouble(json['amount'] ?? json['value'] ?? 0),
-      formatted: json['formatted'] ?? '₹0.00',
+      amount: val,
+      formatted: json['formatted'] ?? '₹${val.toStringAsFixed(2)}',
     );
   }
 
@@ -211,12 +251,13 @@ class AmountInfo {
       'formatted': formatted,
     };
   }
+}
 
-  static double _parseDouble(dynamic value) {
-    if (value == null) return 0.0;
-    if (value is double) return value;
-    if (value is int) return value.toDouble();
-    if (value is String) return double.tryParse(value) ?? 0.0;
-    return 0.0;
-  }
+/// Helper function for numeric parsing
+double _parseDouble(dynamic value) {
+  if (value == null) return 0.0;
+  if (value is double) return value;
+  if (value is int) return value.toDouble();
+  if (value is String) return double.tryParse(value) ?? 0.0;
+  return 0.0;
 }

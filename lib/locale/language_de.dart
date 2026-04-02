@@ -1,4 +1,4 @@
-import 'package:open_core_hr/locale/languages.dart';
+import 'languages.dart';
 
 class LanguageDe extends BaseLanguage {
   @override
@@ -1027,6 +1027,9 @@ class LanguageDe extends BaseLanguage {
 
   @override
   String get lblSearchByAddress => 'Nach Adresse suchen';
+
+  @override
+  String get lblComingSoon => 'Coming Soon';
 
   @override
   String get lblSearchHere => 'Suche hier';
@@ -2120,6 +2123,9 @@ class LanguageDe extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => 'Anwesenheit';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
   String get lblTaskSystem => 'Aufgabensystem';
@@ -3555,6 +3561,10 @@ class LanguageDe extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'Zuweisungsverlauf';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'Problembeschreibung';
   @override
   String get lblSubmitReport => 'Bericht einreichen';
@@ -4095,3 +4105,6 @@ class LanguageDe extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'Richtlinie nicht gefunden';
 }
+
+
+

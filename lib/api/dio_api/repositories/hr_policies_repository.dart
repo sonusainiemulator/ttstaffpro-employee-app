@@ -1,5 +1,6 @@
-import 'package:dio/dio.dart';
+ import 'package:dio/dio.dart';
 import '../base_repository.dart';
+import '../../api_routes.dart';
 import '../../../models/HRPolicies/policy_model.dart';
 import '../../../models/HRPolicies/policy_stats_model.dart';
 import '../../../models/HRPolicies/policy_detail_model.dart';
@@ -11,7 +12,7 @@ class HRPoliciesRepository extends BaseRepository {
   /// GET /api/V1/policies/my-policies
   Future<List<PolicyModel>> getMyPolicies() async {
     return await safeApiCall(
-      () => dioClient.get('policies/my-policies'),
+      () => dioClient.get(APIRoutes.getMyPolicies),
       parser: (data) {
         return (data['data'] as List? ?? [])
             .map((item) => PolicyModel.fromJson(item))
@@ -24,7 +25,7 @@ class HRPoliciesRepository extends BaseRepository {
   /// GET /api/V1/policies/my-policies/stats
   Future<PolicyStatsModel?> getMyPoliciesStats() async {
     return await safeApiCall(
-      () => dioClient.get('policies/my-policies/stats'),
+      () => dioClient.get(APIRoutes.getMyPoliciesStats),
       parser: (data) => PolicyStatsModel.fromJson(data['data']),
     );
   }
@@ -53,7 +54,7 @@ class HRPoliciesRepository extends BaseRepository {
     }
 
     return await safeApiCall(
-      () => dioClient.post('policies/acknowledge', data: requestData),
+      () => dioClient.post(APIRoutes.acknowledgePolicy, data: requestData),
       parser: (data) => AcknowledgmentResponseModel.fromJson(data['data']),
     );
   }
@@ -62,7 +63,7 @@ class HRPoliciesRepository extends BaseRepository {
   /// GET /api/V1/policies/categories
   Future<List<PolicyCategoryModel>> getCategories() async {
     return await safeApiCall(
-      () => dioClient.get('policies/categories'),
+      () => dioClient.get(APIRoutes.getPolicyCategories),
       parser: (data) {
         return (data['data'] as List? ?? [])
             .map((item) => PolicyCategoryModel.fromJson(item))
@@ -75,7 +76,7 @@ class HRPoliciesRepository extends BaseRepository {
   /// GET /api/V1/policies/category/{categoryId}
   Future<List<PolicyModel>> getPoliciesByCategory(int categoryId) async {
     return await safeApiCall(
-      () => dioClient.get('policies/category/$categoryId'),
+      () => dioClient.get('${APIRoutes.getPoliciesByCategory}/$categoryId'),
       parser: (data) {
         return (data['data'] as List? ?? [])
             .map((item) => PolicyModel.fromJson(item))
@@ -88,7 +89,7 @@ class HRPoliciesRepository extends BaseRepository {
   /// GET /api/V1/policies/pending
   Future<List<PolicyModel>> getPendingPolicies() async {
     return await safeApiCall(
-      () => dioClient.get('policies/pending'),
+      () => dioClient.get(APIRoutes.getPendingPolicies),
       parser: (data) {
         return (data['data'] as List? ?? [])
             .map((item) => PolicyModel.fromJson(item))
@@ -101,7 +102,7 @@ class HRPoliciesRepository extends BaseRepository {
   /// GET /api/V1/policies/overdue
   Future<List<PolicyModel>> getOverduePolicies() async {
     return await safeApiCall(
-      () => dioClient.get('policies/overdue'),
+      () => dioClient.get(APIRoutes.getOverduePolicies),
       parser: (data) {
         return (data['data'] as List? ?? [])
             .map((item) => PolicyModel.fromJson(item))

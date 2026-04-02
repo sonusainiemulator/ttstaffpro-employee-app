@@ -1,42 +1,54 @@
 /// Model for payroll statistics and dashboard data
 /// Provides overview of payroll trends, comparisons, and summaries
+/// Refactored to support V1 Mobile API Documentation (Section 5)
 class PayrollStatistics {
-  // Current month statistics
+  // --- V1 Summary Section ---
+  final double totalGrossSalary;
+  final double totalNetSalary;
+  final double totalAmountPaid;
+  final double totalBalanceDue;
+  final double averageNetSalary;
+  final int totalPayrollsCount;
+
+  // --- V1 Status Counts ---
+  final int draftCount;
+  final int pendingCount;
+  final int approvedCount;
+  final int paidCount;
+  final int partiallyPaidCount;
+  final int rejectedCount;
+
+  // --- Current/Latest Month (mapped from 'latest' key) ---
   final double currentMonthGross;
   final double currentMonthNet;
   final double currentMonthDeductions;
   final double currentMonthEarnings;
+  final String? currentMonthName;
+  final String? currentMonthYear;
 
-  // Previous month statistics for comparison
-  final double? previousMonthGross;
-  final double? previousMonthNet;
-  final double? previousMonthDeductions;
-  final double? previousMonthEarnings;
+  // --- Historical Trends ---
+  final List<MonthlyPayrollSummary>? monthlyTrends;
 
-  // Year to Date (YTD) statistics
+  // --- Meta information ---
+  final String year;
+  final String currentMonth; // Friendly name for UI
+  final String? lastUpdated;
+
+  // --- Legacy compatibility fields (kept to avoid UI breakage, defaulted to 0 or calculated) ---
   final double ytdGross;
   final double ytdNet;
   final double ytdDeductions;
   final double ytdEarnings;
   final double ytdTax;
-
-  // Average statistics
   final double averageMonthlyGross;
   final double averageMonthlyNet;
   final double averageMonthlyDeductions;
-
-  // Attendance impact
   final double currentMonthAttendancePercentage;
-  final double? previousMonthAttendancePercentage;
   final double ytdAverageAttendance;
-
-  // LOP and Overtime
   final double currentMonthLopAmount;
   final double currentMonthOvertimeAmount;
   final double ytdLopAmount;
   final double ytdOvertimeAmount;
-
-  // Statutory deductions breakdown
   final double currentMonthPF;
   final double currentMonthESI;
   final double currentMonthProfessionalTax;
@@ -45,229 +57,141 @@ class PayrollStatistics {
   final double ytdESI;
   final double ytdProfessionalTax;
   final double ytdIncomeTax;
-
-  // Payslip counts
   final int totalPayslips;
   final int paidPayslips;
   final int pendingPayslips;
 
-  // Salary trends (month-wise data for charts)
-  final List<MonthlyPayrollSummary>? monthlyTrends;
-
-  // Highest and lowest
-  final double? highestSalaryMonth;
-  final String? highestSalaryMonthName;
-  final double? lowestSalaryMonth;
-  final String? lowestSalaryMonthName;
-
-  // Meta information
-  final String year;
-  final String currentMonth;
-  final String? lastUpdated;
-
   PayrollStatistics({
+    required this.totalGrossSalary,
+    required this.totalNetSalary,
+    required this.totalAmountPaid,
+    required this.totalBalanceDue,
+    required this.averageNetSalary,
+    required this.totalPayrollsCount,
+    required this.draftCount,
+    required this.pendingCount,
+    required this.approvedCount,
+    required this.paidCount,
+    required this.partiallyPaidCount,
+    required this.rejectedCount,
     required this.currentMonthGross,
     required this.currentMonthNet,
     required this.currentMonthDeductions,
     required this.currentMonthEarnings,
-    this.previousMonthGross,
-    this.previousMonthNet,
-    this.previousMonthDeductions,
-    this.previousMonthEarnings,
-    required this.ytdGross,
-    required this.ytdNet,
-    required this.ytdDeductions,
-    required this.ytdEarnings,
-    required this.ytdTax,
-    required this.averageMonthlyGross,
-    required this.averageMonthlyNet,
-    required this.averageMonthlyDeductions,
-    required this.currentMonthAttendancePercentage,
-    this.previousMonthAttendancePercentage,
-    required this.ytdAverageAttendance,
-    required this.currentMonthLopAmount,
-    required this.currentMonthOvertimeAmount,
-    required this.ytdLopAmount,
-    required this.ytdOvertimeAmount,
-    required this.currentMonthPF,
-    required this.currentMonthESI,
-    required this.currentMonthProfessionalTax,
-    required this.currentMonthIncomeTax,
-    required this.ytdPF,
-    required this.ytdESI,
-    required this.ytdProfessionalTax,
-    required this.ytdIncomeTax,
-    required this.totalPayslips,
-    required this.paidPayslips,
-    required this.pendingPayslips,
+    this.currentMonthName,
+    this.currentMonthYear,
     this.monthlyTrends,
-    this.highestSalaryMonth,
-    this.highestSalaryMonthName,
-    this.lowestSalaryMonth,
-    this.lowestSalaryMonthName,
     required this.year,
     required this.currentMonth,
     this.lastUpdated,
+    // Defaulting legacy
+    this.ytdGross = 0,
+    this.ytdNet = 0,
+    this.ytdDeductions = 0,
+    this.ytdEarnings = 0,
+    this.ytdTax = 0,
+    this.averageMonthlyGross = 0,
+    this.averageMonthlyNet = 0,
+    this.averageMonthlyDeductions = 0,
+    this.currentMonthAttendancePercentage = 0,
+    this.ytdAverageAttendance = 0,
+    this.currentMonthLopAmount = 0,
+    this.currentMonthOvertimeAmount = 0,
+    this.ytdLopAmount = 0,
+    this.ytdOvertimeAmount = 0,
+    this.currentMonthPF = 0,
+    this.currentMonthESI = 0,
+    this.currentMonthProfessionalTax = 0,
+    this.currentMonthIncomeTax = 0,
+    this.ytdPF = 0,
+    this.ytdESI = 0,
+    this.ytdProfessionalTax = 0,
+    this.ytdIncomeTax = 0,
+    this.totalPayslips = 0,
+    this.paidPayslips = 0,
+    this.pendingPayslips = 0,
   });
 
   factory PayrollStatistics.fromJson(Map<String, dynamic> json) {
+    final summary = json['summary'] as Map<String, dynamic>? ?? {};
+    final statuses = json['statusCounts'] as Map<String, dynamic>? ?? {};
+    final latest = json['latest'] as Map<String, dynamic>? ?? {};
+    final period = json['period'] as Map<String, dynamic>? ?? {};
+
     return PayrollStatistics(
-      currentMonthGross: _parseDouble(json['currentMonthGross']),
-      currentMonthNet: _parseDouble(json['currentMonthNet']),
-      currentMonthDeductions: _parseDouble(json['currentMonthDeductions']),
-      currentMonthEarnings: _parseDouble(json['currentMonthEarnings']),
-      previousMonthGross: json['previousMonthGross'] != null
-          ? _parseDouble(json['previousMonthGross'])
-          : null,
-      previousMonthNet: json['previousMonthNet'] != null
-          ? _parseDouble(json['previousMonthNet'])
-          : null,
-      previousMonthDeductions: json['previousMonthDeductions'] != null
-          ? _parseDouble(json['previousMonthDeductions'])
-          : null,
-      previousMonthEarnings: json['previousMonthEarnings'] != null
-          ? _parseDouble(json['previousMonthEarnings'])
-          : null,
-      ytdGross: _parseDouble(json['ytdGross']),
-      ytdNet: _parseDouble(json['ytdNet']),
-      ytdDeductions: _parseDouble(json['ytdDeductions']),
-      ytdEarnings: _parseDouble(json['ytdEarnings']),
-      ytdTax: _parseDouble(json['ytdTax']),
-      averageMonthlyGross: _parseDouble(json['averageMonthlyGross']),
-      averageMonthlyNet: _parseDouble(json['averageMonthlyNet']),
-      averageMonthlyDeductions: _parseDouble(json['averageMonthlyDeductions']),
-      currentMonthAttendancePercentage:
-          _parseDouble(json['currentMonthAttendancePercentage']),
-      previousMonthAttendancePercentage:
-          json['previousMonthAttendancePercentage'] != null
-              ? _parseDouble(json['previousMonthAttendancePercentage'])
-              : null,
-      ytdAverageAttendance: _parseDouble(json['ytdAverageAttendance']),
-      currentMonthLopAmount: _parseDouble(json['currentMonthLopAmount']),
-      currentMonthOvertimeAmount:
-          _parseDouble(json['currentMonthOvertimeAmount']),
-      ytdLopAmount: _parseDouble(json['ytdLopAmount']),
-      ytdOvertimeAmount: _parseDouble(json['ytdOvertimeAmount']),
-      currentMonthPF: _parseDouble(json['currentMonthPF']),
-      currentMonthESI: _parseDouble(json['currentMonthESI']),
-      currentMonthProfessionalTax:
-          _parseDouble(json['currentMonthProfessionalTax']),
-      currentMonthIncomeTax: _parseDouble(json['currentMonthIncomeTax']),
-      ytdPF: _parseDouble(json['ytdPF']),
-      ytdESI: _parseDouble(json['ytdESI']),
-      ytdProfessionalTax: _parseDouble(json['ytdProfessionalTax']),
-      ytdIncomeTax: _parseDouble(json['ytdIncomeTax']),
-      totalPayslips: json['totalPayslips'] ?? 0,
-      paidPayslips: json['paidPayslips'] ?? 0,
-      pendingPayslips: json['pendingPayslips'] ?? 0,
-      monthlyTrends: json['monthlyTrends'] != null
-          ? (json['monthlyTrends'] as List)
+      // V1 Summary
+      totalGrossSalary: _parseDouble(summary['totalGrossSalary']),
+      totalNetSalary: _parseDouble(summary['totalNetSalary']),
+      totalAmountPaid: _parseDouble(summary['totalAmountPaid']),
+      totalBalanceDue: _parseDouble(summary['totalBalanceDue']),
+      averageNetSalary: _parseDouble(summary['averageNetSalary']),
+      totalPayrollsCount: summary['totalPayrolls'] ?? 0,
+
+      // V1 Statuses
+      draftCount: statuses['draft'] ?? 0,
+      pendingCount: statuses['pending'] ?? 0,
+      approvedCount: statuses['approved'] ?? 0,
+      paidCount: statuses['paid'] ?? 0,
+      partiallyPaidCount: statuses['partially_paid'] ?? 0,
+      rejectedCount: statuses['rejected'] ?? 0,
+
+      // Latest Month Info
+      currentMonthGross: _parseDouble(latest['grossSalary']),
+      currentMonthNet: _parseDouble(latest['netSalary']),
+      currentMonthDeductions: _parseDouble(latest['grossSalary']) - _parseDouble(latest['netSalary']),
+      currentMonthEarnings: _parseDouble(latest['grossSalary']),
+      currentMonthName: latest['month'],
+      currentMonthYear: latest['monthYear'],
+
+      // Trends
+      monthlyTrends: json['trend'] != null
+          ? (json['trend'] as List)
               .map((item) => MonthlyPayrollSummary.fromJson(item))
               .toList()
           : null,
-      highestSalaryMonth: json['highestSalaryMonth'] != null
-          ? _parseDouble(json['highestSalaryMonth'])
-          : null,
-      highestSalaryMonthName: json['highestSalaryMonthName'],
-      lowestSalaryMonth: json['lowestSalaryMonth'] != null
-          ? _parseDouble(json['lowestSalaryMonth'])
-          : null,
-      lowestSalaryMonthName: json['lowestSalaryMonthName'],
-      year: json['year'] ?? '',
-      currentMonth: json['currentMonth'] ?? '',
+
+      // Meta
+      year: period['endMonth']?.split('-')?.first ?? '',
+      currentMonth: latest['month'] ?? 'Latest',
       lastUpdated: json['lastUpdated'],
+
+      // Legacy Mapping for UI stability
+      ytdGross: _parseDouble(summary['totalGrossSalary']),
+      ytdNet: _parseDouble(summary['totalNetSalary']),
+      ytdDeductions: _parseDouble(summary['totalGrossSalary']) - _parseDouble(summary['totalNetSalary']),
+      totalPayslips: summary['totalPayrolls'] ?? 0,
+      paidPayslips: statuses['paid'] ?? 0,
+      pendingPayslips: statuses['pending'] ?? 0,
+      averageMonthlyNet: _parseDouble(summary['averageNetSalary']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'currentMonthGross': currentMonthGross,
-      'currentMonthNet': currentMonthNet,
-      'currentMonthDeductions': currentMonthDeductions,
-      'currentMonthEarnings': currentMonthEarnings,
-      'previousMonthGross': previousMonthGross,
-      'previousMonthNet': previousMonthNet,
-      'previousMonthDeductions': previousMonthDeductions,
-      'previousMonthEarnings': previousMonthEarnings,
-      'ytdGross': ytdGross,
-      'ytdNet': ytdNet,
-      'ytdDeductions': ytdDeductions,
-      'ytdEarnings': ytdEarnings,
-      'ytdTax': ytdTax,
-      'averageMonthlyGross': averageMonthlyGross,
-      'averageMonthlyNet': averageMonthlyNet,
-      'averageMonthlyDeductions': averageMonthlyDeductions,
-      'currentMonthAttendancePercentage': currentMonthAttendancePercentage,
-      'previousMonthAttendancePercentage': previousMonthAttendancePercentage,
-      'ytdAverageAttendance': ytdAverageAttendance,
-      'currentMonthLopAmount': currentMonthLopAmount,
-      'currentMonthOvertimeAmount': currentMonthOvertimeAmount,
-      'ytdLopAmount': ytdLopAmount,
-      'ytdOvertimeAmount': ytdOvertimeAmount,
-      'currentMonthPF': currentMonthPF,
-      'currentMonthESI': currentMonthESI,
-      'currentMonthProfessionalTax': currentMonthProfessionalTax,
-      'currentMonthIncomeTax': currentMonthIncomeTax,
-      'ytdPF': ytdPF,
-      'ytdESI': ytdESI,
-      'ytdProfessionalTax': ytdProfessionalTax,
-      'ytdIncomeTax': ytdIncomeTax,
-      'totalPayslips': totalPayslips,
-      'paidPayslips': paidPayslips,
-      'pendingPayslips': pendingPayslips,
-      'monthlyTrends': monthlyTrends?.map((m) => m.toJson()).toList(),
-      'highestSalaryMonth': highestSalaryMonth,
-      'highestSalaryMonthName': highestSalaryMonthName,
-      'lowestSalaryMonth': lowestSalaryMonth,
-      'lowestSalaryMonthName': lowestSalaryMonthName,
-      'year': year,
-      'currentMonth': currentMonth,
-      'lastUpdated': lastUpdated,
+      'summary': {
+        'totalGrossSalary': totalGrossSalary,
+        'totalNetSalary': totalNetSalary,
+        'totalAmountPaid': totalAmountPaid,
+        'totalBalanceDue': totalBalanceDue,
+        'averageNetSalary': averageNetSalary,
+        'totalPayrolls': totalPayrollsCount,
+      },
+      'statusCounts': {
+        'draft': draftCount,
+        'pending': pendingCount,
+        'approved': approvedCount,
+        'paid': paidCount,
+        'partially_paid': partiallyPaidCount,
+        'rejected': rejectedCount,
+      },
+      'latest': {
+        'grossSalary': currentMonthGross,
+        'netSalary': currentMonthNet,
+        'month': currentMonthName,
+        'monthYear': currentMonthYear,
+      },
+      'trend': monthlyTrends?.map((m) => m.toJson()).toList(),
     };
-  }
-
-  /// Calculate month-over-month growth percentage for net salary
-  double? get netSalaryGrowthPercentage {
-    if (previousMonthNet == null || previousMonthNet == 0) return null;
-    return ((currentMonthNet - previousMonthNet!) / previousMonthNet!) * 100;
-  }
-
-  /// Calculate month-over-month growth percentage for gross salary
-  double? get grossSalaryGrowthPercentage {
-    if (previousMonthGross == null || previousMonthGross == 0) return null;
-    return ((currentMonthGross - previousMonthGross!) / previousMonthGross!) *
-        100;
-  }
-
-  /// Check if current month salary is higher than previous month
-  bool get isCurrentMonthHigher {
-    if (previousMonthNet == null) return false;
-    return currentMonthNet > previousMonthNet!;
-  }
-
-  /// Get total statutory deductions for current month
-  double get currentMonthTotalStatutoryDeductions {
-    return currentMonthPF +
-        currentMonthESI +
-        currentMonthProfessionalTax +
-        currentMonthIncomeTax;
-  }
-
-  /// Get total statutory deductions for YTD
-  double get ytdTotalStatutoryDeductions {
-    return ytdPF + ytdESI + ytdProfessionalTax + ytdIncomeTax;
-  }
-
-  /// Get deduction percentage for current month
-  double get currentMonthDeductionPercentage {
-    if (currentMonthGross == 0) return 0.0;
-    return (currentMonthDeductions / currentMonthGross) * 100;
-  }
-
-  /// Get average deduction percentage for YTD
-  double get ytdDeductionPercentage {
-    if (ytdGross == 0) return 0.0;
-    return (ytdDeductions / ytdGross) * 100;
   }
 
   static double _parseDouble(dynamic value) {
@@ -281,49 +205,37 @@ class PayrollStatistics {
 
 /// Model for monthly payroll summary (for trends/charts)
 class MonthlyPayrollSummary {
-  final String month; // Format: "2025-01" or "January 2025"
-  final String monthName; // "January"
-  final int year;
+  final String month; // Friendly name: "September 2025"
+  final String monthYear; // "2025-09"
   final double grossSalary;
   final double netSalary;
-  final double deductions;
-  final double earnings;
-  final double attendancePercentage;
+  final int payrollCount;
 
   MonthlyPayrollSummary({
     required this.month,
-    required this.monthName,
-    required this.year,
+    required this.monthYear,
     required this.grossSalary,
     required this.netSalary,
-    required this.deductions,
-    required this.earnings,
-    required this.attendancePercentage,
+    required this.payrollCount,
   });
 
   factory MonthlyPayrollSummary.fromJson(Map<String, dynamic> json) {
     return MonthlyPayrollSummary(
       month: json['month'] ?? '',
-      monthName: json['monthName'] ?? '',
-      year: json['year'] ?? 0,
-      grossSalary: _parseDouble(json['grossSalary']),
-      netSalary: _parseDouble(json['netSalary']),
-      deductions: _parseDouble(json['deductions']),
-      earnings: _parseDouble(json['earnings']),
-      attendancePercentage: _parseDouble(json['attendancePercentage']),
+      monthYear: json['monthYear'] ?? '',
+      grossSalary: _parseDouble(json['totalGrossSalary']),
+      netSalary: _parseDouble(json['totalNetSalary']),
+      payrollCount: json['payrollCount'] ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'month': month,
-      'monthName': monthName,
-      'year': year,
-      'grossSalary': grossSalary,
-      'netSalary': netSalary,
-      'deductions': deductions,
-      'earnings': earnings,
-      'attendancePercentage': attendancePercentage,
+      'monthYear': monthYear,
+      'totalGrossSalary': grossSalary,
+      'totalNetSalary': netSalary,
+      'payrollCount': payrollCount,
     };
   }
 

@@ -6,6 +6,7 @@ import 'package:open_core_hr/models/Expense/expense_request_model.dart';
 import 'package:open_core_hr/models/Expense/expense_type_model.dart';
 import 'package:open_core_hr/models/Settings/app_settings_model.dart';
 import 'package:open_core_hr/models/attendance_history_model.dart';
+import 'package:open_core_hr/models/Attendance/actual_time_report_model.dart';
 import 'package:open_core_hr/models/dashboard_model.dart';
 import 'package:open_core_hr/models/notification_model.dart';
 import 'package:open_core_hr/models/payslip_model.dart';
@@ -507,6 +508,46 @@ class ApiService {
     );
 
     return checkSuccessCase(response);
+  }
+
+  Future<ActualTimeReportResponse?> getActualTimeReport({
+    String? startDate, // Expected as dd-mm-yyyy from UI
+    String? endDate,   // Expected as dd-mm-yyyy from UI
+  }) async {
+    final params = <String, String>{};
+    
+    // V1 uses start_date and end_date in YYYY-MM-DD format
+    if (startDate != null && startDate.contains('-')) {
+      final parts = startDate.split('-');
+      if (parts.length == 3) {
+        // dd-mm-yyyy -> yyyy-mm-dd
+        params['start_date'] = '${parts[2]}-${parts[1]}-${parts[0]}';
+      }
+    }
+    
+    if (endDate != null && endDate.contains('-')) {
+      final parts = endDate.split('-');
+      if (parts.length == 3) {
+        // dd-mm-yyyy -> yyyy-mm-dd
+        params['end_date'] = '${parts[2]}-${parts[1]}-${parts[0]}';
+      }
+    }
+
+    final query = Uri(queryParameters: params).query;
+    final response = await handleResponse(
+      query.isEmpty
+          ? await getRequest(APIRoutes.getActualTimeReport)
+          : await getRequestWithQuery(APIRoutes.getActualTimeReport, query),
+    );
+
+    if (!checkSuccessCase(response) || response?.data == null) return null;
+    try {
+      return ActualTimeReportResponse.fromJson(
+          Map<String, dynamic>.from(response!.data));
+    } catch (e) {
+      log('ActualTimeReport parse error: $e');
+      return null;
+    }
   }
 
   Future<bool> validateGeofence(double lat, double long) async {

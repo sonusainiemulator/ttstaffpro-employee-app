@@ -9,9 +9,8 @@ import 'package:open_core_hr/screens/Home/Component/demo_mode_banner.dart';
 import 'package:open_core_hr/screens/Leave/leave_dashboard_screen.dart';
 
 import '../../../models/Settings/module_settings_model.dart';
-import '../../../utils/app_constants.dart';
 import '../../../utils/app_widgets.dart';
-import '../../Approvals/approval_screen.dart';
+// import '../../Approvals/approval_screen.dart';
 import '../../AttendanceHistory/attendance_history_screen.dart';
 import '../../AttendanceRegularization/attendance_regularization_list_screen.dart';
 import '../../DigitalId/digital_id_card_screen.dart';
@@ -22,9 +21,7 @@ import '../../Loan/loan_screen.dart';
 import '../../Payslip/payslip_screen.dart';
 
 class WidgetsComponent extends StatefulWidget {
-  const WidgetsComponent({
-    super.key,
-  });
+  const WidgetsComponent({super.key});
 
   @override
   State<WidgetsComponent> createState() => _WidgetsComponentState();
@@ -105,6 +102,7 @@ class _WidgetsComponentState extends State<WidgetsComponent> {
       });
     }
 
+    /*
     //Approvals
     if (moduleService.isApprovalModuleEnabled() &&
         getBoolAsync(approverPref)) {
@@ -114,6 +112,7 @@ class _WidgetsComponentState extends State<WidgetsComponent> {
         'onTap': () => const ApprovalScreen().launch(context),
       });
     }
+    */
 
     //Payslip
     if (moduleService.isPayrollModuleEnabled()) {
@@ -208,14 +207,11 @@ class _WidgetsComponentState extends State<WidgetsComponent> {
               ),
             ),
             100.height,
-            FooterSignature(
-              textColor: appStore.textPrimaryColor!,
-            ),
+            FooterSignature(textColor: appStore.textPrimaryColor!),
             55.height,
           ],
         ),
       ),
     );
   }
-
 }

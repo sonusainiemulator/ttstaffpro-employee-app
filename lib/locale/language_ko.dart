@@ -1247,6 +1247,9 @@ class LanguageKo extends BaseLanguage {
   String get lblSearchByAddress => '주소로 검색';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => '여기에서 검색';
 
   @override
@@ -2022,6 +2025,9 @@ class LanguageKo extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => '출석';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
   String get lblTaskSystem => '작업 시스템';
@@ -3511,6 +3517,10 @@ class LanguageKo extends BaseLanguage {
   @override
   String get lblAssignmentHistory => '할당 이력';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => '문제 설명';
   @override
   String get lblSubmitReport => '보고서 제출';
@@ -4114,3 +4124,6 @@ class LanguageKo extends BaseLanguage {
   @override
   String get lblPolicyNotFound => '정책을 찾을 수 없습니다';
 }
+
+
+

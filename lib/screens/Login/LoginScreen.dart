@@ -33,12 +33,18 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
   bool _isPasswordVisible = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _setupAnimations();
     init();
+    _emailController.text = 'erjimmyjess@gmail.com';
+    _passwordController.text = '1234568';
+    _loginStore.employeeId = _emailController.text;
+    _loginStore.password = _passwordController.text;
   }
 
   void _setupAnimations() {
@@ -70,6 +76,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   @override
   void dispose() {
     _animationController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -550,6 +558,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                               // Email/Username Field
                                               Observer(
                                                 builder: (_) => AppTextField(
+                                                  controller: _emailController,
                                                   textFieldType: TextFieldType.EMAIL,
                                                   onChanged: (value) => _loginStore.employeeId = value,
                                                   decoration: AppDesignSystem.modernInputDecoration(
@@ -566,6 +575,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                               // Password Field
                                               Observer(
                                                 builder: (_) => AppTextField(
+                                                  controller: _passwordController,
                                                   textFieldType: TextFieldType.PASSWORD,
                                                   onChanged: (value) => _loginStore.password = value,
                                                   decoration: AppDesignSystem.modernInputDecoration(

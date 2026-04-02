@@ -12,8 +12,8 @@ extension DateTimeExtension on DateTime {
       'September',
       'October',
       'November',
-      'December'
+      'December',
     ];
-    return months[this.month - 1]; // Fetch month name based on the month index
+    return months[month - 1]; // Fetch month name based on the month index
   }
 }

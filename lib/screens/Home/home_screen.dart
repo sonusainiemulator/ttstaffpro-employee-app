@@ -19,6 +19,7 @@ import '../Expense/ExpenseScreen.dart';
 import '../Loan/loan_screen.dart';
 import '../Document/DocumentManagement/document_management_home_screen.dart';
 import '../AttendanceHistory/attendance_history_screen.dart';
+import '../AttendanceHistory/actual_time_report_screen.dart';
 import '../AttendanceRegularization/attendance_regularization_list_screen.dart';
 import '../DigitalId/digital_id_card_screen.dart';
 // TODO: Approval screen needs to be implemented
@@ -27,7 +28,7 @@ import '../Payroll/payroll_dashboard_screen.dart';
 import '../Holidays/holiday_screen.dart';
 import '../Calendar/calendar_screen.dart';
 import '../NoticeBoard/notice_board_screen.dart';
-import '../HRPolicies/hr_policies_screen.dart';
+// import '../HRPolicies/hr_policies_screen.dart';
 import '../Assets/assets_list_screen.dart';
 import '../Disciplinary/warnings_list_screen.dart';
 import 'Component/attendance_component.dart';
@@ -137,6 +138,14 @@ class _HomeScreenState extends State<HomeScreen>
       'onTap': () => const AttendanceRegularizationListScreen().launch(context),
     });
 
+    // Actual Time Report
+    modules.add({
+      'title': 'Actual Time Report',
+      'icon': Iconsax.chart_2,
+      'gradient': const [Color(0xFF11998E), Color(0xFF38EF7D)],
+      'onTap': () => const ActualTimeReportScreen().launch(context),
+    });
+
     // Digital ID Card
     if (moduleService.isDigitalIdCardModuleEnabled()) {
       modules.add({
@@ -195,15 +204,17 @@ class _HomeScreenState extends State<HomeScreen>
       });
     }
 
-    // HR Policies Module
+    // HR Policies Module - Hidden for now, later add with coming soon text
+    /*
     if (moduleService.isHrPoliciesModuleEnabled()) {
       modules.add({
         'title': language.lblHRPolicies,
         'icon': Iconsax.document_text,
         'gradient': const [Color(0xFF6A11CB), Color(0xFF2575FC)],
-        'onTap': () => const HRPoliciesScreen().launch(context),
+        'onTap': () => toast(language.lblComingSoon),
       });
     }
+    */
 
     // Assets Module
     if (moduleService.isAssetsModuleEnabled()) {

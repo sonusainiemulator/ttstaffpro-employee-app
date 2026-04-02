@@ -347,7 +347,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconButton(
@@ -369,7 +369,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
               if (!_isSearching) ...[
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
@@ -385,7 +385,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                 const SizedBox(width: 8),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
@@ -401,7 +401,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
             const SizedBox(height: 12),
             Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: TextField(
@@ -411,7 +411,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                 decoration: InputDecoration(
                   hintText: language.lblSearchPayslips,
                   hintStyle: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 15,
                   ),
                   prefixIcon: const Icon(
@@ -594,7 +594,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF696CFF).withOpacity(0.3),
+            color: const Color(0xFF696CFF).withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -634,8 +634,8 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
         boxShadow: [
           BoxShadow(
             color: isDark
-                ? Colors.black.withOpacity(0.3)
-                : Colors.black.withOpacity(0.04),
+                ? Colors.black.withValues(alpha: 0.3)
+                : Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -661,7 +661,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        const Color(0xFF696CFF).withOpacity(0.8),
+                        const Color(0xFF696CFF).withValues(alpha: 0.8),
                         const Color(0xFF5457E6),
                       ],
                       begin: Alignment.topLeft,
@@ -670,7 +670,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF696CFF).withOpacity(0.3),
+                        color: const Color(0xFF696CFF).withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -707,7 +707,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.1),
+                              color: Colors.green.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Row(
@@ -736,7 +736,9 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF696CFF).withOpacity(0.1),
+                              color: const Color(
+                                0xFF696CFF,
+                              ).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
@@ -757,7 +759,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                 // Download Button
                 Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFF696CFF).withOpacity(0.1),
+                    color: const Color(0xFF696CFF).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: IconButton(
@@ -780,7 +782,9 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                       if (filePath != null) {
                         toast(language.lblPayslipDownloadSuccess);
                       } else if (payrollStore.error != null) {
-                        toast('${language.lblPayslipDownloadFailed}: ${payrollStore.error}');
+                        toast(
+                          '${language.lblPayslipDownloadFailed}: ${payrollStore.error}',
+                        );
                       }
                     },
                   ),
@@ -805,15 +809,15 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withOpacity(0.2),
-                  const Color(0xFF5457E6).withOpacity(0.1),
+                  const Color(0xFF696CFF).withValues(alpha: 0.2),
+                  const Color(0xFF5457E6).withValues(alpha: 0.1),
                 ],
               ),
             ),
             child: Icon(
               Iconsax.document_text,
               size: 70,
-              color: const Color(0xFF696CFF).withOpacity(0.7),
+              color: const Color(0xFF696CFF).withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: 32),

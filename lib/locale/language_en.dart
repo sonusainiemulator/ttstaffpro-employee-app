@@ -391,7 +391,8 @@ class LanguageEn extends BaseLanguage {
       'This device is not registered click on register to add it to your account';
 
   @override
-  String get lblThisDeviceIsAlreadyRegisteredWithOtherAccountPleaseContactAdministrator =>
+  String
+  get lblThisDeviceIsAlreadyRegisteredWithOtherAccountPleaseContactAdministrator =>
       'This device is already registered with other account. Please contact administrator';
 
   @override
@@ -434,6 +435,9 @@ class LanguageEn extends BaseLanguage {
   String get lblConfirm => 'Confirm';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => 'Search here';
 
   @override
@@ -444,7 +448,8 @@ class LanguageEn extends BaseLanguage {
       'Enter your phone number to send an OTP';
 
   @override
-  String get lblWeHaveSendA4DigitVerificationCodeToYourPhonePleaseEnterTheCodeBelowTtoVerifyItsYou =>
+  String
+  get lblWeHaveSendA4DigitVerificationCodeToYourPhonePleaseEnterTheCodeBelowTtoVerifyItsYou =>
       'We have send a 4 digit verification code to your phone. Please enter the code below to verify it\'s you.';
 
   @override
@@ -484,11 +489,13 @@ class LanguageEn extends BaseLanguage {
   String get lblCollectsLocationData => 'Collects Location Data';
 
   @override
-  String get lblImportantGiveLocationAccuracyToPreciseAndAllowAllTheTimeSoThatTheAppCanFunctionProperly =>
+  String
+  get lblImportantGiveLocationAccuracyToPreciseAndAllowAllTheTimeSoThatTheAppCanFunctionProperly =>
       'Important: Give location accuracy to \'Precise\' and \'Allow all the time\' so that the app can function properly';
 
   @override
-  String get lblLocationWillBeTrackedTnTheBackgroundAndAlsoEvenWhenTheAppIsClosedOrNotInUse =>
+  String
+  get lblLocationWillBeTrackedTnTheBackgroundAndAlsoEvenWhenTheAppIsClosedOrNotInUse =>
       'Location will be tracked in the background and also even when the app is closed or not in use.';
 
   @override
@@ -554,7 +561,8 @@ class LanguageEn extends BaseLanguage {
       'Your device has additional battery optimization';
 
   @override
-  String get lblFollowTheStepsAndDisableTheOptimizationsToAllowSmoothFunctioningOfThisApp =>
+  String
+  get lblFollowTheStepsAndDisableTheOptimizationsToAllowSmoothFunctioningOfThisApp =>
       'Follow the steps and disable the optimizations to allow smooth functioning of this app';
 
   @override
@@ -1205,7 +1213,8 @@ class LanguageEn extends BaseLanguage {
       'Looks like you already registered this device. You can use one tap login';
 
   @override
-  String get lblIfYouWantToLoginWithDifferentAccountPleaseContactAdministrator =>
+  String
+  get lblIfYouWantToLoginWithDifferentAccountPleaseContactAdministrator =>
       'If you want to login with different account please contact administrator';
 
   @override
@@ -1236,7 +1245,8 @@ class LanguageEn extends BaseLanguage {
   String get lblYouAreInOfflineMode => 'You are in offline mode';
 
   @override
-  String get lblOptionsWillBeLimitedUntilYouAreBackOnlinePleaseCheckYourInternetConnection =>
+  String
+  get lblOptionsWillBeLimitedUntilYouAreBackOnlinePleaseCheckYourInternetConnection =>
       'Options will be limited until you are back online. Please check your internet connection.';
 
   @override
@@ -1394,7 +1404,8 @@ class LanguageEn extends BaseLanguage {
   String get lblPaymentCollection => 'Payment Collection';
 
   @override
-  String get lblPaymentCollectionModuleIsNotEnabled => 'Payment Collection Module is not enabled';
+  String get lblPaymentCollectionModuleIsNotEnabled =>
+      'Payment Collection Module is not enabled';
 
   @override
   String get lblVisitModuleIsNotEnabled => 'Visit module is not enabled';
@@ -1462,7 +1473,8 @@ class LanguageEn extends BaseLanguage {
   String get lblActivity => 'Activity';
 
   @override
-  String get lblActivityPermissionIsUsedToDetectYourPhysicalMovementsAndTravelEnablingTheAppToTrackAttendanceVisitsAndActivityStates =>
+  String
+  get lblActivityPermissionIsUsedToDetectYourPhysicalMovementsAndTravelEnablingTheAppToTrackAttendanceVisitsAndActivityStates =>
       'Activity permission is used to detect your physical movements and travel, enabling the app to track attendance, visits, and activity states.';
 
   @override
@@ -1482,7 +1494,8 @@ class LanguageEn extends BaseLanguage {
       'Allow access to your activity for attendance and travel tracking';
 
   @override
-  String get lblAllowAccessToYourLocationForAttendanceAndTravelTrackingEvenWhenTheAppIsClosed =>
+  String
+  get lblAllowAccessToYourLocationForAttendanceAndTravelTrackingEvenWhenTheAppIsClosed =>
       'Allow access to your location for attendance and travel tracking even when the app is closed';
 
   @override
@@ -1625,7 +1638,8 @@ class LanguageEn extends BaseLanguage {
   String get lblFilterByYear => 'Filter by year';
 
   @override
-  String get lblForAnyQueriesCustomizationsInstallationOrFeedbackPleaseContactUsAt =>
+  String
+  get lblForAnyQueriesCustomizationsInstallationOrFeedbackPleaseContactUsAt =>
       'For any queries, customizations, installation, or feedback, please contact us at';
 
   @override
@@ -1676,7 +1690,8 @@ class LanguageEn extends BaseLanguage {
   String get lblLocationInfo => 'Location info';
 
   @override
-  String get lblLocationPermissionIsRequiredForTrackingAttendanceRecordingClientVisitsAndCalculatingDistancesTraveledEvenWhenTheAppIsNotInUse =>
+  String
+  get lblLocationPermissionIsRequiredForTrackingAttendanceRecordingClientVisitsAndCalculatingDistancesTraveledEvenWhenTheAppIsNotInUse =>
       'Location permission is required for tracking attendance, recording client visits, and calculating distances traveled even when the app is not in use.';
 
   @override
@@ -1760,7 +1775,8 @@ class LanguageEn extends BaseLanguage {
   String get lblNoUsersFound => 'No users found';
 
   @override
-  String get lblNotificationPermissionEnsuresYouReceiveUpdatesOnAttendanceTasksAndOtherImportantEventsInRealTime =>
+  String
+  get lblNotificationPermissionEnsuresYouReceiveUpdatesOnAttendanceTasksAndOtherImportantEventsInRealTime =>
       'Notification permission ensures you receive updates on attendance, tasks, and other important events in real time.';
 
   @override
@@ -1973,7 +1989,8 @@ class LanguageEn extends BaseLanguage {
   String get lblDiscard => 'Discard';
 
   @override
-  String get lblPleaseFillAllRequiredFields => 'Please fill all required fields';
+  String get lblPleaseFillAllRequiredFields =>
+      'Please fill all required fields';
 
   @override
   String get lblIsRequired => 'is required';
@@ -2044,7 +2061,8 @@ class LanguageEn extends BaseLanguage {
   String get lblEnterRemarks => 'Enter any additional information';
 
   @override
-  String get lblExpectedDisbursementDate => 'Expected Disbursement Date (Optional)';
+  String get lblExpectedDisbursementDate =>
+      'Expected Disbursement Date (Optional)';
 
   @override
   String get lblEMICalculation => 'EMI Calculation';
@@ -2080,14 +2098,19 @@ class LanguageEn extends BaseLanguage {
   String get lblTenure => 'Tenure';
 
   @override
-  String get lblLoanRequestUpdatedSuccessfully => 'Loan request updated successfully';
+  String get lblLoanRequestUpdatedSuccessfully =>
+      'Loan request updated successfully';
 
   @override
-  String get lblLoanRequestSavedAsDraft => 'Loan request saved as draft successfully';
+  String get lblLoanRequestSavedAsDraft =>
+      'Loan request saved as draft successfully';
 
   // Module Names Keys
   @override
   String get lblAttendance => 'Attendance';
+  
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
   String get lblTaskSystem => 'Task System';
@@ -2098,10 +2121,10 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblProductOrdering => 'Product & Ordering';
 
-    @override
+  @override
   String get lblDynamicForm => 'Dynamic Form';
 
-    @override
+  @override
   String get lblGeoFencing => 'Geo Fencing';
 
   @override
@@ -2152,7 +2175,7 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblFaceAttendance => 'Face Attendance';
 
-    @override
+  @override
   String get lblAssetsManagement => 'Assets Management';
 
   @override
@@ -2187,10 +2210,12 @@ class LanguageEn extends BaseLanguage {
   String get lblDemoMode => 'Demo Mode';
 
   @override
-  String get lblLoginToAdminPanel => 'Login to the admin panel to manage your data';
+  String get lblLoginToAdminPanel =>
+      'Login to the admin panel to manage your data';
 
   @override
-  String get lblUseTenantLoginButton => 'Use the tenant login button on the login screen';
+  String get lblUseTenantLoginButton =>
+      'Use the tenant login button on the login screen';
 
   @override
   String get lblVisitAdminPanel => 'Visit Admin Panel';
@@ -2335,7 +2360,6 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblFilterLeaveRequests => 'Filter Leave Requests';
 
-
   @override
   String get lblResetFilters => 'Reset Filters';
 
@@ -2359,7 +2383,8 @@ class LanguageEn extends BaseLanguage {
   String get lblNoTeamLeaves => 'No Team Leaves';
 
   @override
-  String get lblNoTeamLeavesMessage => 'Your team members have no approved leaves this month';
+  String get lblNoTeamLeavesMessage =>
+      'Your team members have no approved leaves this month';
 
   @override
   String get lblTeamMembersOnLeave => '%s team member(s) on leave';
@@ -2399,7 +2424,8 @@ class LanguageEn extends BaseLanguage {
   String get lblPleaseSelectLeaveType => 'Please select a leave type';
 
   @override
-  String get lblHalfDayDateError => 'For half day leave, from and to dates must be the same';
+  String get lblHalfDayDateError =>
+      'For half day leave, from and to dates must be the same';
 
   @override
   String get lblFirstHalf => 'First Half';
@@ -2480,7 +2506,8 @@ class LanguageEn extends BaseLanguage {
   String get lblCompensatoryOffsApplied => 'Compensatory Offs Applied';
 
   @override
-  String get lblCompOffsCannotBeModified => 'Comp offs cannot be modified when editing';
+  String get lblCompOffsCannotBeModified =>
+      'Comp offs cannot be modified when editing';
 
   @override
   String get lblCompOffWillBeApplied => 'Comp Off will be applied (FIFO)';
@@ -2510,19 +2537,24 @@ class LanguageEn extends BaseLanguage {
   String get lblPleaseEnterReasonForLeave => 'Please enter reason for leave';
 
   @override
-  String get lblInsufficientBalance => 'Insufficient balance. Available: %s days, Required: %s days';
+  String get lblInsufficientBalance =>
+      'Insufficient balance. Available: %s days, Required: %s days';
 
   @override
-  String get lblSelectCompensatoryOffs => 'Please select compensatory offs to use';
+  String get lblSelectCompensatoryOffs =>
+      'Please select compensatory offs to use';
 
   @override
-  String get lblCompOffDaysCannotExceed => 'Compensatory off days cannot exceed total leave days';
+  String get lblCompOffDaysCannotExceed =>
+      'Compensatory off days cannot exceed total leave days';
 
   @override
-  String get lblLeaveRequestUpdatedSuccess => 'Leave request updated successfully';
+  String get lblLeaveRequestUpdatedSuccess =>
+      'Leave request updated successfully';
 
   @override
-  String get lblLeaveRequestSubmittedSuccess => 'Leave request submitted successfully';
+  String get lblLeaveRequestSubmittedSuccess =>
+      'Leave request submitted successfully';
 
   @override
   String get lblFailedToSubmitLeaveRequest => 'Failed to submit leave request';
@@ -2532,10 +2564,12 @@ class LanguageEn extends BaseLanguage {
   String get lblCancelLeaveRequest => 'Cancel Leave Request';
 
   @override
-  String get lblConfirmCancelLeave => 'Are you sure you want to cancel this leave request?';
+  String get lblConfirmCancelLeave =>
+      'Are you sure you want to cancel this leave request?';
 
   @override
-  String get lblCancellationReasonOptional => 'Reason for cancellation (optional)';
+  String get lblCancellationReasonOptional =>
+      'Reason for cancellation (optional)';
 
   @override
   String get lblNoKeepIt => 'No, Keep It';
@@ -2547,7 +2581,8 @@ class LanguageEn extends BaseLanguage {
   String get lblFailedToCancelLeave => 'Failed to cancel leave request';
 
   @override
-  String get lblCannotOpenDocument => 'Cannot open document. Please check if the file exists.';
+  String get lblCannotOpenDocument =>
+      'Cannot open document. Please check if the file exists.';
 
   @override
   String get lblLeaveRequested => 'Leave Requested';
@@ -2601,7 +2636,8 @@ class LanguageEn extends BaseLanguage {
   String get lblCancelRequestBtn => 'Cancel Request';
 
   @override
-  String get lblLeaveRequestCancelledSuccess => 'Leave request cancelled successfully';
+  String get lblLeaveRequestCancelledSuccess =>
+      'Leave request cancelled successfully';
 
   @override
   String get lblExpires => 'Expires';
@@ -2629,7 +2665,8 @@ class LanguageEn extends BaseLanguage {
   String get lblDeleteCompOff => 'Delete Comp Off';
 
   @override
-  String get lblConfirmDeleteCompOff => 'Are you sure you want to delete this compensatory off request? This action cannot be undone.';
+  String get lblConfirmDeleteCompOff =>
+      'Are you sure you want to delete this compensatory off request? This action cannot be undone.';
 
   @override
   String get lblCompOffRequested => 'Comp Off Requested';
@@ -2644,7 +2681,8 @@ class LanguageEn extends BaseLanguage {
   String get lblPleaseSelectWorkedDate => 'Please select worked date';
 
   @override
-  String get lblWorkedDateCannotBeFuture => 'Worked date cannot be in the future';
+  String get lblWorkedDateCannotBeFuture =>
+      'Worked date cannot be in the future';
 
   @override
   String get lblHoursWorkedMinimum => 'Hours worked must be at least 1';
@@ -2788,7 +2826,6 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblAll => 'All';
 
-
   @override
   String get lblBuyThisAppNow => 'Buy this app now';
 
@@ -2915,7 +2952,6 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblAllYears => 'All Years';
 
-
   @override
   String get lblWithdrawn => 'Withdrawn';
 
@@ -2933,7 +2969,6 @@ class LanguageEn extends BaseLanguage {
 
   @override
   String get lblFilterPayslips => 'Filter Payslips';
-
 
   // Attendance Regularization
   @override
@@ -3139,20 +3174,25 @@ class LanguageEn extends BaseLanguage {
   String get lblSelectDocumentType => 'Select Document Type';
 
   @override
-  String get lblSelectTheTypeOfDocument => 'Select the type of document you need';
+  String get lblSelectTheTypeOfDocument =>
+      'Select the type of document you need';
 
   @override
-  String get lblProvideReasonForRequest => 'Provide a clear reason for your request';
+  String get lblProvideReasonForRequest =>
+      'Provide a clear reason for your request';
 
   @override
-  String get lblRequestReviewedByHR => 'Your request will be reviewed by HR team';
+  String get lblRequestReviewedByHR =>
+      'Your request will be reviewed by HR team';
 
   @override
-  String get lblNotifiedWhenReady => 'You will be notified once the document is ready';
+  String get lblNotifiedWhenReady =>
+      'You will be notified once the document is ready';
 
   // Loan Module
   @override
-  String get lblYourLoanRequestsWillAppearHere => 'Your loan requests will appear here';
+  String get lblYourLoanRequestsWillAppearHere =>
+      'Your loan requests will appear here';
   @override
   String get lblErrorLoadingLoanDetails => 'Error loading loan details';
   @override
@@ -3180,23 +3220,32 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblPurposeMinimumLength => 'Purpose must be at least 5 characters';
   @override
-  String get lblPurposeMustBeAtLeast5Characters => 'Purpose must be at least 5 characters';
+  String get lblPurposeMustBeAtLeast5Characters =>
+      'Purpose must be at least 5 characters';
   @override
-  String get lblLoanReviewNote1 => 'Your loan request will be reviewed by the management';
+  String get lblLoanReviewNote1 =>
+      'Your loan request will be reviewed by the management';
   @override
-  String get lblLoanReviewNote2 => 'Approval time may vary based on the loan amount';
+  String get lblLoanReviewNote2 =>
+      'Approval time may vary based on the loan amount';
   @override
-  String get lblLoanReviewNote3 => 'You will be notified once your request is processed';
+  String get lblLoanReviewNote3 =>
+      'You will be notified once your request is processed';
   @override
-  String get lblLoanReviewNote4 => 'Ensure all details are accurate before submitting';
+  String get lblLoanReviewNote4 =>
+      'Ensure all details are accurate before submitting';
   @override
-  String get lblYourLoanRequestWillBeReviewedByManagement => 'Your loan request will be reviewed by management';
+  String get lblYourLoanRequestWillBeReviewedByManagement =>
+      'Your loan request will be reviewed by management';
   @override
-  String get lblApprovalTimeMayVaryBasedOnLoanAmount => 'Approval time may vary based on loan amount';
+  String get lblApprovalTimeMayVaryBasedOnLoanAmount =>
+      'Approval time may vary based on loan amount';
   @override
-  String get lblYouWillBeNotifiedOnceRequestIsProcessed => 'You will be notified once request is processed';
+  String get lblYouWillBeNotifiedOnceRequestIsProcessed =>
+      'You will be notified once request is processed';
   @override
-  String get lblEnsureAllDetailsAreAccurateBeforeSubmitting => 'Ensure all details are accurate before submitting';
+  String get lblEnsureAllDetailsAreAccurateBeforeSubmitting =>
+      'Ensure all details are accurate before submitting';
   @override
   String get lblMonths => 'months';
   @override
@@ -3206,7 +3255,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblUpTo => 'Up to';
   @override
-  String get lblAreYouSureYouWantToDeleteThisDraft => 'Are you sure you want to delete this draft?';
+  String get lblAreYouSureYouWantToDeleteThisDraft =>
+      'Are you sure you want to delete this draft?';
   @override
   String get lblDraftDeletedSuccessfully => 'Draft deleted successfully';
   @override
@@ -3242,7 +3292,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblNoRepaymentsYet => 'No Repayments Yet';
   @override
-  String get lblRepaymentScheduleAfterDisbursement => 'Repayment schedule will appear after loan disbursement';
+  String get lblRepaymentScheduleAfterDisbursement =>
+      'Repayment schedule will appear after loan disbursement';
   @override
   String get lblPaidOn => 'Paid On';
   @override
@@ -3282,7 +3333,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblNoPayslipsAvailable => 'No payslips available';
   @override
-  String get lblPayslipsWillAppearMessage => 'Your payslips will appear here once processed';
+  String get lblPayslipsWillAppearMessage =>
+      'Your payslips will appear here once processed';
   @override
   String get lblErrorLoadingData => 'Error Loading Data';
   @override
@@ -3348,7 +3400,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblNoSalaryStructureFound => 'No Salary Structure Found';
   @override
-  String get lblSalaryStructureNotConfigured => 'Your salary structure has not been configured yet. Please contact HR for assistance.';
+  String get lblSalaryStructureNotConfigured =>
+      'Your salary structure has not been configured yet. Please contact HR for assistance.';
   @override
   String get lblErrorLoadingSalaryStructure => 'Error Loading Salary Structure';
   @override
@@ -3358,11 +3411,13 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblNoPayrollRecordsFound => 'No Payroll Records Found';
   @override
-  String get lblPayrollRecordsMessage => 'Your payroll records will appear here once processed';
+  String get lblPayrollRecordsMessage =>
+      'Your payroll records will appear here once processed';
   @override
   String get lblErrorLoadingRecords => 'Error Loading Records';
   @override
-  String get lblPayslipsGeneratedMessage => 'Your payslips will appear here once generated';
+  String get lblPayslipsGeneratedMessage =>
+      'Your payslips will appear here once generated';
   @override
   String get lblErrorLoadingPayslips => 'Error Loading Payslips';
 
@@ -3388,7 +3443,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblNoEarnings => 'No Earnings';
   @override
-  String get lblNoAdditionalEarnings => 'No additional earnings for this period';
+  String get lblNoAdditionalEarnings =>
+      'No additional earnings for this period';
   @override
   String get lblEarningsBreakdown => 'Earnings Breakdown';
   @override
@@ -3402,13 +3458,15 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblLoadingPayslipDetails => 'Loading payslip details...';
   @override
-  String get lblPayslipDownloadedSuccessfully => 'Payslip downloaded successfully';
+  String get lblPayslipDownloadedSuccessfully =>
+      'Payslip downloaded successfully';
   @override
   String get lblPayslipNotFound => 'Payslip not found';
   @override
   String get lblPrintFeatureComingSoon => 'Print feature coming soon';
   @override
-  String get lblStoragePermissionRequired => 'Storage permission is required to download files';
+  String get lblStoragePermissionRequired =>
+      'Storage permission is required to download files';
   @override
   String get lblPayslipDownloadedTo => 'Payslip downloaded to';
   @override
@@ -3418,7 +3476,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblFailedToDownloadPayslip => 'Failed to download payslip';
   @override
-  String get lblNoAppToOpenPDF => 'No app found to open PDF files. Please install a PDF viewer.';
+  String get lblNoAppToOpenPDF =>
+      'No app found to open PDF files. Please install a PDF viewer.';
   @override
   String get lblPDFFileNotFound => 'PDF file not found';
   @override
@@ -3468,7 +3527,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblMakeSureServerIsRunning => 'Make sure the server is running';
   @override
-  String get lblContactITAdministrator => 'Contact your IT administrator if the issue persists';
+  String get lblContactITAdministrator =>
+      'Contact your IT administrator if the issue persists';
   @override
   String get lblReconnecting => 'Reconnecting...';
 
@@ -3478,7 +3538,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblConfirmWithdraw => 'Confirm Withdraw';
   @override
-  String get lblWithdrawAppealConfirm => 'Are you sure you want to withdraw this appeal?';
+  String get lblWithdrawAppealConfirm =>
+      'Are you sure you want to withdraw this appeal?';
   @override
   String get lblSelectWarning => 'Select Warning';
   @override
@@ -3526,7 +3587,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblConfirmAcknowledge => 'Confirm Acknowledge';
   @override
-  String get lblAcknowledgeWarningConfirm => 'Are you sure you want to acknowledge this warning?';
+  String get lblAcknowledgeWarningConfirm =>
+      'Are you sure you want to acknowledge this warning?';
   @override
   String get lblVerbalWarning => 'Verbal Warning';
   @override
@@ -3573,6 +3635,12 @@ class LanguageEn extends BaseLanguage {
   String get lblMyAssets => 'My Assets';
   @override
   String get lblAssignmentHistory => 'Assignment History';
+  @override
+  String get lblNoAssignmentHistory =>
+      'No assignment history available for this asset';
+
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
   @override
   String get lblIssueDescription => 'Issue Description';
   @override
@@ -3670,7 +3738,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblConfirmAcknowledgePolicy => 'Confirm Acknowledge';
   @override
-  String get lblAcknowledgePolicyConfirm => 'Are you sure you want to acknowledge this policy?';
+  String get lblAcknowledgePolicyConfirm =>
+      'Are you sure you want to acknowledge this policy?';
   @override
   String get lblPolicyCategory => 'Policy Category';
   @override
@@ -3736,9 +3805,11 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblPleaseDescribeIssue => 'Please describe the issue';
   @override
-  String get lblDescriptionMinLength => 'Description must be at least 10 characters';
+  String get lblDescriptionMinLength =>
+      'Description must be at least 10 characters';
   @override
-  String get lblProvideDetailToResolve => 'Provide as much detail as possible to help resolve the issue quickly';
+  String get lblProvideDetailToResolve =>
+      'Provide as much detail as possible to help resolve the issue quickly';
 
   // Digital ID Card Keys
   @override
@@ -3764,7 +3835,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblPleaseSelectType => 'Please select type';
   @override
-  String get lblExplainReasonPlaceholder => 'Explain your reason for regularization...';
+  String get lblExplainReasonPlaceholder =>
+      'Explain your reason for regularization...';
   @override
   String get lblAttachmentsOptional => 'Attachments (Optional)';
   @override
@@ -3792,7 +3864,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblConfirmDelete => 'Confirm Delete';
   @override
-  String get lblAreYouSureToDeleteRequest => 'Are you sure you want to delete this request?';
+  String get lblAreYouSureToDeleteRequest =>
+      'Are you sure you want to delete this request?';
 
   // Notice Board Keys
   @override
@@ -3872,7 +3945,8 @@ class LanguageEn extends BaseLanguage {
 
   // Attendance Regularization Additional Keys
   @override
-  String get lblNoDatesAvailableForRegularization => 'No dates available for regularization';
+  String get lblNoDatesAvailableForRegularization =>
+      'No dates available for regularization';
   @override
   String get lblFileSizeExceeds5MB => 'File size exceeds 5MB limit';
   @override
@@ -3890,7 +3964,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblNoUpcomingHolidays => 'No Upcoming Holidays';
   @override
-  String get lblNoUpcomingHolidaysMessage => 'There are no upcoming holidays scheduled';
+  String get lblNoUpcomingHolidaysMessage =>
+      'There are no upcoming holidays scheduled';
   @override
   String get lblNoHolidaysToDisplay => 'There are no holidays to display';
   @override
@@ -3908,7 +3983,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblPleaseEnterAppealReason => 'Please enter appeal reason';
   @override
-  String get lblAppealReasonMinLength => 'Appeal reason must be at least 10 characters';
+  String get lblAppealReasonMinLength =>
+      'Appeal reason must be at least 10 characters';
   @override
   String get lblYourStatement => 'Your Statement';
   @override
@@ -3916,9 +3992,11 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblPleaseProvideStatement => 'Please provide your statement';
   @override
-  String get lblStatementMinLength => 'Statement must be at least 20 characters';
+  String get lblStatementMinLength =>
+      'Statement must be at least 20 characters';
   @override
-  String get lblSupportingDocumentsOptional => 'Supporting Documents (Optional)';
+  String get lblSupportingDocumentsOptional =>
+      'Supporting Documents (Optional)';
   @override
   String get lblTapToSelectFiles => 'Tap to select files';
   @override
@@ -3928,13 +4006,16 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblImportantInformation => 'Important Information';
   @override
-  String get lblAppealInfoBullet1 => 'Your appeal will be reviewed by the HR department';
+  String get lblAppealInfoBullet1 =>
+      'Your appeal will be reviewed by the HR department';
   @override
   String get lblAppealInfoBullet2 => 'You may be called for a hearing';
   @override
-  String get lblAppealInfoBullet3 => 'The appeal decision will be communicated to you';
+  String get lblAppealInfoBullet3 =>
+      'The appeal decision will be communicated to you';
   @override
-  String get lblAppealInfoBullet4 => 'Be honest and provide all relevant information';
+  String get lblAppealInfoBullet4 =>
+      'Be honest and provide all relevant information';
   @override
   String get lblSubmitAppeal => 'Submit Appeal';
   @override
@@ -3948,7 +4029,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblWithdrawAppeal => 'Withdraw Appeal';
   @override
-  String get lblWithdrawAppealConfirmation => 'Are you sure you want to withdraw this appeal? This action cannot be undone.';
+  String get lblWithdrawAppealConfirmation =>
+      'Are you sure you want to withdraw this appeal? This action cannot be undone.';
   @override
   String get lblYesWithdraw => 'Yes, Withdraw';
   @override
@@ -3996,15 +4078,18 @@ class LanguageEn extends BaseLanguage {
 
   // Disciplinary Actions - Warning Details Keys
   @override
-  String get lblAcknowledgeConfirmation => 'By acknowledging this warning, you confirm that you have read and understood its contents.';
+  String get lblAcknowledgeConfirmation =>
+      'By acknowledging this warning, you confirm that you have read and understood its contents.';
   @override
   String get lblOptionalComments => 'Optional comments';
   @override
-  String get lblWarningAcknowledgedSuccessfully => 'Warning acknowledged successfully';
+  String get lblWarningAcknowledgedSuccessfully =>
+      'Warning acknowledged successfully';
   @override
   String get lblFailedToAcknowledgeWarning => 'Failed to acknowledge warning';
   @override
-  String get lblCannotOpenAttachment => 'Cannot open attachment. Please check if the file exists.';
+  String get lblCannotOpenAttachment =>
+      'Cannot open attachment. Please check if the file exists.';
   @override
   String get lblErrorOpeningAttachment => 'Error opening attachment';
   @override
@@ -4046,7 +4131,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblFileSizeExceedsLimit => 'File size exceeds the 10MB limit';
   @override
-  String get lblErrorSelectingFile => 'An error occurred while selecting or uploading the file';
+  String get lblErrorSelectingFile =>
+      'An error occurred while selecting or uploading the file';
   @override
   String get lblCompletedOn => 'Completed on';
   @override
@@ -4054,15 +4140,18 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblUploadedFile => 'Uploaded File';
   @override
-  String get lblEnterAcknowledgement => 'Enter acknowledgement or details here...';
+  String get lblEnterAcknowledgement =>
+      'Enter acknowledgement or details here...';
   @override
   String get lblAcknowledgeAddDetails => 'Acknowledge / Add Details';
   @override
-  String get lblPleaseEnterAcknowledgement => 'Please enter acknowledgement or details';
+  String get lblPleaseEnterAcknowledgement =>
+      'Please enter acknowledgement or details';
   @override
   String get lblSubmitTask => 'Submit Task?';
   @override
-  String get lblConfirmSubmission => 'Confirm submission with the entered details';
+  String get lblConfirmSubmission =>
+      'Confirm submission with the entered details';
   @override
   String get lblFileUploaded => 'File Uploaded';
   @override
@@ -4074,7 +4163,8 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblMarkTaskComplete => 'Mark Task as Complete?';
   @override
-  String get lblOnboardingNotAvailable => 'Your onboarding checklist is not available yet.\nPlease check back later.';
+  String get lblOnboardingNotAvailable =>
+      'Your onboarding checklist is not available yet.\nPlease check back later.';
   @override
   String get lblTaskTitle => 'Task Title';
   @override

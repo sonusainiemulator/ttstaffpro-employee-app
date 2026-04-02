@@ -410,6 +410,9 @@ class LanguageFr extends BaseLanguage {
   String get lblConfirm => 'Confirmer';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => 'Chercher ici';
 
   @override
@@ -2107,6 +2110,9 @@ class LanguageFr extends BaseLanguage {
   String get lblAttendance => 'Présence';
 
   @override
+  String get lblManageYour => 'Manage Your';
+
+  @override
   String get lblTaskSystem => 'Système de tâches';
 
   @override
@@ -3655,6 +3661,10 @@ class LanguageFr extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'Historique d\'affectation';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'Description du problème';
   @override
   String get lblSubmitReport => 'Soumettre le rapport';
@@ -4065,3 +4075,6 @@ class LanguageFr extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'Politique non trouvée';
 }
+
+
+

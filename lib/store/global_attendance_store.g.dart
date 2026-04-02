@@ -212,12 +212,17 @@ mixin _$GlobalAttendanceStore on GlobalAttendanceStoreBase, Store {
       AsyncAction('GlobalAttendanceStoreBase.checkInOut', context: context);
 
   @override
-  Future<dynamic> checkInOut(AttendanceStatus status,
-      {String? lateCheckInReason}) {
-    return _$checkInOutAsyncAction.run(
-        () => super.checkInOut(status, lateCheckInReason: lateCheckInReason));
+  Future<Result> checkInOut(AttendanceStatus status,
+      {String? lateCheckInReason,
+      String? earlyCheckoutReason,
+      bool? overtimeTask,
+      String? overtimeTaskNote}) {
+    return _$checkInOutAsyncAction.run(() => super.checkInOut(status,
+        lateCheckInReason: lateCheckInReason,
+        earlyCheckoutReason: earlyCheckoutReason,
+        overtimeTask: overtimeTask,
+        overtimeTaskNote: overtimeTaskNote));
   }
-
   late final _$GlobalAttendanceStoreBaseActionController =
       ActionController(name: 'GlobalAttendanceStoreBase', context: context);
 

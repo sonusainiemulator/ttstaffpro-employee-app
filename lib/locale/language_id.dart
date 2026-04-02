@@ -1,4 +1,4 @@
-import 'package:open_core_hr/locale/languages.dart';
+import 'languages.dart';
 
 class LanguageId extends BaseLanguage {
   @override
@@ -1010,6 +1010,9 @@ class LanguageId extends BaseLanguage {
 
   @override
   String get lblSearchByAddress => 'Cari Berdasarkan Alamat';
+
+  @override
+  String get lblComingSoon => 'Coming Soon';
 
   @override
   String get lblSearchHere => 'Cari di sini';
@@ -2085,6 +2088,9 @@ class LanguageId extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => 'Kehadiran';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
     String get lblTaskSystem => 'Sistem Tugas';
@@ -3575,6 +3581,10 @@ class LanguageId extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'Riwayat Penugasan';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'Deskripsi Masalah';
   @override
   String get lblSubmitReport => 'Kirim Laporan';
@@ -4115,3 +4125,6 @@ class LanguageId extends BaseLanguage {
     @override
     String get lblPolicyNotFound => 'Kebijakan tidak ditemukan';
 }
+
+
+

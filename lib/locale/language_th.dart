@@ -1,4 +1,4 @@
-import 'package:open_core_hr/locale/languages.dart';
+import 'languages.dart';
 
 class LanguageTh extends BaseLanguage {
   @override
@@ -998,6 +998,9 @@ class LanguageTh extends BaseLanguage {
 
   @override
   String get lblSearchByAddress => 'ค้นหาตามที่อยู่';
+
+  @override
+  String get lblComingSoon => 'Coming Soon';
 
   @override
   String get lblSearchHere => 'ค้นหาที่นี่';
@@ -2060,6 +2063,9 @@ class LanguageTh extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => 'การเข้างาน';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
   String get lblTaskSystem => 'ระบบงาน';
@@ -3568,6 +3574,10 @@ class LanguageTh extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'ประวัติการมอบหมาย';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'รายละเอียดปัญหา';
   @override
   String get lblSubmitReport => 'ส่งรายงาน';
@@ -4108,3 +4118,6 @@ class LanguageTh extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'ไม่พบนโยบาย';
 }
+
+
+

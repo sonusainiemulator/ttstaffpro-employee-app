@@ -410,6 +410,9 @@ class LanguageAr extends BaseLanguage {
   String get lblConfirm => 'تأكيـــد';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => 'إبحث هناء';
 
   @override
@@ -2062,6 +2065,9 @@ class LanguageAr extends BaseLanguage {
   String get lblAttendance => 'الحضور';
 
   @override
+  String get lblManageYour => 'Manage Your';
+
+  @override
   String get lblTaskSystem => 'نظام المهام';
 
   @override
@@ -3499,6 +3505,10 @@ class LanguageAr extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'سجل التخصيص';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'وصف المشكلة';
   @override
   String get lblSubmitReport => 'إرسال التقرير';
@@ -4039,3 +4049,6 @@ class LanguageAr extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'السياسة غير موجودة';
 }
+
+
+

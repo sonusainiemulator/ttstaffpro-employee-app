@@ -1018,6 +1018,9 @@ class LanguageBn extends BaseLanguage {
   String get lblSearchByAddress => 'ঠিকানা দ্বারা অনুসন্ধান করুন';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => 'এখানে অনুসন্ধান করুন';
 
   @override
@@ -2109,6 +2112,9 @@ class LanguageBn extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => 'Attendance';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
   String get lblTaskSystem => 'Task System';
@@ -3465,6 +3471,10 @@ class LanguageBn extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'বরাদ্দ ইতিহাস';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'সমস্যার বিবরণ';
   @override
   String get lblSubmitReport => 'রিপোর্ট জমা দিন';
@@ -4005,3 +4015,6 @@ class LanguageBn extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'নীতি পাওয়া যায়নি';
 }
+
+
+

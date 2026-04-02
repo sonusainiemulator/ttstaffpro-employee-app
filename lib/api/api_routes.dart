@@ -43,15 +43,19 @@ class APIRoutes {
 
   static const addMessagingTokenURL = 'messagingToken';
 
-  //Payroll & Payslips (New API)
-  static const getPayrollRecords = 'payroll/my-records';
-  static const getPayrollRecordDetails = 'payroll/my-records'; // + /{id}
-  static const getMySalaryStructure = 'payroll/my-salary-structure';
-  static const getMyPayrollStatistics = 'payroll/my-statistics';
-  static const getMyPayslips = 'payroll/my-payslips';
-  static const getPayslipDetails = 'payroll/my-payslips'; // + /{id}
-  static const downloadPayslipPdf = 'payroll/download-payslip'; // + /{id}
-  static const getMyAdjustments = 'payroll/my-modifiers';
+  // Payroll endpoints (V1 Mobile Documentation)
+  static const String payrollList = 'payroll'; // GET /api/V1/payroll
+  static const String payrollDetail = 'payroll/payslip'; // Add /{id} - GET /api/V1/payroll/payslip/{id}
+  static const String salaryStructure = 'payroll/salary-structure'; // GET /api/V1/payroll/salary-structure
+  static const String payrollStatistics = 'payroll/statistics'; // GET /api/V1/payroll/statistics
+  static const String payrollModifiers = 'payroll/modifiers'; // List definitions
+  static const String modifierHistory = 'payroll/modifier-history'; // Applied adjustment history (with alias support)
+  static const String downloadPayslipPdf = 'payroll/download-payslip';
+
+  // Repository Aliases (Used by PayrollRepository)
+  static const String getMyPayrollStatistics = payrollStatistics;
+  static const String getMyAdjustments = modifierHistory;
+  static const String getMyAdjustmentsAlias = 'payroll/my-modifier-history';
 
   // Backward compatibility (Old Payslip API - deprecated)
   @Deprecated('Use getMyPayslips instead')
@@ -172,6 +176,9 @@ class APIRoutes {
 
   static const setEarlyCheckoutReason = 'attendance/setEarlyCheckoutReason';
 
+  static const getActualTimeReport = 'attendance/actual-time-report';
+
+
   //Qr Attendance
   static const verifyQr = 'qrAttendance/verifyCode';
 
@@ -241,4 +248,13 @@ class APIRoutes {
       'myOnboardingChecklist/{id}/uploadFile'; // POST
   static const String downloadMyChecklistFile =
       'myOnboardingChecklist/{id}/downloadFile'; // GET
+
+  // HR Policies
+  static const String getMyPolicies = 'policies/my-policies';
+  static const String getMyPoliciesStats = 'policies/my-policies/stats';
+  static const String acknowledgePolicy = 'policies/acknowledge';
+  static const String getPolicyCategories = 'policies/categories';
+  static const String getPoliciesByCategory = 'policies/category';
+  static const String getPendingPolicies = 'policies/pending';
+  static const String getOverduePolicies = 'policies/overdue';
 }

@@ -503,6 +503,9 @@ class LanguageHi extends BaseLanguage {
   String get lblSearchByAddress => 'पते से खोजें';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => 'यहां तलाश करो';
 
   @override
@@ -2085,6 +2088,9 @@ class LanguageHi extends BaseLanguage {
   String get lblAttendance => 'उपस्थिति';
 
   @override
+  String get lblManageYour => 'Manage Your';
+
+  @override
   String get lblTaskSystem => 'कार्य प्रणाली';
 
   @override
@@ -3638,6 +3644,10 @@ class LanguageHi extends BaseLanguage {
   @override
   String get lblAssignmentHistory => 'आवंटन इतिहास';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => 'समस्या विवरण';
   @override
   String get lblSubmitReport => 'रिपोर्ट जमा करें';
@@ -4048,3 +4058,6 @@ class LanguageHi extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'नीति नहीं मिली';
 }
+
+
+

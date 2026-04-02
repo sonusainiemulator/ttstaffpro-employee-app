@@ -976,6 +976,9 @@ class LanguageJa extends BaseLanguage {
   String get lblSearchByAddress => '住所で検索';
 
   @override
+  String get lblComingSoon => 'Coming Soon';
+
+  @override
   String get lblSearchHere => '検索';
 
   @override
@@ -2032,6 +2035,9 @@ class LanguageJa extends BaseLanguage {
   // Module Names Keys
   @override
   String get lblAttendance => '出席';
+
+  @override
+  String get lblManageYour => 'Manage Your';
 
   @override
   String get lblTaskSystem => 'タスクシステム';
@@ -3518,6 +3524,10 @@ class LanguageJa extends BaseLanguage {
   @override
   String get lblAssignmentHistory => '割り当て履歴';
   @override
+  String get lblNoAssignmentHistory => 'No assignment history available for this asset';
+  @override
+  String get lblFailedToLoadHistory => 'Failed to load assignment history';
+  @override
   String get lblIssueDescription => '問題の説明';
   @override
   String get lblSubmitReport => 'レポートを提出';
@@ -4120,3 +4130,6 @@ class LanguageJa extends BaseLanguage {
   @override
   String get lblPolicyNotFound => 'ポリシーが見つかりません';
 }
+
+
+

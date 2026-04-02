@@ -5,7 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import '../locale/app_localizations.dart';
 import '../locale/languages.dart';
 import '../main.dart';
-import '../models/status/status_response.dart';
+import 'package:open_core_hr/models/status/status_response.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_constants.dart';
 
