@@ -45,15 +45,15 @@ abstract class FormBuilderStoreBase with Store {
   List<AssignedFormModel> get pendingForms {
     return assignedForms
         .where((form) =>
-            form.status?.toLowerCase() == 'pending' ||
-            form.status?.toLowerCase() == 'assigned')
+            form.status.toLowerCase() == 'pending' ||
+            form.status.toLowerCase() == 'assigned')
         .toList();
   }
 
   @computed
   List<AssignedFormModel> get submittedForms {
     return assignedForms
-        .where((form) => form.status?.toLowerCase() == 'submitted')
+        .where((form) => form.status.toLowerCase() == 'submitted')
         .toList();
   }
 
@@ -64,8 +64,8 @@ abstract class FormBuilderStoreBase with Store {
       if (form.dueDate == null) return false;
       final dueDate = form.dueDate!;
       return dueDate.isBefore(now) &&
-          (form.status?.toLowerCase() == 'pending' ||
-              form.status?.toLowerCase() == 'assigned');
+          (form.status.toLowerCase() == 'pending' ||
+              form.status.toLowerCase() == 'assigned');
     }).toList();
   }
 

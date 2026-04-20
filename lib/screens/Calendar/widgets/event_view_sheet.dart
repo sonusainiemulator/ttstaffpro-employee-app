@@ -143,7 +143,7 @@ class EventViewSheet extends StatelessWidget {
                         attendee.avatar ?? '',
                       ), // Handle potential null avatar
                       onBackgroundImageError:
-                          (_, __) {}, // Prevent crash on error
+                          (_, _) {}, // Prevent crash on error
                       child: attendee.avatar == null
                           ? Text(
                               (attendee.name?.isNotEmpty ?? false)

@@ -62,7 +62,9 @@ class _AssignmentHistoryScreenState extends State<AssignmentHistoryScreen> {
   Future<void> _loadMore() async {
     if (_isLoadingMore || _assetStore.isLoading) return;
     if (_assetStore.assignmentHistory.length >=
-        _assetStore.totalHistoryCount) return;
+        _assetStore.totalHistoryCount) {
+      return;
+    }
 
     setState(() => _isLoadingMore = true);
     await _assetStore.fetchAssignmentHistory(loadMore: true);

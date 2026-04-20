@@ -8,7 +8,6 @@ import 'package:shimmer/shimmer.dart';
 import '../../main.dart';
 import '../../stores/leave_store.dart';
 import '../../models/leave/leave_statistics.dart';
-import '../../utils/app_colors.dart';
 import 'leave_request_detail_screen.dart';
 
 class LeaveStatisticsScreen extends StatefulWidget {

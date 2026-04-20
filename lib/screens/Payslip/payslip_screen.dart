@@ -27,7 +27,7 @@ class _PayslipScreenState extends State<PayslipScreen> {
     init();
   }
 
-  init() async {
+  Future<void> init() async {
     _store.getPayslips();
   }
 

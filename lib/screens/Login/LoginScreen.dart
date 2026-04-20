@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  bool _isPasswordVisible = false;
+  final bool _isPasswordVisible = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -41,8 +41,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     super.initState();
     _setupAnimations();
     init();
-    _emailController.text = 'erjimmyjess@gmail.com';
-    _passwordController.text = '1234568';
+    _emailController.text = '';
+    _passwordController.text = '';
     _loginStore.employeeId = _emailController.text;
     _loginStore.password = _passwordController.text;
   }
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     super.dispose();
   }
 
-  init() async {
+  Future<void> init() async {
     await sharedHelper.refreshAppSettings();
     await moduleService.refreshModuleSettings();
     _loginStore.setupValidations();
@@ -557,9 +557,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                             children: [
                                               // Email/Username Field
                                               Observer(
-                                                builder: (_) => AppTextField(
+                                                builder: (_) => TextFormField(
                                                   controller: _emailController,
-                                                  textFieldType: TextFieldType.EMAIL,
+                                                  keyboardType: TextInputType.text,
+                                                  autocorrect: false,
+                                                  enableSuggestions: false,
+                                                  autofillHints: const <String>[],
                                                   onChanged: (value) => _loginStore.employeeId = value,
                                                   decoration: AppDesignSystem.modernInputDecoration(
                                                     hintText: language.lblEmail,
@@ -574,9 +577,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
                                               // Password Field
                                               Observer(
-                                                builder: (_) => AppTextField(
+                                                builder: (_) => TextFormField(
                                                   controller: _passwordController,
-                                                  textFieldType: TextFieldType.PASSWORD,
+                                                  obscureText: true,
+                                                  autocorrect: false,
+                                                  enableSuggestions: false,
+                                                  autofillHints: const <String>[],
                                                   onChanged: (value) => _loginStore.password = value,
                                                   decoration: AppDesignSystem.modernInputDecoration(
                                                     hintText: language.lblPassword,

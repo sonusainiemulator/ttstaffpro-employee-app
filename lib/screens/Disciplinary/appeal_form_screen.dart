@@ -26,7 +26,7 @@ class _AppealFormScreenState extends State<AppealFormScreen> {
   final TextEditingController _employeeStatementController = TextEditingController();
 
   bool _isSubmitting = false;
-  List<PlatformFile> _selectedFiles = [];
+  final List<PlatformFile> _selectedFiles = [];
 
   @override
   void dispose() {
@@ -241,7 +241,7 @@ class _AppealFormScreenState extends State<AppealFormScreen> {
                                           ),
                                           const SizedBox(height: 8),
                                           Text(
-                                            '${language.lblIssuedOn}: ${DateParser.parseDate(widget.warning.issueDate) != null ? DateParser.formatDate(DateParser.parseDate(widget.warning.issueDate)!) : widget.warning.issueDate}',
+                                            '${language.lblIssuedOn}: ${DateParser.formatDate(DateParser.parseDate(widget.warning.issueDate))}',
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: appStore.isDarkModeOn

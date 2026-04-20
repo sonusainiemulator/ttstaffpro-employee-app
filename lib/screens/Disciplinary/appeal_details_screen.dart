@@ -575,10 +575,8 @@ class _AppealDetailsScreenState extends State<AppealDetailsScreen> {
                       _buildInfoRow(
                         Iconsax.calendar,
                         language.lblAppealDate,
-                        DateParser.parseDate(_appeal!.appealDate) != null
-                            ? DateParser.formatDate(
-                                DateParser.parseDate(_appeal!.appealDate)!)
-                            : _appeal!.appealDate,
+                        DateParser.formatDate(
+                                DateParser.parseDate(_appeal!.appealDate)),
                       ),
                     ],
                   ),
@@ -779,10 +777,8 @@ class _AppealDetailsScreenState extends State<AppealDetailsScreen> {
                         _buildInfoRow(
                           Iconsax.calendar_tick,
                           language.lblReviewedDate,
-                          DateParser.parseDate(_appeal!.reviewedAt!) != null
-                              ? DateParser.formatDate(
-                                  DateParser.parseDate(_appeal!.reviewedAt!)!)
-                              : _appeal!.reviewedAt!,
+                          DateParser.formatDate(
+                                  DateParser.parseDate(_appeal!.reviewedAt!)),
                         ),
                         if (_appeal!.reviewComments != null)
                           Column(
@@ -833,10 +829,8 @@ class _AppealDetailsScreenState extends State<AppealDetailsScreen> {
                         _buildInfoRow(
                           Iconsax.calendar,
                           language.lblHearingDate,
-                          DateParser.parseDate(_appeal!.hearingDate!) != null
-                              ? DateParser.formatDate(
-                                  DateParser.parseDate(_appeal!.hearingDate!)!)
-                              : _appeal!.hearingDate!,
+                          DateParser.formatDate(
+                                  DateParser.parseDate(_appeal!.hearingDate!)),
                           iconColor: Colors.blue,
                         ),
                         if (_appeal!.hearingTime != null)

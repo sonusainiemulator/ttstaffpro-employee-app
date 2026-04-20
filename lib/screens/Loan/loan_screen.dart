@@ -83,7 +83,7 @@ class _LoanScreenState extends State<LoanScreen> {
                       24.height,
                       // Status Filter
                       DropdownButtonFormField<String>(
-                        value: tempSelectedStatus,
+                        initialValue: tempSelectedStatus,
                         decoration: InputDecoration(
                           labelText: language.lblSelectStatus,
                           prefixIcon: const Icon(Iconsax.status, size: 20),

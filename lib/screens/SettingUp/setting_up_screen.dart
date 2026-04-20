@@ -27,7 +27,7 @@ class _SettingUpScreenState extends State<SettingUpScreen> {
     init();
   }
 
-  init() async {
+  Future<void> init() async {
     await sharedHelper.setAppVersionToPref();
 
     // Check if baseURL is still placeholder

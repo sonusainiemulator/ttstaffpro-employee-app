@@ -38,25 +38,32 @@ class UserModel {
       this.isExpenseApprover});
 
   factory UserModel.fromJSON(Map<String, dynamic> json) {
+    Map<String, dynamic> userData = json;
+    if (json.containsKey('user') && json['user'] is Map) {
+      userData = json['user'];
+    } else if (json.containsKey('employee') && json['employee'] is Map) {
+      userData = json['employee'];
+    }
+
     return UserModel(
-      id: json['id']?.toString(),
-      firstName: json['firstName']?.toString(),
-      lastName: json['lastName']?.toString(),
-      avatar: json['avatar']?.toString(),
-      gender: json['gender']?.toString(),
-      address: json['address']?.toString(),
-      phoneNumber: json['phoneNumber']?.toString(),
-      alternateNumber: json['alternateNumber']?.toString(),
-      status: json['status']?.toString(),
-      token: json['token']?.toString(),
-      employeeCode: json['employeeCode']?.toString(),
-      email: json['email']?.toString(),
-      designation: json['designation']?.toString(),
+      id: (userData['id'] ?? json['id'])?.toString(),
+      firstName: (userData['firstName'] ?? json['firstName'])?.toString(),
+      lastName: (userData['lastName'] ?? json['lastName'])?.toString(),
+      avatar: (userData['avatar'] ?? json['avatar'])?.toString(),
+      gender: (userData['gender'] ?? json['gender'])?.toString(),
+      address: (userData['address'] ?? json['address'])?.toString(),
+      phoneNumber: (userData['phoneNumber'] ?? json['phoneNumber'])?.toString(),
+      alternateNumber: (userData['alternateNumber'] ?? json['alternateNumber'])?.toString(),
+      status: (userData['status'] ?? json['status'])?.toString(),
+      token: (json['token'] ?? userData['token'])?.toString(),
+      employeeCode: (userData['employeeCode'] ?? json['employeeCode'])?.toString(),
+      email: (userData['email'] ?? json['email'])?.toString(),
+      designation: (userData['designation'] ?? json['designation'])?.toString(),
       locationActivityTrackingEnabled:
-          json['isLocationActivityTrackingEnabled'] ?? false,
-      isApprover: json['isApprover'] ?? false,
-      isLeaveApprover: json['isLeaveApprover'] ?? false,
-      isExpenseApprover: json['isExpenseApprover'] ?? false,
+          userData['isLocationActivityTrackingEnabled'] ?? json['isLocationActivityTrackingEnabled'] ?? false,
+      isApprover: userData['isApprover'] ?? json['isApprover'] ?? false,
+      isLeaveApprover: userData['isLeaveApprover'] ?? json['isLeaveApprover'] ?? false,
+      isExpenseApprover: userData['isExpenseApprover'] ?? json['isExpenseApprover'] ?? false,
     );
   }
 }

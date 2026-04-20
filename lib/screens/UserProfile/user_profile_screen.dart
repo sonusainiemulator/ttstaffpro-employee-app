@@ -25,7 +25,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     init();
   }
 
-  init() async {
+  Future<void> init() async {
     var result = await apiService.getUserInfo(widget.userId);
     if (result != null) {
       user = result;

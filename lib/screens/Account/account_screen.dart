@@ -15,7 +15,6 @@ import '../../utils/app_widgets.dart';
 import '../DigitalId/digital_id_card_screen.dart';
 import '../Support/support_screen.dart';
 import '../language_screen.dart';
-import '../navigation_screen.dart';
 
 class AccountScreen extends StatefulWidget {
   static String tag = '/AccountScreen';
@@ -107,7 +106,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         value: appStore.isDarkModeOn,
                         onChanged: (s) => appStore.toggleDarkMode(value: s),
                         activeTrackColor: appStore.appColorPrimary,
-                        activeColor: white,
+                        activeThumbColor: white,
                       ),
                     ),
                     _buildSettingsItem(
@@ -125,7 +124,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           setState(() => isNotificationEnabled = value);
                         },
                         activeTrackColor: appStore.appColorPrimary,
-                        activeColor: white,
+                        activeThumbColor: white,
                       ),
                     ),
                     _buildSettingsItem(

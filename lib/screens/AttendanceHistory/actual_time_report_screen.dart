@@ -593,8 +593,9 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
   Widget _buildDailyCard(ActualTimeReport r, bool isDark) {
     // Determine card accent based on key events
     Color cardAccent = Colors.green;
-    if (r.isAbsent) cardAccent = Colors.red;
-    else if (r.isHoliday) cardAccent = const Color(0xFF696CFF);
+    if (r.isAbsent) {
+      cardAccent = Colors.red;
+    } else if (r.isHoliday) cardAccent = const Color(0xFF696CFF);
     else if (r.isWeekend) cardAccent = Colors.indigo;
     else if (r.isHalfDay) cardAccent = Colors.orange;
     else if (r.lateMinutes > 0) cardAccent = Colors.amber;
@@ -630,8 +631,9 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
 
   Widget _dayLeading(ActualTimeReport r, Color accent) {
     IconData icon = Iconsax.logout;
-    if (r.isAbsent) icon = Iconsax.close_circle;
-    else if (r.isHoliday) icon = Iconsax.calendar_tick;
+    if (r.isAbsent) {
+      icon = Iconsax.close_circle;
+    } else if (r.isHoliday) icon = Iconsax.calendar_tick;
     else if (r.isWeekend) icon = Iconsax.calendar;
     else if (r.isHalfDay) icon = Iconsax.sun_1;
     else if (r.actualCheckIn != null) icon = Iconsax.login;
@@ -871,8 +873,9 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
   Widget _buildComplianceBar(double score, bool isDark) {
     final clipped = score.clamp(0.0, 100.0);
     Color color;
-    if (clipped >= 90) color = Colors.green;
-    else if (clipped >= 70) color = Colors.amber;
+    if (clipped >= 90) {
+      color = Colors.green;
+    } else if (clipped >= 70) color = Colors.amber;
     else color = Colors.red;
 
     return Column(

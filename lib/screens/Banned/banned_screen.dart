@@ -11,7 +11,7 @@ import '../../utils/app_constants.dart';
 import '../../utils/app_widgets.dart';
 
 class BannedScreen extends StatefulWidget {
-  const BannedScreen({Key? key}) : super(key: key);
+  const BannedScreen({super.key});
 
   @override
   State<BannedScreen> createState() => _BannedScreenState();

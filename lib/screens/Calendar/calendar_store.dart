@@ -385,8 +385,8 @@ abstract class CalendarStoreBase with Store {
       selectedStartDate = date;
     }
 
-    log('LLL: selected end date: ' + selectedEndDate.toString());
-    log('LLL: is before: ' + selectedEndDate!.isBefore(date).toString());
+    log('LLL: selected end date: $selectedEndDate');
+    log('LLL: is before: ${selectedEndDate!.isBefore(date)}');
   }
 
   @action

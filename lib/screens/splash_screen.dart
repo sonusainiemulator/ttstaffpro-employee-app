@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:open_core_hr/models/OnBoarding/my_onboarding_screen.dart';
-import 'package:open_core_hr/screens/Permission/permissions_screen.dart';
 import 'package:open_core_hr/screens/OfflineMode/offline_mode_screen.dart';
 import 'package:open_core_hr/screens/SettingUp/setting_up_screen.dart';
 import 'package:open_core_hr/screens/navigation_screen.dart';
@@ -47,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
         } else {
           // Fetch app settings first to get SaaS mode status
           try {
-            await sharedHelper.refreshAppSettings();
+            await sharedHelper.refreshAppSettings(refreshUser: false);
           } catch (e) {
             log('Error fetching app settings: $e');
             // Continue with cached/default values

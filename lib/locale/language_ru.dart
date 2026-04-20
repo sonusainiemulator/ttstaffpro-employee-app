@@ -2744,6 +2744,7 @@ class LanguageRu extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'Запросите компенсационный выходной, чтобы увидеть его здесь';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'Ошибка загрузки деталей';
 
   @override

@@ -2761,6 +2761,7 @@ class LanguagePt extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'Solicite uma folga compensatória para vê-la aqui';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'Erro ao carregar detalhes';
 
   @override

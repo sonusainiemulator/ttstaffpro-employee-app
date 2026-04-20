@@ -2718,6 +2718,7 @@ class LanguageTh extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'ขอวันลาชดเชยเพื่อดูที่นี่';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'เกิดข้อผิดพลาดในการโหลดรายละเอียด';
 
   @override

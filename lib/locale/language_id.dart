@@ -2743,6 +2743,7 @@ class LanguageId extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'Minta cuti kompensasi untuk melihatnya di sini';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'Kesalahan memuat detail';
 
   @override

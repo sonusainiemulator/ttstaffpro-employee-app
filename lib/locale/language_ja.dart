@@ -2685,6 +2685,7 @@ class LanguageJa extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => '代休を申請するとここに表示されます';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => '詳細の読み込みエラー';
 
   @override

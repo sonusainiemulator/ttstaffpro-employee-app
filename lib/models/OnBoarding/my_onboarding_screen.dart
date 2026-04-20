@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
-import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart'; // For picking files
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -10,12 +8,10 @@ import 'package:nb_utils/nb_utils.dart'; // For extensions and utilities
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../locale/languages.dart';
 import '../../main.dart';
 import '../../utils/design_system.dart';
 import '../../utils/app_widgets.dart';
 import '../../models/my_checklist_item_model.dart';
-import '../../screens/Account/account_screen.dart';
 import 'MyOnboardingStore.dart';
 
 class MyOnboardingScreen extends StatefulWidget {

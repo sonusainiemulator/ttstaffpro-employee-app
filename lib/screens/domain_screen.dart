@@ -88,7 +88,7 @@ class _DomainScreenState extends State<DomainScreen> {
                           return DropdownMenuItem<TenantModel>(
                             value: e,
                             child: Text(
-                              e.tenantName!,
+                              e.tenantName,
                               style: const TextStyle(fontSize: 14),
                             ),
                           );

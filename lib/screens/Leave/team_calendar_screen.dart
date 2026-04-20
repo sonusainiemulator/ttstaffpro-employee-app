@@ -8,7 +8,6 @@ import 'package:shimmer/shimmer.dart';
 import '../../main.dart';
 import '../../stores/leave_store.dart';
 import '../../models/leave/team_calendar_item.dart';
-import '../../utils/app_colors.dart';
 import '../../utils/app_widgets.dart';
 
 class TeamCalendarScreen extends StatefulWidget {

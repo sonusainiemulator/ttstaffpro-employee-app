@@ -400,7 +400,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
               ),
             ),
             child: DropdownButtonFormField<ExpenseTypeModel>(
-              value: _store.selectedExpenseType,
+              initialValue: _store.selectedExpenseType,
               dropdownColor: appStore.isDarkModeOn
                   ? const Color(0xFF1F2937)
                   : Colors.white,

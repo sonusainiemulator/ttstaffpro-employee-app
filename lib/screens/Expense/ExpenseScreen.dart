@@ -162,7 +162,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                 // Status Filter
                 Observer(
                   builder: (_) => DropdownButtonFormField<String>(
-                    value: _store.selectedStatus,
+                    initialValue: _store.selectedStatus,
                     style: TextStyle(
                       color: appStore.isDarkModeOn
                           ? Colors.white

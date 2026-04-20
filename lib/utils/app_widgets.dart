@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
@@ -6,7 +5,6 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../main.dart';
-import '../screens/navigation_screen.dart';
 import 'app_colors.dart';
 import 'app_constants.dart';
 
@@ -103,7 +101,7 @@ class CustomTheme extends StatelessWidget {
           ? ThemeData.dark().copyWith(
               colorScheme: ColorScheme.fromSwatch()
                   .copyWith(secondary: appStore.appColorPrimary)
-                  .copyWith(background: context.scaffoldBackgroundColor),
+                  .copyWith(surface: context.scaffoldBackgroundColor),
             )
           : ThemeData.light(),
       child: child!,

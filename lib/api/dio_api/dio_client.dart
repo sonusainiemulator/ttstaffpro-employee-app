@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../api_routes.dart';
-import '../../utils/app_constants.dart';
 import 'interceptors/auth_interceptor.dart';
 import 'interceptors/error_interceptor.dart';
 import 'interceptors/network_interceptor.dart';
@@ -44,7 +43,7 @@ class DioApiClient {
   /// In header-based SaaS mode, always use central URL from APIRoutes.baseURL
   /// Tenant is identified via X-Tenant-ID header, not URL
   String _getBaseUrl() {
-    return APIRoutes.baseURL;
+    return getStringAsync('baseurl', defaultValue: APIRoutes.baseURL);
   }
 
   void _setupInterceptors() {

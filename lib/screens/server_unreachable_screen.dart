@@ -4,9 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import '../Utils/app_constants.dart';
-import '../Utils/app_widgets.dart';
 import '../main.dart';
-import 'Permission/permissions_screen.dart';
 import 'Login/LoginScreen.dart';
 import 'navigation_screen.dart';
 

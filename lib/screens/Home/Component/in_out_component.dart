@@ -13,7 +13,6 @@ import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 import '../../../Utils/app_constants.dart';
 import '../../../Utils/app_widgets.dart';
-import '../../../Widgets/button_widget.dart';
 import '../../../store/global_attendance_store.dart';
 import '../../../utils/design_system.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -109,7 +108,7 @@ class _InOutComponentState extends State<InOutComponent> {
     });
   }
 
-  refreshTimer() async {
+  Future<void> refreshTimer() async {
     if (globalAttendanceStore.isOnBreak) {
       var startTime = globalAttendanceStore.breakStartAt;
       var now = DateTime.now();
@@ -664,7 +663,7 @@ class _InOutComponentState extends State<InOutComponent> {
                           isOvertimeTask = val;
                         });
                       },
-                      activeColor: appStore.appColorPrimary,
+                      activeThumbColor: appStore.appColorPrimary,
                     ),
                   ],
                 ),

@@ -76,7 +76,7 @@ class DocumentRequestRepository extends BaseRepository {
     return await safeApiCall(
       () => dioClient.post('document-requests', data: {
         'document_type_id': documentTypeId,
-        if (remarks != null) 'remarks': remarks,
+        'remarks': ?remarks,
       }),
       parser: (data) {
         return DocumentRequestModel.fromJson(

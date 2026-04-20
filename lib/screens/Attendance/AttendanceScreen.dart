@@ -17,7 +17,7 @@ import 'AttendanceStore.dart';
 
 class AttendanceScreen extends StatefulWidget {
   static String tag = '/AttendanceScreen';
-  const AttendanceScreen({Key? key}) : super(key: key);
+  const AttendanceScreen({super.key});
 
   @override
   State<AttendanceScreen> createState() => _AttendanceScreenState();
@@ -37,9 +37,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   //Local Auth
   final LocalAuthentication auth = LocalAuthentication();
   _SupportState _supportState = _SupportState.unknown;
-  bool? _canCheckBiometrics;
-  List<BiometricType>? _availableBiometrics;
-  bool _isAuthenticating = false;
   bool _authorized = false;
 
   var now = DateTime.now();
@@ -67,121 +64,46 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     super.dispose();
   }
 
-  updateMarkers(Set<Marker> markers) {
+  void updateMarkers(Set<Marker> markers) {
     this.markers = markers.toList();
   }
 
-  Future<void> _checkBiometrics() async {
-    late bool canCheckBiometrics;
-    try {
-      canCheckBiometrics = await auth.canCheckBiometrics;
-    } on PlatformException catch (e) {
-      canCheckBiometrics = false;
-      log(e);
-    }
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _canCheckBiometrics = canCheckBiometrics;
-    });
-  }
-
-  Future<void> _getAvailableBiometrics() async {
-    late List<BiometricType> availableBiometrics;
-    try {
-      availableBiometrics = await auth.getAvailableBiometrics();
-    } on PlatformException catch (e) {
-      availableBiometrics = <BiometricType>[];
-      log(e);
-    }
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _availableBiometrics = availableBiometrics;
-    });
-  }
 
   Future _authenticate() async {
     bool authenticated = false;
     try {
-      setState(() {
-        _isAuthenticating = true;
-      });
-
-      authenticated = await auth.authenticate(
+      await auth.authenticate(
           localizedReason: language.lblScanYourFingerprintToCheckIn,
-          /*    options: const AuthenticationOptions(
+          options: const AuthenticationOptions(
             stickyAuth: true,
             biometricOnly: true,
-          ),*/
+          ),
           authMessages: <AuthMessages>[
-            /*   IOSAuthMessages(
+            AndroidAuthMessages(
+              signInTitle: language.lblFingerprintAuthentication,
               cancelButton: language.lblCancel,
               goToSettingsButton: language.lblSettings,
-              goToSettingsDescription: language.lblPleaseSetUpYourTouchId,
-              lockOut: language.lblPleaseReEnableYourTouchId,
-            ),*/
-            AndroidAuthMessages(
-                signInTitle: language.lblFingerprintAuthentication,
-                //fingerprintRequiredTitle: "Connect to Login",
-                cancelButton: language.lblCancel,
-                goToSettingsButton: language.lblSettings,
-                goToSettingsDescription: 'Please setup your fingerprint',
-                biometricRequiredTitle:
-                    language.lblAuthenticateWithFingerprintOrPasswordToProceed
-                //fingerprintSuccess: "Authentication Successfully authenticated",
-                ),
-          ]);
-      _authorized = authenticated;
-      setState(() {
-        _isAuthenticating = false;
+              goToSettingsDescription: 'Please setup your fingerprint',
+              biometricRequiredTitle:
+                  language.lblAuthenticateWithFingerprintOrPasswordToProceed,
+            ),
+          ]).then((authenticated) {
+        if (mounted) {
+          setState(() {
+            _authorized = authenticated;
+          });
+        }
       });
     } on PlatformException catch (e) {
       log('Auth error$e');
     }
-    if (!mounted) return false;
+    if (!mounted) return;
 
     setState(() {
       _authorized = authenticated;
     });
   }
 
-  Future<void> _authenticateWithBiometrics() async {
-    bool authenticated = false;
-    try {
-      setState(() {
-        _isAuthenticating = true;
-      });
-      authenticated = await auth.authenticate(
-        localizedReason:
-            'Scan your fingerprint (or face or whatever) to authenticate',
-        options: const AuthenticationOptions(
-          stickyAuth: true,
-          biometricOnly: true,
-        ),
-      );
-      setState(() {
-        _isAuthenticating = false;
-      });
-    } on PlatformException catch (e) {
-      print(e);
-      setState(() {
-        _isAuthenticating = false;
-      });
-      return;
-    }
-    if (!mounted) {
-      return;
-    }
-
-    setState(() {
-      _authorized = authenticated;
-    });
-  }
 
   void _onMapCreated(GoogleMapController controller) {
     _controller = controller;
@@ -303,7 +225,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           builder: (_) => !_store.isLoading
               ? const AttendanceStatusComponent()
               : Card(
-                  color: white.withOpacity(0.4),
+                  color: white.withValues(alpha: 0.4),
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -368,85 +290,86 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                         color: white),
                                                   ],
                                                 ),
-                                                onTap: () async {
-                                                  final bool
-                                                      canAuthenticateWithBiometrics =
-                                                      await auth
-                                                          .canCheckBiometrics;
-                                                  final bool canAuthenticate =
-                                                      canAuthenticateWithBiometrics ||
+                                                    onTap: () async {
+                                                      final bool canAuthenticate =
                                                           await auth
-                                                              .isDeviceSupported();
-                                                  if (!canAuthenticate) {
-                                                    if (!mounted) return;
-                                                    showConfirmDialogCustom(
-                                                      context,
-                                                      title: language
-                                                          .lblAreYouSureYouWantToCheckIn,
-                                                      dialogType: DialogType
-                                                          .CONFIRMATION,
-                                                      positiveText:
-                                                          language.lblYes,
-                                                      negativeText:
-                                                          language.lblNo,
-                                                      onAccept: (c) async {
-                                                        await _store.checkInOut(
-                                                            'checkin');
-                                                      },
-                                                    );
-                                                    return;
-                                                  }
-                                                  if (_supportState ==
-                                                      _SupportState.supported) {
-                                                    await _authenticate();
-                                                    if (_authorized) {
+                                                              .canCheckBiometrics ||
+                                                              await auth
+                                                                  .isDeviceSupported();
+                                                      
+                                                      final currentContext = context;
                                                       if (!mounted) return;
-                                                      showConfirmDialogCustom(
-                                                        context,
-                                                        title: language
-                                                            .lblAreYouSureYouWantToCheckIn,
-                                                        dialogType: DialogType
-                                                            .CONFIRMATION,
-                                                        positiveText:
-                                                            language.lblYes,
-                                                        negativeText:
-                                                            language.lblNo,
-                                                        onAccept: (c) async {
-                                                          await _store
-                                                              .checkInOut(
-                                                                  'checkin');
-                                                        },
-                                                      );
-                                                      return;
-                                                    } else {
-                                                      if (!mounted) return;
-                                                      showConfirmDialogCustom(
-                                                        context,
-                                                        title: language
-                                                            .lblAreYouSureYouWantToCheckIn,
-                                                        dialogType: DialogType
-                                                            .CONFIRMATION,
-                                                        positiveText:
-                                                            language.lblYes,
-                                                        negativeText:
-                                                            language.lblNo,
-                                                        onAccept: (c) async {
-                                                          await _store
-                                                              .checkInOut(
-                                                                  'checkin');
-                                                        },
-                                                      );
-                                                    }
-                                                  } else {
-                                                    if (!mounted) return;
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return setPinDialog;
-                                                        });
-                                                  }
-                                                })
+
+                                                      if (!canAuthenticate) {
+                                                        showConfirmDialogCustom(
+                                                          currentContext,
+                                                          title: language
+                                                              .lblAreYouSureYouWantToCheckIn,
+                                                          dialogType: DialogType
+                                                              .CONFIRMATION,
+                                                          positiveText:
+                                                              language.lblYes,
+                                                          negativeText:
+                                                              language.lblNo,
+                                                          onAccept: (c) async {
+                                                            await _store.checkInOut(
+                                                                'checkin');
+                                                          },
+                                                        );
+                                                        return;
+                                                      }
+                                                      
+                                                      if (_supportState ==
+                                                          _SupportState.supported) {
+                                                        await _authenticate();
+                                                        
+                                                        if (!mounted) return;
+
+                                                        if (_authorized) {
+                                                          showConfirmDialogCustom(
+                                                            currentContext,
+                                                            title: language
+                                                              .lblAreYouSureYouWantToCheckIn,
+                                                            dialogType: DialogType
+                                                                .CONFIRMATION,
+                                                            positiveText:
+                                                                language.lblYes,
+                                                            negativeText:
+                                                                language.lblNo,
+                                                            onAccept: (c) async {
+                                                              await _store
+                                                                  .checkInOut(
+                                                                      'checkin');
+                                                            },
+                                                          );
+                                                          return;
+                                                        } else {
+                                                          showConfirmDialogCustom(
+                                                            currentContext,
+                                                            title: language
+                                                              .lblAreYouSureYouWantToCheckIn,
+                                                            dialogType: DialogType
+                                                                .CONFIRMATION,
+                                                            positiveText:
+                                                                language.lblYes,
+                                                            negativeText:
+                                                                language.lblNo,
+                                                            onAccept: (c) async {
+                                                              await _store
+                                                                  .checkInOut(
+                                                                      'checkin');
+                                                            },
+                                                          );
+                                                        }
+                                                      } else {
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext
+                                                                context) {
+                                                              return setPinDialog;
+                                                            });
+                                                      }
+                                                    })
                                             : appStore.getCurrentStatus!
                                                         .status ==
                                                     'checkedin'

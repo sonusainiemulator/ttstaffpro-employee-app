@@ -2741,6 +2741,7 @@ class LanguageHi extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'कॉम्प ऑफ का अनुरोध करें और इसे यहां देखें';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'विवरण लोड करने में त्रुटि';
 
   @override

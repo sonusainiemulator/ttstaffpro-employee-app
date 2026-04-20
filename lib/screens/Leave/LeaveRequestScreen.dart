@@ -67,7 +67,7 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
     });
   }
 
-  sendLeaveRequest() async {
+  Future<void> sendLeaveRequest() async {
     hideKeyboard(context);
     setState(() {
       _isLoading = true;
@@ -190,7 +190,7 @@ class _LeaveRequestScreenState extends State<LeaveRequestScreen> {
                                   });
                                 },
                                 borderRadius: BorderRadius.circular(20.0),
-                                value: _leaveTypes.first,
+                                initialValue: _leaveTypes.first,
                                 decoration: newEditTextDecoration(
                                   Icons.table_chart,
                                   language.lblLeaveType,

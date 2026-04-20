@@ -2718,6 +2718,7 @@ class LanguageAr extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'اطلب إجازة تعويضية لرؤيتها هنا';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'خطأ في تحميل التفاصيل';
 
   @override

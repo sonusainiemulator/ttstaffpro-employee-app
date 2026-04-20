@@ -19,7 +19,7 @@ abstract class NoticeBoardStoreBase with Store {
   ObservableList<NoticeModel> notices = ObservableList<NoticeModel>();
 
   @action
-  getNoticeBoard() async {
+  Future<void> getNoticeBoard() async {
     if (_noticeBox.isNotEmpty) {
       notices.clear();
       notices.addAll(_noticeBox.values);

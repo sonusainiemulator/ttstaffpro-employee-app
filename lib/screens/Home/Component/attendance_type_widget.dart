@@ -35,7 +35,7 @@ class _AttendanceTypeWidgetState extends State<AttendanceTypeWidget> {
     init();
   }
 
-  init() async {
+  Future<void> init() async {
     if (widget.type == AttendanceType.ipAddress) {
       attendanceType = 'IP Based';
       var ip = IpAddress();
@@ -169,7 +169,7 @@ class _AttendanceTypeWidgetState extends State<AttendanceTypeWidget> {
   }
 
   Widget _buildAttendanceDetails() {
-    Widget _detailRow(IconData icon, String text) {
+    Widget detailRow(IconData icon, String text) {
       return Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
@@ -217,17 +217,17 @@ class _AttendanceTypeWidgetState extends State<AttendanceTypeWidget> {
     }
 
     if (widget.type == AttendanceType.ipAddress) {
-      return _detailRow(Iconsax.global, ipAddress);
+      return detailRow(Iconsax.global, ipAddress);
     } else if (widget.type == AttendanceType.geofence) {
-      return _detailRow(Iconsax.location, address);
+      return detailRow(Iconsax.location, address);
     } else if (widget.type == AttendanceType.qr) {
-      return _detailRow(Iconsax.scan, language.lblScanQRCodeToMarkAttendance);
+      return detailRow(Iconsax.scan, language.lblScanQRCodeToMarkAttendance);
     } else if (widget.type == AttendanceType.dynamicQr) {
-      return _detailRow(Icons.qr_code, language.lblDynamicQRCodeIsEnabled);
+      return detailRow(Icons.qr_code, language.lblDynamicQRCodeIsEnabled);
     } else if (widget.type == AttendanceType.face) {
-      return _detailRow(Icons.face, language.lblFaceRecognitionIsEnabled);
+      return detailRow(Icons.face, language.lblFaceRecognitionIsEnabled);
     } else {
-      return _detailRow(Iconsax.unlock, language.lblOpenAttendance);
+      return detailRow(Iconsax.unlock, language.lblOpenAttendance);
     }
   }
 }

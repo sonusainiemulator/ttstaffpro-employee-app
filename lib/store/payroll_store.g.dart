@@ -336,13 +336,13 @@ mixin _$PayrollStore on _PayrollStore, Store {
       Atom(name: '_PayrollStore.selectedPayrollRecord', context: context);
 
   @override
-  PayrollRecordDetailModel? get selectedPayrollRecord {
+  PayslipDetailModel? get selectedPayrollRecord {
     _$selectedPayrollRecordAtom.reportRead();
     return super.selectedPayrollRecord;
   }
 
   @override
-  set selectedPayrollRecord(PayrollRecordDetailModel? value) {
+  set selectedPayrollRecord(PayslipDetailModel? value) {
     _$selectedPayrollRecordAtom.reportWrite(value, super.selectedPayrollRecord,
         () {
       super.selectedPayrollRecord = value;
@@ -598,7 +598,7 @@ mixin _$PayrollStore on _PayrollStore, Store {
   }
 
   @override
-  void setSelectedPayrollRecord(PayrollRecordDetailModel? record) {
+  void setSelectedPayrollRecord(PayslipDetailModel? record) {
     final _$actionInfo = _$_PayrollStoreActionController.startAction(
         name: '_PayrollStore.setSelectedPayrollRecord');
     try {

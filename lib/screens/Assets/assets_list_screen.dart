@@ -10,7 +10,6 @@ import '../../models/Assets/asset_model.dart';
 import '../../utils/date_parser.dart';
 import '../../utils/url_helper.dart';
 import '../../main.dart';
-import '../../locale/languages.dart';
 import 'asset_detail_screen.dart';
 import 'asset_qr_scanner_screen.dart';
 

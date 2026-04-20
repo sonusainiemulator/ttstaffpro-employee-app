@@ -2781,6 +2781,7 @@ class LanguageEn extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'Request a comp off to see it here';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'Error loading details';
 
   @override
@@ -3398,10 +3399,9 @@ class LanguageEn extends BaseLanguage {
   @override
   String get lblInactive => 'Inactive';
   @override
-  String get lblNoSalaryStructureFound => 'No Salary Structure Found';
+  String get lblNoSalaryStructureFound => 'No active salary structure';
   @override
-  String get lblSalaryStructureNotConfigured =>
-      'Your salary structure has not been configured yet. Please contact HR for assistance.';
+  String get lblSalaryStructureNotConfigured => 'Your salary structure has not been configured yet. Please contact HR for assistance.';
   @override
   String get lblErrorLoadingSalaryStructure => 'Error Loading Salary Structure';
   @override

@@ -67,8 +67,15 @@ class PayrollRepository extends BaseRepository {
     return await safeApiCall(
       () => dioClient.get(APIRoutes.salaryStructure),
       parser: (data) {
-        final body = data['data'] as Map<String, dynamic>? ?? data as Map<String, dynamic>;
-        return SalaryStructureModel.fromJson(body);
+        final body = data['data'] ?? data;
+        
+        // Handle list responses (take the first active structure)
+        if (body is List) {
+          if (body.isEmpty) return null;
+          return SalaryStructureModel.fromJson(body.first as Map<String, dynamic>);
+        }
+        
+        return SalaryStructureModel.fromJson(body as Map<String, dynamic>);
       },
     );
   }

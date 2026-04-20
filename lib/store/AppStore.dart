@@ -8,12 +8,14 @@ import '../main.dart';
 import 'package:open_core_hr/models/status/status_response.dart';
 import '../utils/app_colors.dart';
 import '../utils/app_constants.dart';
+import '../api/dio_api/repositories/attendance_repository.dart';
 
 part 'AppStore.g.dart';
 
 class AppStore = AppStoreBase with _$AppStore;
 
 abstract class AppStoreBase with Store {
+  final AttendanceRepository _attendanceRepository = AttendanceRepository();
   final List<String> statuses = [
     'online',
     'offline',
@@ -175,7 +177,7 @@ abstract class AppStoreBase with Store {
   }
 
   @action
-  refreshAttendanceStatus() async {
+  Future<void> refreshAttendanceStatus() async {
     //Setting userId from prefs
     var user = getStringAsync(userIdPref);
     try {
@@ -184,7 +186,7 @@ abstract class AppStoreBase with Store {
       log('Error : $e');
     }
     isStatusCheckLoading = true;
-    var statusResult = await apiService.checkAttendanceStatus();
+    var statusResult = await _attendanceRepository.checkAttendanceStatus();
     if (statusResult != null) {
       setCurrentStatus(statusResult);
     }

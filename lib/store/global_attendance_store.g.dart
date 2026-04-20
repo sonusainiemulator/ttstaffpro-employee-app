@@ -223,6 +223,7 @@ mixin _$GlobalAttendanceStore on GlobalAttendanceStoreBase, Store {
         overtimeTask: overtimeTask,
         overtimeTaskNote: overtimeTaskNote));
   }
+
   late final _$GlobalAttendanceStoreBaseActionController =
       ActionController(name: 'GlobalAttendanceStoreBase', context: context);
 

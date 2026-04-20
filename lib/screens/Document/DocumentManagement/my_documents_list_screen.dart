@@ -6,7 +6,6 @@ import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../main.dart';
 import '../../../store/document_management_store.dart';
-import '../../../utils/app_colors.dart';
 import '../../../models/Document/my_document_model.dart';
 import 'my_document_detail_screen.dart';
 
@@ -1031,7 +1030,7 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
                                 _selectedCategoryId == category.id,
                                 () => setModalState(() => _selectedCategoryId = category.id),
                               );
-                            }).toList(),
+                            }),
                           ],
                         ),
                         16.height,
@@ -1104,13 +1103,13 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
   }
 
   void _navigateToDetail(MyDocumentModel document) {
-    MyDocumentDetailScreen(documentId: document.id!).launch(context);
+    MyDocumentDetailScreen(documentId: document.id).launch(context);
   }
 
   Future<void> _downloadDocument(MyDocumentModel document) async {
     try {
       toast(language.lblDownloadingDocument);
-      final downloadUrl = await _store.getDocumentDownloadUrl(document.id!);
+      final downloadUrl = await _store.getDocumentDownloadUrl(document.id);
 
       if (downloadUrl != null && downloadUrl['file_url'] != null) {
         final url = downloadUrl['file_url'];

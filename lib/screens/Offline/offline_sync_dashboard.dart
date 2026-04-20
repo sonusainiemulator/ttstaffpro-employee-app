@@ -4,6 +4,8 @@ import 'package:open_core_hr/Utils/app_widgets.dart';
 import 'package:open_core_hr/main.dart';
 
 class OfflineSyncDashboard extends StatefulWidget {
+  const OfflineSyncDashboard({super.key});
+
   @override
   _OfflineSyncDashboardState createState() => _OfflineSyncDashboardState();
 }
@@ -73,33 +75,20 @@ class _OfflineSyncDashboardState extends State<OfflineSyncDashboard> {
                           final item = data[index];
 
                           // Validate and display data
-                          if (item is Map<String, dynamic>) {
-                            return Card(
-                              margin: EdgeInsets.symmetric(vertical: 6),
-                              child: ListTile(
-                                title: Text(
-                                  'Record ${index + 1}',
-                                  style: boldTextStyle(size: 14),
-                                ),
-                                subtitle: Text(
-                                  item.toString(),
-                                  style: primaryTextStyle(size: 12),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return ListTile(
+                          return Card(
+                            margin: EdgeInsets.symmetric(vertical: 6),
+                            child: ListTile(
                               title: Text(
-                                'Invalid Data',
+                                'Record ${index + 1}',
                                 style: boldTextStyle(size: 14),
                               ),
                               subtitle: Text(
                                 item.toString(),
                                 style: primaryTextStyle(size: 12),
                               ),
-                            );
-                          }
-                        },
+                            ),
+                          );
+                                                },
                       ),
               ),
             ],

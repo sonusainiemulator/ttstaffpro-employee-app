@@ -10,7 +10,6 @@ import '../../main.dart';
 import '../../stores/leave_store.dart';
 import '../../models/leave/leave_request.dart';
 import '../../utils/string_extensions.dart';
-import '../../utils/app_colors.dart';
 import '../../utils/url_helper.dart';
 import 'leave_request_form_screen.dart';
 

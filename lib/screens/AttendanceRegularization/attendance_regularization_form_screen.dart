@@ -7,7 +7,6 @@ import 'package:nb_utils/nb_utils.dart';
 
 import '../../main.dart';
 import '../../models/Attendance/attendance_regularization.dart';
-import '../../utils/app_widgets.dart';
 import '../../utils/string_extensions.dart';
 import 'attendance_regularization_store.dart';
 
@@ -517,7 +516,7 @@ class _AttendanceRegularizationFormScreenState
                                                 child:
                                                     DropdownButtonFormField<
                                                         String>(
-                                                  value: _store
+                                                  initialValue: _store
                                                       .selectedRegularizationType,
                                                   dropdownColor: isDark
                                                       ? const Color(0xFF1F2937)

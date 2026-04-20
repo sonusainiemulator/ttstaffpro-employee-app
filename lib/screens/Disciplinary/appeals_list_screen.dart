@@ -435,7 +435,7 @@ class _AppealsListScreenState extends State<AppealsListScreen> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Filed: ${DateParser.parseDate(appeal.appealDate) != null ? DateParser.formatDate(DateParser.parseDate(appeal.appealDate)!) : appeal.appealDate}',
+                        'Filed: ${DateParser.formatDate(DateParser.parseDate(appeal.appealDate))}',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,

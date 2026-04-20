@@ -72,7 +72,7 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
           children: [
             // Status filter
             DropdownButtonFormField<String?>(
-              value: selectedStatus,
+              initialValue: selectedStatus,
               decoration: InputDecoration(
                 labelText: language.lblStatus,
                 labelStyle: TextStyle(

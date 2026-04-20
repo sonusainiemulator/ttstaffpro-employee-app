@@ -8,7 +8,6 @@ import 'package:shimmer/shimmer.dart';
 import '../../main.dart';
 import '../../stores/leave_store.dart';
 import '../../models/leave/leave_request.dart';
-import '../../utils/app_colors.dart';
 import '../../utils/string_extensions.dart';
 import 'leave_request_detail_screen.dart';
 import 'leave_request_form_screen.dart';

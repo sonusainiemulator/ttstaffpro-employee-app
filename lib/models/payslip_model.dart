@@ -68,9 +68,9 @@ class PayslipModel {
       final modifiers = json['payroll_modifiers'] ?? json['payrollModifiers'] ??
                         json['payroll_adjustments'] ?? json['payrollAdjustments'];
       if (modifiers is List) {
-        modifiers.forEach((v) {
+        for (var v in modifiers) {
           payrollModifiers!.add(PayrollModifier.fromJson(v));
-        });
+        }
       }
     }
 
@@ -100,7 +100,7 @@ class PayslipModel {
 
   //Serialize the data
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['code'] = code;
     data['basicSalary'] = basicSalary;
@@ -116,9 +116,7 @@ class PayslipModel {
     data['totalHolidays'] = totalHolidays;
     data['totalWeekends'] = totalWeekends;
     data['totalWorkingDays'] = totalWorkingDays;
-    data['payrollModifiers'] = payrollModifiers != null
-        ? payrollModifiers!.map((v) => v?.toJson()).toList()
-        : null;
+    data['payrollModifiers'] = payrollModifiers?.map((v) => v.toJson()).toList();
     data['status'] = status;
     data['payrollPeriod'] = payrollPeriod;
     data['createdAt'] = createdAt;
@@ -145,7 +143,7 @@ class PayrollModifier {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['name'] = name;
     data['code'] = code;
     data['percentage'] = percentage;

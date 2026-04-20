@@ -24,7 +24,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     init();
   }
 
-  init() async {
+  Future<void> init() async {
     _store.pagingController.addPageRequestListener((pageKey) {
       _store.fetchNotifications(pageKey);
     });

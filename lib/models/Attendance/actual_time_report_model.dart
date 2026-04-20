@@ -94,8 +94,12 @@ class ActualTimeReport {
   factory ActualTimeReport.fromJson(Map<String, dynamic> json) {
     // V1 fields mapping (documentation Section 6)
     final workingHours = _parseDouble(json['totalWorkingHours'] ?? json['actualWorkingHours']);
-    final breakHours = _parseDouble((json['actualBreakMinutes'] ?? json['actualBreakHours'] ?? 0) / 60.0);
-    final otHours = _parseDouble(json['lateCheckoutMinutes'] ?? json['overtimeHours']);
+    final breakHours = json['actualBreakHours'] != null 
+        ? _parseDouble(json['actualBreakHours']) 
+        : _parseDouble(json['actualBreakMinutes']) / 60.0;
+    final otHours = json['overtimeHours'] != null 
+        ? _parseDouble(json['overtimeHours']) 
+        : _parseDouble(json['lateCheckoutMinutes']) / 60.0;
 
     return ActualTimeReport(
       id: json['id'] ?? 0,
@@ -229,8 +233,9 @@ class ActualTimeReportResponse {
       totalOT += r.overtimeHours;
       lateM += r.lateMinutes;
       earlyM += r.earlyCheckoutMinutes;
-      if (r.isAbsent) a++;
-      else if (r.isHoliday) hol++;
+      if (r.isAbsent) {
+        a++;
+      } else if (r.isHoliday) hol++;
       else if (r.isWeekend) w++;
       else if (r.isHalfDay) h++;
       else p++;

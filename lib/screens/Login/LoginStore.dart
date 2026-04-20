@@ -168,6 +168,15 @@ abstract class LoginStoreBase with Store {
         }
       }
 
+      if (user.token.isEmptyOrNull) {
+        log('ERROR: Login succeeded but no token was returned by the API.');
+        await setValue(isLoggedInPref, false);
+        await setValue(isDeviceVerifiedPref, false);
+        isLoading = false;
+        toast('Login response is incomplete. Please contact your administrator.');
+        return "";
+      }
+
       await setValue(isLoggedInPref, true);
       await setValue(isDeviceVerifiedPref, false);
       await setValue(userIdPref, user.id);

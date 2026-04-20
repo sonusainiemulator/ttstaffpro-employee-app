@@ -300,7 +300,7 @@ class SocketService {
     if (_isConnecting) return 'Connecting...';
     if (_isConnected && isHealthy()) return 'Connected';
     if (_reconnectAttempts > 0) {
-      return 'Reconnecting... (${_reconnectAttempts}/$_maxReconnectAttempts)';
+      return 'Reconnecting... ($_reconnectAttempts/$_maxReconnectAttempts)';
     }
     return 'Disconnected';
   }

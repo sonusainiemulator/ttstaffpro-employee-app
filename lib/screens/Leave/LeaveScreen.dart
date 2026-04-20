@@ -54,7 +54,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
               // Status Filter
               Observer(
                 builder: (_) => DropdownButtonFormField<String>(
-                  value: _store.selectedStatus,
+                  initialValue: _store.selectedStatus,
                   decoration: InputDecoration(
                     labelText: language.lblStatus,
                     border: const OutlineInputBorder(

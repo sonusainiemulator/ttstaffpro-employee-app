@@ -2739,6 +2739,7 @@ class LanguageTr extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'Burada görmek için telafi izni talep edin';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'Detaylar yüklenirken hata oluştu';
 
   @override

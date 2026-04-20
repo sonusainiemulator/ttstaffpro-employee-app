@@ -21,7 +21,7 @@ class _NoticeBoardState extends State<NoticeBoard> {
     init();
   }
 
-  init() async {
+  Future<void> init() async {
     if (moduleService.isNoticeModuleEnabled()) {
       _store.getNoticeBoard();
     }

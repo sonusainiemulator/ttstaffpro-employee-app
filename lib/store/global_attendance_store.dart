@@ -7,6 +7,7 @@ import 'package:public_ip_address/public_ip_address.dart';
 import '../api/result.dart';
 import '../main.dart';
 import 'package:open_core_hr/models/status/status_response.dart';
+import '../api/dio_api/repositories/attendance_repository.dart';
 
 part 'global_attendance_store.g.dart';
 
@@ -14,6 +15,7 @@ class GlobalAttendanceStore = GlobalAttendanceStoreBase
     with _$GlobalAttendanceStore;
 
 abstract class GlobalAttendanceStoreBase with Store {
+  final AttendanceRepository _attendanceRepository = AttendanceRepository();
   @observable
   bool isInOutBtnLoading = false;
 
@@ -27,17 +29,17 @@ abstract class GlobalAttendanceStoreBase with Store {
 
   @computed
   bool get isKillDevice {
-    return currentStatus != null && currentStatus!.deviceStatus == 'kill';
+    return currentStatus != null && currentStatus!.deviceStatus?.toLowerCase() == 'kill';
   }
 
   @computed
   bool get isNew {
-    return currentStatus != null && currentStatus!.status == 'new';
+    return currentStatus != null && currentStatus!.status?.toLowerCase() == 'new';
   }
 
   @computed
   bool get isCheckedIn {
-    return currentStatus != null && currentStatus!.status == 'checkedin';
+    return currentStatus != null && currentStatus!.status?.toLowerCase() == 'checkedin';
   }
 
   @computed
@@ -51,7 +53,7 @@ abstract class GlobalAttendanceStoreBase with Store {
 
   @computed
   bool get isCheckedOut {
-    return currentStatus != null && currentStatus!.status == 'checkedout';
+    return currentStatus != null && currentStatus!.status?.toLowerCase() == 'checkedout';
   }
 
   @computed
@@ -93,7 +95,7 @@ abstract class GlobalAttendanceStoreBase with Store {
   @computed
   AttendanceType get attendanceType {
     if (currentStatus != null && currentStatus!.attendanceType != null) {
-      switch (currentStatus!.attendanceType!) {
+      switch (currentStatus!.attendanceType!.toLowerCase()) {
         case 'geofence':
           return AttendanceType.geofence;
         case 'ip':
@@ -115,7 +117,7 @@ abstract class GlobalAttendanceStoreBase with Store {
   @action
   Future<bool> validateQrCode(String qrCode) async {
     isInOutBtnLoading = true;
-    var result = await apiService.verifyQr(qrCode);
+    var result = await _attendanceRepository.verifyQr(qrCode);
     if (result) {
       isInOutBtnLoading = false;
       toast('Your QR code is verified');
@@ -128,7 +130,7 @@ abstract class GlobalAttendanceStoreBase with Store {
   @action
   Future<bool> validateDynamicQrCode(String qrCode) async {
     isInOutBtnLoading = true;
-    var result = await apiService.verifyDynamicQr(qrCode);
+    var result = await _attendanceRepository.verifyDynamicQr(qrCode);
     if (result) {
       isInOutBtnLoading = false;
       toast('Your QR code is verified');
@@ -143,7 +145,7 @@ abstract class GlobalAttendanceStoreBase with Store {
     isInOutBtnLoading = true;
     var ipAdd = IpAddress();
     var ip = await ipAdd.getIp();
-    var result = await apiService.validateIpAddress(ip);
+    var result = await _attendanceRepository.validateIpAddress(ip);
     if (result) {
       toast('Your IP address is verified');
       isInOutBtnLoading = false;
@@ -158,15 +160,11 @@ abstract class GlobalAttendanceStoreBase with Store {
   @action
   Future<bool> startStopBreak() async {
     isBreakBtnLoading = true;
-    var result = await apiService.startStopBreak();
+    var result = await _attendanceRepository.startStopBreak();
     await appStore.refreshAttendanceStatus();
-    if (result) {
-      isInOutBtnLoading = false;
-      return false;
-    }
 
     isBreakBtnLoading = false;
-    return true;
+    return result;
   }
 
   @computed
@@ -182,12 +180,17 @@ abstract class GlobalAttendanceStoreBase with Store {
 
   @computed
   DateTime get breakStartAt {
-    if (isOnBreak) {
-      var format = DateFormat('dd-MM-yy HH:mm:ss a');
-
-      var nowDateString = DateFormat('dd-MM-yy').format(DateTime.now());
-
-      return format.parse('$nowDateString ${currentStatus!.breakStartedAt}');
+    if (isOnBreak &&
+        currentStatus != null &&
+        !currentStatus!.breakStartedAt.isEmptyOrNull) {
+      try {
+        var format = DateFormat('dd-MM-yy HH:mm:ss a');
+        var nowDateString = DateFormat('dd-MM-yy').format(DateTime.now());
+        return format.parse('$nowDateString ${currentStatus!.breakStartedAt}');
+      } catch (e) {
+        log('Error parsing break start time: $e');
+        return DateTime.now();
+      }
     } else {
       return DateTime.now();
     }
@@ -220,7 +223,7 @@ abstract class GlobalAttendanceStoreBase with Store {
       isInOutBtnLoading = false;
       return false;
     }
-    var result = await apiService.validateGeofence(
+    var result = await _attendanceRepository.validateGeofence(
         location.latitude!, location.longitude!);
     if (result) {
       toast('Your location is verified');
@@ -236,7 +239,7 @@ abstract class GlobalAttendanceStoreBase with Store {
   @action
   Future<bool> setEarlyCheckoutReason(String reason) async {
     isInOutBtnLoading = true;
-    var result = await apiService.setEarlyCheckoutReason(reason);
+    var result = await _attendanceRepository.setEarlyCheckoutReason(reason);
     if (result) {
       toast('Reason updated');
       isInOutBtnLoading = false;
@@ -264,7 +267,7 @@ abstract class GlobalAttendanceStoreBase with Store {
     }
 
     var connectivityResult = await (Connectivity().checkConnectivity());
-    Map req = {
+    Map<String, dynamic> req = {
       "status": status == AttendanceStatus.checkIn ? 'checkin' : 'checkout',
       "lateReason": lateCheckInReason,
       "earlyCheckoutReason": earlyCheckoutReason,
@@ -286,13 +289,13 @@ abstract class GlobalAttendanceStoreBase with Store {
       "signalStrength": 5
     };
 
-    var result = await apiService.checkInOut(req);
+    var result = await _attendanceRepository.checkInOut(req);
     if (!result.isSuccess) {
       toast(result.message);
       isInOutBtnLoading = false;
       return result;
     }
-    var statusResult = await apiService.checkAttendanceStatus();
+    var statusResult = await _attendanceRepository.checkAttendanceStatus();
     if (statusResult != null) {
       appStore.setCurrentStatus(statusResult);
     }

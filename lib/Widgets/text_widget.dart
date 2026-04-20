@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-import '../Utils/app_colors.dart';
 import '../main.dart';
 
 InputDecoration textInputDecoration(String label, IconData icon) {
@@ -28,7 +27,7 @@ InputDecoration textInputDecoration(String label, IconData icon) {
 }
 
 InputDecoration textInputDecorationNoIcon(String label,
-    {String? hintText = null}) {
+    {String? hintText}) {
   return InputDecoration(
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(20.0),

@@ -12,7 +12,7 @@ import '../../../Utils/app_constants.dart';
 import '../../../utils/design_system.dart';
 
 class DemoModeBanner extends StatefulWidget {
-  const DemoModeBanner({Key? key}) : super(key: key);
+  const DemoModeBanner({super.key});
 
   @override
   State<DemoModeBanner> createState() => _DemoModeBannerState();

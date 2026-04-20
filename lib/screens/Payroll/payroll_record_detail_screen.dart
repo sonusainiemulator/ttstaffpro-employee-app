@@ -679,7 +679,7 @@ class _PayrollRecordDetailScreenState
       child: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: 4,
-        itemBuilder: (_, __) => Container(
+        itemBuilder: (_, _) => Container(
           height: 160,
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(

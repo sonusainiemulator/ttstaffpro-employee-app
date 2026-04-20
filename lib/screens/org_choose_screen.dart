@@ -27,11 +27,7 @@ class _OrgChooseScreenState extends State<OrgChooseScreen> {
   @override
   void initState() {
     super.initState();
-    if (getIsDemoMode()) {
-      _orgController.text = 'acme';
-    } else {
-      _orgController.text = 'jim';
-    }
+    _orgController.text = '';
   }
 
   /// Lookup organization via the organization/lookup API
@@ -191,11 +187,6 @@ class _OrgChooseScreenState extends State<OrgChooseScreen> {
                   // Submit Button
                   _buildSubmitButton(isDark),
 
-                  // Demo Mode Indicator
-                  if (getIsDemoMode()) ...[
-                    const SizedBox(height: 16),
-                    _buildDemoModeIndicator(),
-                  ],
                 ],
               ),
             ),
@@ -293,6 +284,9 @@ class _OrgChooseScreenState extends State<OrgChooseScreen> {
             child: TextFormField(
               controller: _orgController,
               textInputAction: TextInputAction.done,
+              autocorrect: false,
+              enableSuggestions: false,
+              autofillHints: const <String>[],
               style: TextStyle(
                 fontSize: 14,
                 color: isDark ? Colors.white : const Color(0xFF111827),

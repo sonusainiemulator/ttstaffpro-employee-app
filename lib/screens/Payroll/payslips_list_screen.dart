@@ -77,7 +77,7 @@ class _PayslipsListScreenState extends State<PayslipsListScreen> {
           children: [
             // Year filter
             DropdownButtonFormField<int?>(
-              value: selectedYear,
+              initialValue: selectedYear,
               decoration: InputDecoration(
                 labelText: language.lblYear,
                 labelStyle: TextStyle(
@@ -120,7 +120,7 @@ class _PayslipsListScreenState extends State<PayslipsListScreen> {
 
             // Status filter
             DropdownButtonFormField<String?>(
-              value: selectedStatus,
+              initialValue: selectedStatus,
               decoration: InputDecoration(
                 labelText: language.lblStatus,
                 labelStyle: TextStyle(

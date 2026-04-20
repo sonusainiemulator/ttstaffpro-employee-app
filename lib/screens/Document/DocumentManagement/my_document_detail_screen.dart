@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../main.dart';
 import '../../../api/dio_api/repositories/my_documents_repository.dart';
 import '../../../models/Document/my_document_model.dart';
-import '../../../utils/app_colors.dart';
 
 /// My Document Detail Screen
 /// Displays full details of a personal document
@@ -307,22 +306,21 @@ class _MyDocumentDetailScreenState extends State<MyDocumentDetailScreen> {
           const SizedBox(height: 16),
 
           // Information rows
-          if (_document!.title != null)
-            _buildInfoRow(
-              isDark,
-              Iconsax.document,
-              language.lblFileName,
-              _document!.title!,
-            ),
-          if (_document!.category != null) ...[
-            const SizedBox(height: 12),
-            _buildInfoRow(
-              isDark,
-              Iconsax.document_text,
-              language.lblFileType,
-              _document!.category!,
-            ),
-          ],
+          _buildInfoRow(
+            isDark,
+            Iconsax.document,
+            language.lblFileName,
+            _document!.title,
+          ),
+          ...[
+          const SizedBox(height: 12),
+          _buildInfoRow(
+            isDark,
+            Iconsax.document_text,
+            language.lblFileType,
+            _document!.category,
+          ),
+        ],
           if (_document!.fileSize != null) ...[
             const SizedBox(height: 12),
             _buildInfoRow(

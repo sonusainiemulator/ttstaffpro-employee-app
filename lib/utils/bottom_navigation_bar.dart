@@ -369,7 +369,6 @@ class _BottomNavigationTile extends StatelessWidget {
 
 class _TileIcon extends StatelessWidget {
   const _TileIcon({
-    super.key,
     required this.colorTween,
     required this.animation,
     required this.iconSize,
@@ -404,7 +403,6 @@ class _TileIcon extends StatelessWidget {
 
 class _Label extends StatelessWidget {
   const _Label({
-    super.key,
     required this.colorTween,
     required this.animation,
     required this.item,

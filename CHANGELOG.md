@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.0.3] - 2026-04-20
+
+### Fixed
+- **Actual Time Report**: Fixed overtime calculation bug where `lateCheckoutMinutes` and `actualBreakMinutes` were erroneously treated precisely as hours if provided via the API. Ensure standard conversion to hours when processing.
+
 ## [5.0.1] - 2026-04-02
 
 ### Added

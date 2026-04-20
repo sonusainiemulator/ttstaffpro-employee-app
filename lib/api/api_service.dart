@@ -113,8 +113,9 @@ class ApiService {
     var response = await handleResponse(
       await getRequestWithQuery(APIRoutes.events, uri),
     );
-    if (!checkSuccessCase(response) || response?.data['values'] == null)
+    if (!checkSuccessCase(response) || response?.data['values'] == null) {
       return [];
+    }
     Iterable list = response?.data['values'];
     return list.map((m) => CalendarEventModel.fromJson(m)).toList();
   }
@@ -190,8 +191,9 @@ class ApiService {
         Uri(queryParameters: query).query,
       ),
     );
-    if (!checkSuccessCase(response) || response?.data['users'] == null)
+    if (!checkSuccessCase(response) || response?.data['users'] == null) {
       return [];
+    }
     Iterable list = response?.data['users'];
     return list
         .map((m) => User.fromJson(m))
@@ -967,8 +969,11 @@ class ApiService {
     return checkSuccessCase(response);
   }
 
-  Future<UserModel?> me() async {
-    var response = await handleResponse(await getRequest(APIRoutes.meURL));
+  Future<UserModel?> me({bool logoutOnUnauthorized = true}) async {
+    var response = await handleResponse(
+      await getRequest(APIRoutes.meURL),
+      logoutOnUnauthorized: logoutOnUnauthorized,
+    );
     if (!checkSuccessCase(response)) {
       return null;
     }

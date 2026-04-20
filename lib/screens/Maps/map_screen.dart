@@ -28,7 +28,7 @@ class MapScreen extends StatefulWidget {
   final Color pinColor;
   final Color confirmButtonTextColor;
   const MapScreen({
-    Key? key,
+    super.key,
     required this.apiKey,
     required this.appBarTitle,
     this.polygonPoints,
@@ -43,7 +43,7 @@ class MapScreen extends StatefulWidget {
     required this.addressPlaceHolder,
     required this.pinWidget,
     required this.initialLocation,
-  }) : super(key: key);
+  });
   @override
   State<MapScreen> createState() => MapScreenState();
 }
@@ -63,7 +63,7 @@ class MapScreenState extends State<MapScreen> {
     zoom: 15,
   );
 
-  IsUserInArea(latitude, longitude) {
+  bool IsUserInArea(latitude, longitude) {
     MapToolkit.LatLng point = MapToolkit.LatLng(latitude, longitude);
     bool geodesic = true;
     bool checkIfUserInArea = MapToolkit.PolygonUtil.containsLocation(
@@ -74,7 +74,7 @@ class MapScreenState extends State<MapScreen> {
     return checkIfUserInArea;
   }
 
-  getAddress(LatLng? location) async {
+  Future<void> getAddress(LatLng? location) async {
     try {
       final endpoint =
           'https://maps.googleapis.com/maps/api/geocode/json?latlng=${location?.latitude},${location?.longitude}'
@@ -336,7 +336,7 @@ class MapScreenState extends State<MapScreen> {
     );
   }
 
-  getPlace(placeId) async {
+  Future<dynamic> getPlace(placeId) async {
     String baseURL = 'https://maps.googleapis.com/maps/api/place/details/json';
     String request =
         '$baseURL?place_id=$placeId&key=${widget.apiKey}&language=${widget.language}';
@@ -357,11 +357,11 @@ class SearchPage extends StatefulWidget {
   final String apiKey;
   final String searchPlaceHolder;
   const SearchPage({
-    Key? key,
+    super.key,
     required this.language,
     required this.apiKey,
     required this.searchPlaceHolder,
-  }) : super(key: key);
+  });
   @override
   _SearchPageState createState() => _SearchPageState();
 }
@@ -380,7 +380,7 @@ class _SearchPageState extends State<SearchPage> {
     });
   }
 
-  _onChanged() {
+  void _onChanged() {
     if (_sessionToken == null) {
       setState(() {
         _sessionToken = uuid.v4();
@@ -480,7 +480,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 }
 
-showGoogleMapLocationPicker({
+Future<dynamic> showGoogleMapLocationPicker({
   required BuildContext context,
   required Widget pinWidget,
   required String apiKey,

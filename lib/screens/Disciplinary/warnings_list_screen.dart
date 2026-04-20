@@ -5,7 +5,6 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../main.dart';
 import '../../api/dio_api/repositories/disciplinary_repository.dart';
-import '../../locale/languages.dart';
 import '../../models/disciplinary/warning_model.dart';
 import '../../models/disciplinary/warning_type_model.dart';
 import '../../utils/date_parser.dart';
@@ -625,10 +624,8 @@ class _WarningsListScreenState extends State<WarningsListScreen> {
                         ),
                         const SizedBox(width: 6),
                         Text(
-                          DateParser.parseDate(warning.issueDate) != null
-                              ? DateParser.formatDate(
-                                  DateParser.parseDate(warning.issueDate)!)
-                              : warning.issueDate,
+                          DateParser.formatDate(
+                                  DateParser.parseDate(warning.issueDate)),
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,

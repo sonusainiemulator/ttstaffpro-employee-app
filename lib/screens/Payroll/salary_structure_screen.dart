@@ -468,39 +468,16 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Iconsax.wallet_3,
-              size: 64,
-              color: appStore.isDarkModeOn
-                  ? Colors.grey[600]
-                  : const Color(0xFF9CA3AF),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              language.lblNoSalaryStructureFound,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: appStore.isDarkModeOn
-                    ? Colors.white
-                    : const Color(0xFF111827),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              language.lblSalaryStructureNotConfigured,
-              style: TextStyle(
-                fontSize: 14,
-                color: appStore.isDarkModeOn
-                    ? Colors.grey[400]
-                    : const Color(0xFF6B7280),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+        child: Text(
+          language.lblNoSalaryStructureFound,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: appStore.isDarkModeOn
+                ? Colors.grey[400]
+                : const Color(0xFF6B7280),
+          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );
@@ -561,7 +538,7 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: 5,
-      itemBuilder: (_, __) => Shimmer.fromColors(
+      itemBuilder: (_, _) => Shimmer.fromColors(
         baseColor: appStore.isDarkModeOn
             ? Colors.grey[800]!
             : const Color(0xFFE5E7EB),

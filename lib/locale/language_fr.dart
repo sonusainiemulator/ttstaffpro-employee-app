@@ -2763,6 +2763,7 @@ class LanguageFr extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'Demandez un congé compensatoire pour le voir ici';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'Erreur lors du chargement des détails';
 
   @override

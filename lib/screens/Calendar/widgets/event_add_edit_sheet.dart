@@ -118,7 +118,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                           padding: const EdgeInsets.only(right: 12),
                           child: _buildColorRadio(colorHex),
                         );
-                      }).toList(),
+                      }),
                     ],
                   ),
                 ),
@@ -378,7 +378,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                                         Observer(
                                           builder: (_) =>
                                               DropdownButtonFormField<String>(
-                                            value: _store.eventTypes.contains(
+                                            initialValue: _store.eventTypes.contains(
                                                     _store.selectedEventType)
                                                 ? _store.selectedEventType
                                                 : null,
@@ -596,7 +596,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                                                   value: _store.isAllDay,
                                                   onChanged: (val) => _store
                                                       .toggleAllDay(val),
-                                                  activeColor:
+                                                  activeThumbColor:
                                                       const Color(0xFF696CFF),
                                                 ),
                                               ],

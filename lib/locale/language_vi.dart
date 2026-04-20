@@ -2745,6 +2745,7 @@ class LanguageVi extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'Yêu cầu nghỉ bù để xem tại đây';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'Lỗi khi tải chi tiết';
 
   @override

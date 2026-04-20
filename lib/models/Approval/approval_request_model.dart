@@ -35,7 +35,7 @@ class ApprovalRequestModel {
     String requestType,
   ) {
     if (requestType == 'leave') {
-      log('JSON:>>> ' + json.toString());
+      log('JSON:>>> $json');
       return ApprovalRequestModel(
         id: json['id'],
         title: 'Leave Request #${json['id']}',

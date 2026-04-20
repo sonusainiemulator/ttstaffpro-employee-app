@@ -61,7 +61,7 @@ abstract class DocumentStoreBase with Store {
   final commentsCont = TextEditingController();
   final commentsNode = FocusNode();
 
-  int _currentPage = 1;
+  final int _currentPage = 1;
 
   void _handleError(dynamic e) {
     if (e is ApiException) {

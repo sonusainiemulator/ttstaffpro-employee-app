@@ -397,14 +397,19 @@ class SalaryStructureComponent {
 
   factory SalaryStructureComponent.fromJson(Map<String, dynamic> json) =>
       SalaryStructureComponent(
-        name: json['name'] as String? ?? '',
-        amount: _parseDouble(json['amount']),
+        name: json['name'] as String? ?? json['component_name'] as String? ?? '',
+        amount: _parseDouble(json['amount'] ?? json['component_value']),
         percentage: json['percentage'] != null
             ? _parseDouble(json['percentage'])
-            : null,
-        ofBasic: json['of_basic'] != null ? _parseDouble(json['of_basic']) : null,
-        ofGross: json['of_gross'] != null ? _parseDouble(json['of_gross']) : null,
+            : (json['percentage_value'] != null ? _parseDouble(json['percentage_value']) : null),
+        ofBasic: _parseDoubleNullable(json['of_basic'] ?? json['ofBasic']),
+        ofGross: _parseDoubleNullable(json['of_gross'] ?? json['ofGross']),
       );
+
+  static double? _parseDoubleNullable(dynamic v) {
+    if (v == null) return null;
+    return _parseDouble(v);
+  }
 
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -462,11 +467,11 @@ class SalaryStructureModel {
   factory SalaryStructureModel.fromJson(Map<String, dynamic> json) {
     return SalaryStructureModel(
       id: _parseInt(json['id']),
-      basicSalary: _parseDouble(json['basicSalary']),
-      grossSalary: _parseDouble(json['grossSalary']),
-      netSalary: _parseDouble(json['netSalary']),
-      effectiveFrom: json['effectiveFrom'] as String? ?? '',
-      earnings: (json['earnings'] as List<dynamic>? ?? [])
+      basicSalary: _parseDouble(json['basicSalary'] ?? json['basic_salary']),
+      grossSalary: _parseDouble(json['grossSalary'] ?? json['gross_salary']),
+      netSalary: _parseDouble(json['netSalary'] ?? json['net_salary'] ?? json['take_home']),
+      effectiveFrom: json['effectiveFrom'] as String? ?? json['effective_from'] as String? ?? '',
+      earnings: (json['earnings'] as List<dynamic>? ?? json['allowances'] as List<dynamic>? ?? [])
           .map((e) =>
               SalaryStructureComponent.fromJson(e as Map<String, dynamic>))
           .toList(),

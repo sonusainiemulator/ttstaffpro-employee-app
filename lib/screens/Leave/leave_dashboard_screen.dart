@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:nb_utils/nb_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../main.dart';
 import '../../stores/leave_store.dart';
 import '../../utils/app_colors.dart';
-import '../../utils/app_widgets.dart';
 import 'leave_requests_list_screen.dart';
 import 'leave_request_form_screen.dart';
 import 'leave_statistics_screen.dart';
@@ -276,7 +274,7 @@ class _LeaveDashboardScreenState extends State<LeaveDashboardScreen> {
                       ),
                   ],
                 );
-              }).toList(),
+              }),
 
               // Comp Off if available
               if (_leaveStore.compOffBalance != null &&
@@ -420,7 +418,7 @@ class _LeaveDashboardScreenState extends State<LeaveDashboardScreen> {
                                   _leaveStore.compOffBalance!.available > 0
                               ? 1
                               : 0),
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  separatorBuilder: (_, _) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     if (index <
                         _leaveStore.leaveBalanceSummary!.leaveBalances.length) {
@@ -1130,7 +1128,7 @@ class _LeaveDashboardScreenState extends State<LeaveDashboardScreen> {
               ),
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }

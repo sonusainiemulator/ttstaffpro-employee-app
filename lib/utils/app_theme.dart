@@ -19,7 +19,7 @@ class AppThemeData {
     dividerColor: viewLineColor,
     fontFamily: GoogleFonts.poppins().fontFamily,
     appBarTheme: const AppBarTheme(
-      color: appLayoutBackground,
+      backgroundColor: appLayoutBackground,
       iconTheme: IconThemeData(color: textPrimaryColor),
       systemOverlayStyle:
           SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark),
@@ -51,7 +51,7 @@ class AppThemeData {
     highlightColor: appBackgroundColorDark,
     //errorColor: const Color(0xFFCF6676),
     appBarTheme: const AppBarTheme(
-      color: appBackgroundColorDark,
+      backgroundColor: appBackgroundColorDark,
       iconTheme: IconThemeData(color: blackColor),
       systemOverlayStyle:
           SystemUiOverlayStyle(statusBarIconBrightness: Brightness.light),

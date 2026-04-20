@@ -2764,6 +2764,7 @@ class LanguageEs extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'Solicite un descanso compensatorio para verlo aquí';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'Error al cargar detalles';
 
   @override

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class BlinkingEyes extends StatefulWidget {
+  const BlinkingEyes({super.key});
+
   @override
   _BlinkingEyesState createState() => _BlinkingEyesState();
 }

@@ -42,7 +42,7 @@ class CalendarEventModel {
 
   factory CalendarEventModel.fromJson(Map<String, dynamic> json) {
     // Helper function to safely parse dates
-    DateTime? _parseDate(String? dateString) {
+    DateTime? parseDate(String? dateString) {
       if (dateString == null) return null;
       try {
         return DateTime.parse(dateString)
@@ -57,8 +57,8 @@ class CalendarEventModel {
       id: json['id'],
       title: json['title'],
       description: json['description'],
-      start: _parseDate(json['start']), // Parse ISO string from API
-      end: _parseDate(json['end']), // Parse ISO string from API
+      start: parseDate(json['start']), // Parse ISO string from API
+      end: parseDate(json['end']), // Parse ISO string from API
       allDay: json['allDay'],
       color: json['color'],
       eventType: json['eventType'],
@@ -66,8 +66,8 @@ class CalendarEventModel {
       meetingLink: json['meetingLink'], // New field
       clientId: json['clientId'], // New field
       clientName: json['clientName'], // New field
-      createdAt: _parseDate(json['createdAt']),
-      updatedAt: _parseDate(json['updatedAt']),
+      createdAt: parseDate(json['createdAt']),
+      updatedAt: parseDate(json['updatedAt']),
       createdBy: json['createdBy'] != null
           ? EventCreator.fromJson(json['createdBy'])
           : null,

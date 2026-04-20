@@ -11,7 +11,6 @@ import 'package:open_core_hr/screens/Leave/leave_dashboard_screen.dart';
 import 'package:open_core_hr/screens/Expense/ExpenseScreen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../Utils/app_widgets.dart';
 import '../main.dart';
 
 class NavigationScreen extends StatefulWidget {

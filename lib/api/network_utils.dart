@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:http/http.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -30,7 +29,7 @@ Map<String, String> buildHeader() {
 
   // Add tenant ID header for SaaS mode
   if (getIsSaaSMode() && !tenantId.isEmptyOrNull) {
-    headers['X-Tenant-ID'] = tenantId!;
+    headers['X-Tenant-ID'] = tenantId;
   }
 
   return headers;
@@ -40,7 +39,7 @@ Map<String, String> buildHeader() {
 /// In header-based SaaS mode, always use central URL from APIRoutes.baseURL
 /// Tenant is identified via X-Tenant-ID header, not URL
 String getBaseUrl() {
-  return APIRoutes.baseURL;
+  return getStringAsync('baseurl', defaultValue: APIRoutes.baseURL);
 }
 
 bool isBaseUrlPlaceholder() {
@@ -203,7 +202,10 @@ Future<StreamedResponse> multipartRequestWithData(
   }
 }
 
-Future<ApiResponseModel?> handleResponse(Response response) async {
+Future<ApiResponseModel?> handleResponse(
+  Response response, {
+  bool logoutOnUnauthorized = true,
+}) async {
   if (response.statusCode.isSuccessful()) {
     try {
       var resModel = ApiResponseModel.fromJson(jsonDecode(response.body));
@@ -214,7 +216,11 @@ Future<ApiResponseModel?> handleResponse(Response response) async {
       throw 'Invalid response from server. Please try again.';
     }
   } else if (response.statusCode == 401) {
-    sharedHelper.logoutAlt();
+    log('HandleResponse: 401 Unauthorized detected for ${response.request?.url}');
+    log('Response body on 401: ${response.body}');
+    if (logoutOnUnauthorized) {
+      sharedHelper.logoutAlt();
+    }
     throw ('Please login again');
   } else if (response.statusCode == 400) {
     try {

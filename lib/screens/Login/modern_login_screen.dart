@@ -108,9 +108,13 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
     super.dispose();
   }
 
-  init() async {
+  Future<void> init() async {
     await sharedHelper.refreshAppSettings();
     await moduleService.refreshModuleSettings();
+    _usernameController.clear();
+    _passwordController.clear();
+    _loginStore.employeeId = '';
+    _loginStore.password = '';
     _loginStore.setupValidations();
   }
 
@@ -215,6 +219,9 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
         focusNode: focusNode,
         obscureText: isPassword && !_isPasswordVisible,
         keyboardType: keyboardType,
+        autocorrect: false,
+        enableSuggestions: !isPassword,
+        autofillHints: const <String>[],
         style: AppDesignSystem.bodyLarge.copyWith(
           color: AppDesignSystem.neutral900,
         ),
@@ -285,7 +292,7 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
                     _loginStore.employeeId = _usernameController.text;
                     _loginStore.password = _passwordController.text;
                     var result = await _loginStore.login();
-                    if (result?.toLowerCase() == 'active') {
+                    if (result.toLowerCase() == 'active') {
                       if (!mounted) return;
                       sharedHelper.refreshAppSettings();
                       const OrgChooseScreen().launch(context, isNewTask: true);
@@ -528,7 +535,7 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
                     _loginStore.employeeId = _usernameController.text;
                     _loginStore.password = _passwordController.text;
                     var result = await _loginStore.login();
-                    if (result?.toLowerCase() == 'active') {
+                    if (result.toLowerCase() == 'active') {
                       if (!mounted) return;
                       sharedHelper.refreshAppSettings();
                       const OrgChooseScreen().launch(context, isNewTask: true);

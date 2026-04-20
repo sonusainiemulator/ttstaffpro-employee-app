@@ -23,7 +23,7 @@ class LocalFaceData {
 }
 
 class FaceAttendanceScreen extends StatefulWidget {
-  const FaceAttendanceScreen({Key? key}) : super(key: key);
+  const FaceAttendanceScreen({super.key});
 
   @override
   State<FaceAttendanceScreen> createState() => _FaceAttendanceScreenState();
@@ -74,7 +74,7 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
     _loadEnrollmentFromServer();
   }
 
-  _loadEnrollOption() async {
+  Future<void> _loadEnrollOption() async {
     _isEnrolled = await _store.isEnrolled();
     setState(() {});
   }

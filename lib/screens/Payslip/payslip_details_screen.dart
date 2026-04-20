@@ -419,7 +419,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

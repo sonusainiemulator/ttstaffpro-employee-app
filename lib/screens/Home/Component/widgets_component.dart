@@ -36,13 +36,13 @@ class _WidgetsComponentState extends State<WidgetsComponent> {
     init();
   }
 
-  init() async {
+  Future<void> init() async {
     buildModulesList();
     setState(() {});
     await sharedHelper.setAppVersionToPref();
   }
 
-  buildModulesList() {
+  void buildModulesList() {
     // Leave Module
     if (moduleService.isLeaveModuleEnabled()) {
       modules.add({

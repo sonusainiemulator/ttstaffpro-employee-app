@@ -10,8 +10,6 @@ import 'package:file_picker/file_picker.dart';
 import '../../stores/leave_store.dart';
 import '../../models/leave/leave_type.dart';
 import '../../models/leave/leave_request.dart';
-import '../../models/leave/compensatory_off.dart';
-import '../../utils/app_colors.dart';
 import '../../utils/date_parser.dart';
 import '../../utils/app_widgets.dart';
 import '../../main.dart';
@@ -638,7 +636,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
               ),
             ),
             child: DropdownButtonFormField<LeaveType>(
-              value: _selectedLeaveType,
+              initialValue: _selectedLeaveType,
               dropdownColor: appStore.isDarkModeOn
                   ? const Color(0xFF1F2937)
                   : Colors.white,
@@ -875,7 +873,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
                       }
                     });
                   },
-                  activeColor: const Color(0xFF696CFF),
+                  activeThumbColor: const Color(0xFF696CFF),
                 ),
               ],
             ),
@@ -1036,7 +1034,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
                   }
                 });
               },
-              activeColor: const Color(0xFF696CFF),
+              activeThumbColor: const Color(0xFF696CFF),
             ),
           ],
         ),
@@ -1233,7 +1231,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
               onChanged: (value) {
                 setState(() => _isAbroad = value);
               },
-              activeColor: const Color(0xFF696CFF),
+              activeThumbColor: const Color(0xFF696CFF),
             ),
           ],
         ),

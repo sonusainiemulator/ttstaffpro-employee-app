@@ -1,5 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_device_unique_id/flutter_device_unique_id_platform_interface.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:open_core_hr/api/network_utils.dart';
@@ -69,23 +69,64 @@ class SharedHelper {
     return getStringAsync(appCompanyNamePref);
   }
 
+  bool isLoggingOut = false;
+  
   void logout(BuildContext context) async {
+    log('SharedHelper: logout called.');
+    if (isLoggingOut) {
+      log('SharedHelper: logout already in progress, skipping redundant trigger.');
+      return;
+    }
+    isLoggingOut = true;
+    
     // Preserve SaaS mode before clearing preferences
     final wasSaaSMode = getIsSaaSMode();
+    log('SharedHelper: wasSaaSMode during logout = $wasSaaSMode');
 
-    clearSharedPref();
-    toast('Logged out successfully');
-
+    await clearSharedPref();
+    
+    isLoggingOut = false;
+    log('SharedHelper: Navigating to ${wasSaaSMode ? 'OrgChooseScreen' : 'LoginScreen'}');
     if (wasSaaSMode) {
-      OrgChooseScreen().launch(context, isNewTask: true);
+      const OrgChooseScreen().launch(context, isNewTask: true);
     } else {
-      LoginScreen().launch(context, isNewTask: true);
+      const LoginScreen().launch(context, isNewTask: true);
     }
+    
+    toast('Logged out successfully');
   }
 
   void logoutAlt() async {
-    clearSharedPref();
-    toast('Logged out successfully');
+    log('SharedHelper: logoutAlt called.');
+    if (isLoggingOut) {
+      log('SharedHelper: logoutAlt already in progress, skipping redundant trigger.');
+      return;
+    }
+    isLoggingOut = true;
+    
+    final wasSaaSMode = getIsSaaSMode();
+    log('SharedHelper: wasSaaSMode during logoutAlt = $wasSaaSMode');
+    
+    // Clear preferences but capture what we need first
+    await clearSharedPref();
+    
+    // Re-set initial states if needed
+    await setValue(isLoggedInPref, false);
+    
+    if (navigatorKey.currentState != null) {
+      log('SharedHelper: Navigating to ${wasSaaSMode ? 'OrgChooseScreen' : 'LoginScreen'}');
+      navigatorKey.currentState!.pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => wasSaaSMode ? const OrgChooseScreen() : const LoginScreen(),
+        ),
+        (route) => false,
+      );
+    } else {
+      log('SharedHelper: navigatorKey.currentState is NULL, cannot navigate via navigatorKey.');
+    }
+    
+    isLoggingOut = false;
+    toast('Session expired. Please login again.');
   }
 
   Future<String?> getDeviceId() async {
@@ -141,23 +182,39 @@ class SharedHelper {
   }
 
   String getUserInitials() {
-    return getStringAsync(firstNamePref).substring(0, 1).toUpperCase() +
-        getStringAsync(lastNamePref).substring(0, 1).toUpperCase();
+    String firstName = getStringAsync(firstNamePref);
+    String lastName = getStringAsync(lastNamePref);
+    String initials = '';
+    if (firstName.isNotEmpty) {
+      initials += firstName.substring(0, 1).toUpperCase();
+    }
+    if (lastName.isNotEmpty) {
+      initials += lastName.substring(0, 1).toUpperCase();
+    }
+    if (initials.isEmpty) {
+      initials = '?';
+    }
+    return initials;
   }
 
-  Future refreshAppSettings() async {
+  Future refreshAppSettings({
+    bool refreshUser = true,
+    bool logoutOnUnauthorized = true,
+  }) async {
     var appSettings = await apiService.getAppSettings();
     if (appSettings != null) {
       await setAppSettings(appSettings);
       setValue(isSettingsRefreshedPref, true);
     }
-    if (getBoolAsync(isLoggedInPref)) {
-      await refreshUserData();
+    if (refreshUser && getBoolAsync(isLoggedInPref)) {
+      await refreshUserData(logoutOnUnauthorized: logoutOnUnauthorized);
     }
   }
 
-  Future refreshUserData() async {
-    var user = await apiService.me();
+  Future refreshUserData({bool logoutOnUnauthorized = true}) async {
+    var user = await apiService.me(
+      logoutOnUnauthorized: logoutOnUnauthorized,
+    );
     if (user != null) {
       await setValue(firstNamePref, user.firstName);
       await setValue(lastNamePref, user.lastName);
@@ -178,16 +235,19 @@ class SharedHelper {
     }
   }
 
-  void routeBasedOnStatus(BuildContext context, String status) {
-    sharedHelper.refreshAppSettings();
+  Future<void> routeBasedOnStatus(BuildContext context, String status) async {
+    // Ensure app settings are refreshed before routing
+    await refreshAppSettings(refreshUser: false);
 
-    if (status == 'onboarding') {
+    if (!context.mounted) return;
+
+    if (status.toLowerCase() == 'onboarding') {
       toast('Please complete the onboarding process');
       const MyOnboardingScreen().launch(context, isNewTask: true);
       return;
-    } else if (status == 'active') {
+    } else if (status.toLowerCase() == 'active') {
       // Skip device verification for Employee App - go directly to permissions
-      PermissionScreen().launch(context, isNewTask: true);
+      const PermissionScreen().launch(context, isNewTask: true);
     } else {
       toast('Unknown status. Please contact your administrator.');
     }
@@ -195,12 +255,12 @@ class SharedHelper {
 
   bool isAccountActive() {
     var status = getStringAsync(statusPref);
-    return status == 'active';
+    return status.toLowerCase() == 'active';
   }
 
   bool isAccountOnboarding() {
     var status = getStringAsync(statusPref);
-    return status == 'onboarding';
+    return status.toLowerCase() == 'onboarding';
   }
 
   void login() async {

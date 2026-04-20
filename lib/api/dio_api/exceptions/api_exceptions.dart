@@ -18,26 +18,24 @@ class ApiException implements Exception {
 
 /// Network connection exception
 class NetworkException extends ApiException {
-  NetworkException({String message = 'No internet connection'})
-      : super(message: message);
+  NetworkException({super.message = 'No internet connection'});
 }
 
 /// Request timeout exception
 class TimeoutException extends ApiException {
-  TimeoutException({String message = 'Request timeout'})
-      : super(message: message);
+  TimeoutException({super.message = 'Request timeout'});
 }
 
 /// Unauthorized access exception
 class UnauthorizedException extends ApiException {
-  UnauthorizedException({String message = 'Unauthorized access'})
-      : super(message: message, statusCode: 401);
+  UnauthorizedException({super.message = 'Unauthorized access'})
+      : super(statusCode: 401);
 }
 
 /// Resource not found exception
 class NotFoundException extends ApiException {
-  NotFoundException({String message = 'Resource not found'})
-      : super(message: message, statusCode: 404);
+  NotFoundException({super.message = 'Resource not found'})
+      : super(statusCode: 404);
 }
 
 /// Validation error exception
@@ -45,9 +43,9 @@ class ValidationException extends ApiException {
   final Map<String, dynamic>? errors;
 
   ValidationException({
-    String message = 'Validation failed',
+    super.message = 'Validation failed',
     this.errors,
-  }) : super(message: message, statusCode: 422, data: errors);
+  }) : super(statusCode: 422, data: errors);
 
   /// Get validation error for a specific field
   String? getFieldError(String field) {
@@ -81,18 +79,18 @@ class ValidationException extends ApiException {
 
 /// Server error exception
 class ServerException extends ApiException {
-  ServerException({String message = 'Server error'})
-      : super(message: message, statusCode: 500);
+  ServerException({super.message = 'Server error'})
+      : super(statusCode: 500);
 }
 
 /// Bad request exception
 class BadRequestException extends ApiException {
-  BadRequestException({String message = 'Bad request'})
-      : super(message: message, statusCode: 400);
+  BadRequestException({super.message = 'Bad request'})
+      : super(statusCode: 400);
 }
 
 /// Forbidden access exception
 class ForbiddenException extends ApiException {
-  ForbiddenException({String message = 'Forbidden access'})
-      : super(message: message, statusCode: 403);
+  ForbiddenException({super.message = 'Forbidden access'})
+      : super(statusCode: 403);
 }

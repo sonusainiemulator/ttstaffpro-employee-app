@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import '../../../main.dart';
 import '../../../stores/leave_store.dart';
 import '../../../models/leave/compensatory_off.dart';
-import '../../../utils/app_colors.dart';
 import '../../../utils/string_extensions.dart';
 import 'comp_off_form_screen.dart';
 
@@ -480,7 +479,7 @@ class _CompOffDetailScreenState extends State<CompOffDetailScreen> {
                   ),
                 ],
               );
-            }).toList(),
+            }),
           ],
         ),
       ),

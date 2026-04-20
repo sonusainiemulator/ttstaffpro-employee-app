@@ -17,7 +17,7 @@ class _CameraScreenState extends State<CameraScreen> {
     init();
   }
 
-  init() async {
+  Future<void> init() async {
     _cameras = await availableCameras();
     controller = CameraController(_cameras[0], ResolutionPreset.max);
     controller.initialize().then((_) {

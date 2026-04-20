@@ -2677,6 +2677,7 @@ class LanguageKo extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => '여기에 표시하려면 보상 휴무를 요청하세요';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => '세부 정보 로딩 오류';
 
   @override

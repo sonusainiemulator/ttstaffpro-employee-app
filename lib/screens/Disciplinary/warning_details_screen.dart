@@ -697,27 +697,21 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
                       _buildInfoRow(
                         Iconsax.calendar,
                         language.lblIssueDate,
-                        DateParser.parseDate(_warning!.issueDate) != null
-                            ? DateParser.formatDate(
-                                DateParser.parseDate(_warning!.issueDate)!)
-                            : _warning!.issueDate,
+                        DateParser.formatDate(
+                                DateParser.parseDate(_warning!.issueDate)),
                       ),
                       _buildInfoRow(
                         Iconsax.calendar_tick,
                         language.lblEffectiveDate,
-                        DateParser.parseDate(_warning!.effectiveDate) != null
-                            ? DateParser.formatDate(
-                                DateParser.parseDate(_warning!.effectiveDate)!)
-                            : _warning!.effectiveDate,
+                        DateParser.formatDate(
+                                DateParser.parseDate(_warning!.effectiveDate)),
                       ),
                       if (_warning!.expiryDate != null)
                         _buildInfoRow(
                           Iconsax.calendar_remove,
                           language.lblExpiryDate,
-                          DateParser.parseDate(_warning!.expiryDate!) != null
-                              ? DateParser.formatDate(
-                                  DateParser.parseDate(_warning!.expiryDate!)!)
-                              : _warning!.expiryDate!,
+                          DateParser.formatDate(
+                                  DateParser.parseDate(_warning!.expiryDate!)),
                           iconColor: Colors.orange,
                         ),
                       _buildInfoRow(
@@ -904,7 +898,7 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${language.lblAppealDeadlineMessage} ${DateParser.parseDate(_warning!.appealDeadline!) != null ? DateParser.formatDate(DateParser.parseDate(_warning!.appealDeadline!)!) : _warning!.appealDeadline!}',
+                                '${language.lblAppealDeadlineMessage} ${DateParser.formatDate(DateParser.parseDate(_warning!.appealDeadline!))}',
                                 style: TextStyle(
                                   fontSize: 13,
                                   color: appStore.isDarkModeOn

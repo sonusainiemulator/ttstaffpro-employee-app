@@ -2778,6 +2778,7 @@ class LanguageDe extends BaseLanguage {
   String get lblRequestCompOffToSeeHere => 'Beantragen Sie einen Freizeitausgleich, um ihn hier zu sehen';
 
   // Compensatory Off Detail Keys  @override
+  @override
   String get lblErrorLoadingCompOffDetails => 'Fehler beim Laden der Details';
 
   @override

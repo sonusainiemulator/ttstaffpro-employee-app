@@ -14,7 +14,6 @@ import '../../models/Assets/asset_maintenance_model.dart';
 import '../../utils/date_parser.dart';
 import '../../utils/url_helper.dart';
 import '../../main.dart';
-import '../../locale/languages.dart';
 import 'report_issue_screen.dart';
 
 class AssetDetailScreen extends StatefulWidget {

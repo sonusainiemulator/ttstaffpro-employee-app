@@ -45,7 +45,7 @@ class _MapComponentState extends State<MapComponent> {
     init();
   }
 
-  init() async {}
+  Future<void> init() async {}
 
   Future<void> addMarker(LatLng currentPosition) async {
     final icon = await BitmapDescriptor.fromAssetImage(
