@@ -32,7 +32,7 @@ dependencies:
 
   flutter_pdfview: ^1.4.0+1
   open_settings_plus: ^0.4.0
-  local_auth: ^2.3.0
+  local_auth: ^3.0.1
   maps_toolkit: ^3.1.0
   flutter_device_unique_id: ^1.0.3
 
