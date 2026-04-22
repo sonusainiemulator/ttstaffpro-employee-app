@@ -121,7 +121,7 @@ dependencies:
   google_static_maps_controller: ^1.1.0
   flutter_sharing_intent: ^1.1.1
   uuid: ^4.5.1
-  socket_io_client: ^3.0.1
+  socket_io_client: ^3.1.4
 
   #DB
   hive: ^2.2.3
