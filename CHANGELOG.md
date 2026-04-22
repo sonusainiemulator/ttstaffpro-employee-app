@@ -1,5 +1,14 @@
 # Changelog
 
+## [5.0.4] - 2026-04-22
+
+### Fixed
+- **Payroll Module**: Corrected Salary Structure API route to use `payroll/salary-structure`, resolving `Resource not found` on Salary Structure screen.
+- **Localization Compile Issue**: Fixed Vietnamese locale class closing-brace placement that could break debug build in recent changes.
+
+### Changed
+- Bumped app version to `5.0.4+7`.
+
 ## [5.0.3] - 2026-04-20
 
 ### Fixed

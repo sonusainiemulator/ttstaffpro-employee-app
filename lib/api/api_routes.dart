@@ -21,6 +21,10 @@ class APIRoutes {
 
   static const profileURL = 'UserProfiles/';
 
+  // Profile management
+  static const updateProfile = 'account/update-profile';
+  static const uploadAvatar = 'account/upload-avatar';
+
   static const loginURL = 'login';
 
   static const loginWithUidURL = 'loginWithUid';
@@ -46,7 +50,7 @@ class APIRoutes {
   // Payroll endpoints (V1 Mobile Documentation)
   static const String payrollList = 'payroll'; // GET /api/V1/payroll
   static const String payrollDetail = 'payroll/payslip'; // Add /{id} - GET /api/V1/payroll/payslip/{id}
-  static const String salaryStructure = 'talent/salary-structure'; // GET /api/V1/talent/salary-structure
+    static const String salaryStructure = 'payroll/salary-structure'; // GET /api/V1/payroll/salary-structure
   static const String payrollStatistics = 'payroll/statistics'; // GET /api/V1/payroll/statistics
   static const String payrollModifiers = 'payroll/modifiers'; // List definitions
   static const String modifierHistory = 'payroll/modifier-history'; // Applied adjustment history (with alias support)
