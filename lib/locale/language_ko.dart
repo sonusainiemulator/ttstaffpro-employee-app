@@ -4124,7 +4124,28 @@ class LanguageKo extends BaseLanguage {
   String get lblDueInDays => '%d일 후 마감';
   @override
   String get lblPolicyNotFound => '정책을 찾을 수 없습니다';
+
+
+  @override
+  String get lblEditProfile => 'Edit Profile';
+  @override
+  String get lblSave => 'Save';
+  @override
+  String get lblSaveChanges => 'Save Changes';
+  @override
+  String get lblSelectImage => 'Select Photo';
+  @override
+  String get lblGallery => 'Gallery';
+  @override
+  String get lblTapToChangePhoto => 'Tap to change photo';
+  @override
+  String get lblProfileUpdatedSuccessfully => 'Profile updated successfully';
+  @override
+  String get lblContactInformation => 'Contact Information';
+  @override
+  String get lblPersonalDetails => 'Personal Details';
+  @override
+  String get lblAlternateNumber => 'Alternate Number';
+  @override
+  String get lblGender => 'Gender';
 }
-
-
-

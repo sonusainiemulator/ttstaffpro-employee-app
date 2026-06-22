@@ -342,9 +342,27 @@ class ApiService {
       return [];
     }
 
-    Iterable list = result?.data;
+    final rawData = result?.data;
 
-    return list.map((m) => NoticeModel.fromJson(m)).toList();
+    // Support multiple backend payload shapes to avoid silently dropping notices.
+    Iterable<dynamic> list;
+    if (rawData is List) {
+      list = rawData;
+    } else if (rawData is Map<String, dynamic>) {
+      final nestedList = rawData['notices'] ?? rawData['values'] ?? rawData['data'] ?? rawData['items'];
+      if (nestedList is List) {
+        list = nestedList;
+      } else {
+        list = const [];
+      }
+    } else {
+      list = const [];
+    }
+
+    return list
+        .whereType<Map>()
+        .map((m) => NoticeModel.fromJson(Map<String, dynamic>.from(m)))
+        .toList();
   }
 
   //Document
@@ -1063,18 +1081,20 @@ class ApiService {
   }
 
   bool checkSuccessCase(ApiResponseModel? response, {bool showError = false}) {
+    bool isSuccessful(ApiResponseModel? res) {
+      if (res == null || res.statusCode != 200) return false;
+      return res.success == true || res.status?.toLowerCase() == 'success';
+    }
+
     if (!showError) {
-      return response != null &&
-          response.statusCode == 200 &&
-          response.status?.toLowerCase() == 'success';
+      return isSuccessful(response);
     } else {
       if (response == null) return false;
       if (response.statusCode == 400 && showError) {
         toast(response.data.toString());
         return false;
       } else {
-        return response.statusCode == 200 &&
-            response.status?.toLowerCase() == 'success';
+        return isSuccessful(response);
       }
     }
   }

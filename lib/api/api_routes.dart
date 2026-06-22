@@ -261,4 +261,25 @@ class APIRoutes {
   static const String getPoliciesByCategory = 'policies/category';
   static const String getPendingPolicies = 'policies/pending';
   static const String getOverduePolicies = 'policies/overdue';
+
+  // Face Attendance Kiosk API (V1)
+  static const String faceAttendanceBase = 'face-attendance';
+  static const String adminProfiles = '$faceAttendanceBase/admin/profiles';
+  static const String adminProfilesSelfReg = '$faceAttendanceBase/admin/self-registration';
+  static const String selfEligibility = '$faceAttendanceBase/self/eligibility';
+  static const String selfRegister = '$faceAttendanceBase/self/register';
+  static const String selfRefresh = '$faceAttendanceBase/self/refresh';
+  static const String selfProfile = '$faceAttendanceBase/self/profile';
+  static const String deviceRegister = '$faceAttendanceBase/device/register';
+  static const String deviceHeartbeat = '$faceAttendanceBase/device/heartbeat';
+  static const String deviceProfilePackage = '$faceAttendanceBase/device/profile-package';
+  static const String deviceProfilePackageDownload = '$faceAttendanceBase/device/profile-package/download';
+  static const String deviceEvents = '$faceAttendanceBase/device/events';
+  static const String deviceSyncBatch = '$faceAttendanceBase/device/sync-batch';
+  static const String adminDashboard = '$faceAttendanceBase/admin/dashboard';
+  static const String adminAuditLog = '$faceAttendanceBase/admin/audit-log';
+  static const String adminFailedRecognitions = '$faceAttendanceBase/admin/failed-recognitions';
+  static const String adminSpoofEvents = '$faceAttendanceBase/admin/spoof-events';
+  static const String adminDevicesHealth = '$faceAttendanceBase/admin/devices/health';
+  static const String adminSettings = '$faceAttendanceBase/admin/settings';
 }

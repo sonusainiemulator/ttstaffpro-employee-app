@@ -2573,4 +2573,17 @@ abstract class BaseLanguage {
   String get lblDueTomorrow;
   String get lblDueInDays;
   String get lblPolicyNotFound;
+
+  // Profile editing
+  String get lblEditProfile;
+  String get lblSave;
+  String get lblSaveChanges;
+  String get lblSelectImage;
+  String get lblGallery;
+  String get lblTapToChangePhoto;
+  String get lblProfileUpdatedSuccessfully;
+  String get lblContactInformation;
+  String get lblPersonalDetails;
+  String get lblAlternateNumber;
+  String get lblGender;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:mobx/mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -143,11 +144,18 @@ abstract class DocumentStoreBase with Store {
       final types = await _repository.getAvailableDocumentTypes();
       documentTypes = ObservableList.of(types);
 
+      if (kDebugMode) {
+        debugPrint('[DocumentTypes] Store loaded count: ${documentTypes.length}');
+      }
+
       if (documentTypes.isNotEmpty) {
         selectedTypeId = documentTypes.first.id;
       }
     } catch (e) {
       _handleError(e);
+      if (kDebugMode) {
+        debugPrint('[DocumentTypes] Store error: $e');
+      }
     } finally {
       isLoading = false;
     }

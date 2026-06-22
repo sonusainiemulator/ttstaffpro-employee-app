@@ -5,34 +5,35 @@ import 'dart:math';
 import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:http/http.dart' as http;
-import 'package:open_core_hr/main.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:open_core_hr/api/dio_api/repositories/face_attendance_repository.dart';
 import 'face_attendance_screen.dart'; // To access LocalFaceData
 
 class FaceEnrollmentStore {
+  final FaceAttendanceRepository _repository = FaceAttendanceRepository();
+
   Future<bool> isEnrolled() async {
     try {
-      // Dummy API call. Replace with your actual API call.
-      var result = await apiService.isFaceDataAdded();
-      return result;
+      final eligibility = await _repository.checkSelfEligibility();
+      return eligibility.hasExistingProfile == true;
     } catch (e) {
-      print("Error fetching enrollment: $e");
+      print("Error fetching enrollment eligibility: $e");
       return false;
     }
   }
 
-  /// Sends the enrollment data (face image and landmarks) to the server.
-  Future<bool> sendEnrollment(LocalFaceData data) async {
+  /// Sends the enrollment data (multiple face images and capture types) to the server.
+  Future<bool> submitRegistration({
+    required List<String> imagePaths,
+    required List<String> captureTypes,
+    String? notes,
+  }) async {
     try {
-      // Convert landmarks to a JSON string.
-      final landmarksMap = data.landmarks?.map((key, value) =>
-          MapEntry(key.toString(), {'x': value.x, 'y': value.y}));
-
-      var result = await apiService.enrollFace(
-          data.imagePath!, jsonEncode(landmarksMap));
-
-      return result;
+      return await _repository.submitSelfRegistration(
+        imagePaths: imagePaths,
+        captureTypes: captureTypes,
+        notes: notes,
+      );
     } catch (e) {
       print("Error sending enrollment: $e");
       return false;
@@ -42,10 +43,21 @@ class FaceEnrollmentStore {
   /// Gets the enrollment data from the server.
   Future<LocalFaceData?> getEnrollment() async {
     try {
-      // Dummy API call. Replace with your actual API call.
-      var jsonResponse = await apiService.getFaceData();
-      // Expecting jsonResponse to contain an image URL.
-      String imageUrl = jsonResponse['imageUrl'];
+      final status = await _repository.getSelfProfileStatus();
+      if (status.images == null || status.images!.isEmpty) {
+        return null;
+      }
+
+      // Find the front image if possible, otherwise use the first one
+      final frontImage = status.images!.firstWhere(
+        (img) => img.captureType == 'front',
+        orElse: () => status.images!.first,
+      );
+
+      final imageUrl = frontImage.imageUrl;
+      if (imageUrl == null || imageUrl.isEmpty) {
+        return null;
+      }
 
       // Download the image and fix its orientation.
       final imagePath = await _downloadImage(imageUrl);
@@ -93,21 +105,5 @@ class FaceEnrollmentStore {
     final fixedFile = await FlutterExifRotation.rotateImage(path: file.path);
 
     return fixedFile.path;
-  }
-
-  /// Helper: Parse a string to FaceLandmarkType.
-  FaceLandmarkType _parseFaceLandmarkType(String key) {
-    // Assuming the key comes as 'leftEye', 'rightEye', etc.
-    switch (key) {
-      case 'leftEye':
-        return FaceLandmarkType.leftEye;
-      case 'rightEye':
-        return FaceLandmarkType.rightEye;
-      case 'noseBase':
-        return FaceLandmarkType.noseBase;
-      // Add additional cases as needed.
-      default:
-        return FaceLandmarkType.leftEye;
-    }
   }
 }

@@ -20,11 +20,13 @@ abstract class NoticeBoardStoreBase with Store {
 
   @action
   Future<void> getNoticeBoard() async {
+    isLoading = true;
     if (_noticeBox.isNotEmpty) {
       notices.clear();
       notices.addAll(_noticeBox.values);
     }
-    updateNoticeBoardInBackground();
+    await updateNoticeBoardInBackground();
+    isLoading = false;
   }
 
   Future<void> updateNoticeBoardInBackground() async {
@@ -32,35 +34,12 @@ abstract class NoticeBoardStoreBase with Store {
       // Fetch the latest notices from the server
       final apiNotices = await apiService.getNotices();
 
-      // Extract IDs of the notices from the server
-      final serverNoticeIds = apiNotices.map((notice) => notice.id).toSet();
-
-      // Extract IDs of the notices stored locally
-      final localNoticeIds =
-          _noticeBox.values.map((notice) => notice.id).toSet();
-
-      // Identify notices to remove: present locally but not on the server
-      final noticesToRemove = localNoticeIds.difference(serverNoticeIds);
-
-      // Remove obsolete notices from the local Hive box
-      for (var noticeId in noticesToRemove) {
-        final key = _noticeBox.keys.firstWhere(
-          (k) => _noticeBox.get(k)?.id == noticeId,
-          orElse: () => null,
-        );
-        if (key != null) {
-          await _noticeBox.delete(key);
+      // Keep previously cached notices if fetch failed/unauthorized and returned empty.
+      if (apiNotices.isNotEmpty) {
+        await _noticeBox.clear();
+        for (var notice in apiNotices) {
+          await _noticeBox.add(notice);
         }
-      }
-
-      // Identify new notices to add: present on the server but not locally
-      final newNotices = apiNotices
-          .where((notice) => !localNoticeIds.contains(notice.id))
-          .toList();
-
-      // Add new notices to the local Hive box
-      for (var notice in newNotices) {
-        await _noticeBox.add(notice);
       }
 
       // Update the in-memory list to reflect the current state of the Hive box
@@ -68,7 +47,7 @@ abstract class NoticeBoardStoreBase with Store {
         ..clear()
         ..addAll(_noticeBox.values);
 
-      log('${newNotices.length} new notices added, ${noticesToRemove.length} notices removed');
+      log('${apiNotices.length} notices synced');
     } catch (e) {
       log('Error updating notices: ${e.toString()}');
       // Handle the error appropriately

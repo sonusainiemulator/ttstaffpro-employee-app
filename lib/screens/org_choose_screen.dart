@@ -45,10 +45,15 @@ class _OrgChooseScreenState extends State<OrgChooseScreen> {
         final data = result.data;
         final name = data['name'];
         final subdomain = data['subdomain'];
+        final dynamic tenantIdRaw =
+            data['tenantId'] ?? data['tenant_id'] ?? data['id'];
+        final tenantId = tenantIdRaw?.toString();
 
         if (name != null && subdomain != null) {
           return TenantModel(
-            tenantId: subdomain, // Use subdomain as tenant identifier
+            tenantId: (tenantId != null && tenantId.isNotEmpty)
+                ? tenantId
+                : subdomain.toString(),
             tenantName: name,
             domain: subdomain,
             domains: [], // Not provided by lookup API
@@ -80,6 +85,7 @@ class _OrgChooseScreenState extends State<OrgChooseScreen> {
     if (foundTenant != null) {
       // Store tenant ID for X-Tenant-ID header (header-based SaaS mode)
       await setValue(tenantPref, foundTenant.tenantId);
+      await setValue(tenantSubDomainPref, foundTenant.domain);
 
       // Store organization name for display purposes
       await setValue('organization', foundTenant.tenantName);

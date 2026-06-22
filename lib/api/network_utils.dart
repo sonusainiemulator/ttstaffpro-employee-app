@@ -12,6 +12,7 @@ import 'config.dart';
 Map<String, String> buildHeader() {
   String? token = getStringAsync(tokenPref);
   String? tenantId = getStringAsync(tenantPref);
+  String? tenantSubDomain = getStringAsync(tenantSubDomainPref);
 
   log('Token: $token');
   if (getIsSaaSMode()) {
@@ -28,8 +29,17 @@ Map<String, String> buildHeader() {
   }
 
   // Add tenant ID header for SaaS mode
-  if (getIsSaaSMode() && !tenantId.isEmptyOrNull) {
-    headers['X-Tenant-ID'] = tenantId;
+  if (getIsSaaSMode()) {
+    if (!tenantId.isEmptyOrNull) {
+      headers['X-Tenant-ID'] = tenantId;
+    }
+
+    if (!tenantSubDomain.isEmptyOrNull) {
+      headers['X-Tenant-Subdomain'] = tenantSubDomain;
+    } else if (!tenantId.isEmptyOrNull) {
+      // Backward-compatible fallback when subdomain was stored in tenantIdPref.
+      headers['X-Tenant-Subdomain'] = tenantId;
+    }
   }
 
   return headers;

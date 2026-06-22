@@ -4075,7 +4075,28 @@ class LanguageFr extends BaseLanguage {
   String get lblDueInDays => 'Échéance dans %d jours';
   @override
   String get lblPolicyNotFound => 'Politique non trouvée';
+
+
+  @override
+  String get lblEditProfile => 'Edit Profile';
+  @override
+  String get lblSave => 'Save';
+  @override
+  String get lblSaveChanges => 'Save Changes';
+  @override
+  String get lblSelectImage => 'Select Photo';
+  @override
+  String get lblGallery => 'Gallery';
+  @override
+  String get lblTapToChangePhoto => 'Tap to change photo';
+  @override
+  String get lblProfileUpdatedSuccessfully => 'Profile updated successfully';
+  @override
+  String get lblContactInformation => 'Contact Information';
+  @override
+  String get lblPersonalDetails => 'Personal Details';
+  @override
+  String get lblAlternateNumber => 'Alternate Number';
+  @override
+  String get lblGender => 'Gender';
 }
-
-
-

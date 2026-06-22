@@ -49,6 +49,7 @@ const locationActivityTrackingEnabledPref =
 const approverPref = 'approverPref';
 
 const tenantPref = 'tenantIdPref';
+const tenantSubDomainPref = 'tenantSubDomainPref';
 
 const lastSyncRunAtPref = 'lastSyncRunAtPref';
 const appVersionPref = 'appVersionPref';

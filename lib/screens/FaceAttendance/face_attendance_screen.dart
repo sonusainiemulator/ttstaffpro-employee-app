@@ -38,8 +38,7 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
   // ML Kit FaceDetector
   final FaceDetector _faceDetector = FaceDetector(
     options: FaceDetectorOptions(
-      enableClassification:
-          true, // needed for eyeOpenProbability, smilingProbability
+      enableClassification: true, // needed for eyeOpenProbability, smilingProbability
       enableLandmarks: true,
       enableTracking: true,
       enableContours: false,
@@ -49,18 +48,23 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
   // Data for “enrolled” face
   LocalFaceData? _enrolledFace;
 
+  // Captured images for multi-image V1 enrollment
+  final List<String> _capturedImagePaths = [];
+  final List<String> _captureTypes = ['front', 'left', 'right'];
+  int _currentStep = 0; // 0 = front, 1 = left, 2 = right, 3 = ready to submit
+
   // Are we in “enroll” mode or “verify” mode?
   bool _enrollMode = true;
 
   // Status message
-  String _infoText = "Press 'Capture Face' to enroll.";
+  String _infoText = "Loading face profile status...";
 
   // For a naive “liveness” check
   bool _livenessPassed = false;
 
   bool _isEnrolled = true;
 
-  // Instance of our enrollment store (dummy implementation)
+  // Instance of our enrollment store using V1 APIs
   final FaceEnrollmentStore _store = FaceEnrollmentStore();
 
   @override
@@ -76,7 +80,11 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
 
   Future<void> _loadEnrollOption() async {
     _isEnrolled = await _store.isEnrolled();
-    setState(() {});
+    setState(() {
+      if (!_isEnrolled) {
+        _infoText = "Look straight into the camera and press 'Capture Front'.";
+      }
+    });
   }
 
   void _loadEnrollmentFromServer() async {
@@ -91,7 +99,6 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
 
   @override
   void dispose() {
-    // Restore orientations if you like:
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     _cameraController?.dispose();
     _faceDetector.close();
@@ -125,7 +132,6 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
       if (!mounted) return;
       setState(() {
         _isCameraInitialized = true;
-        _infoText = "Camera ready. Capture your face to enroll.";
       });
     } catch (e) {
       setState(() {
@@ -134,32 +140,30 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
     }
   }
 
-  /// Capture Face (Enroll)
-  Future<void> _captureFace() async {
+  /// Capture Face (Step-by-step)
+  Future<void> _captureFaceStep() async {
     if (!_isCameraInitialized) return;
     try {
       final XFile file = await _cameraController!.takePicture();
-
       final inputImage = InputImage.fromFilePath(file.path);
       final faces = await _faceDetector.processImage(inputImage);
 
       if (faces.isEmpty) {
         setState(() {
-          _infoText = "No face detected. Try again.";
+          _infoText = "No face detected. Please position your face inside the circle.";
         });
         return;
       }
 
-      // Use the first face
       final face = faces.first;
 
-      // Check naive liveness: eyes open?
+      // Check naive liveness
       final bool isLive = _checkLiveness(face);
       _livenessPassed = isLive;
 
       if (!isLive) {
         setState(() {
-          _infoText = "Liveness check failed! Eyes might be closed. Try again.";
+          _infoText = "Liveness check failed! Make sure your eyes are open and look at the camera.";
         });
         return;
       }
@@ -167,37 +171,52 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
       // Save image to a permanent location
       final savedPath = await _saveImageLocally(File(file.path));
 
-      // Gather naive landmarks
-      final landmarkMap = <FaceLandmarkType, Point<int>>{};
-      for (final type in FaceLandmarkType.values) {
-        final lm = face.landmarks[type];
-        if (lm != null) {
-          landmarkMap[type] = lm.position;
+      setState(() {
+        _capturedImagePaths.add(savedPath);
+        _currentStep++;
+        if (_currentStep < 3) {
+          final nextType = _captureTypes[_currentStep].toUpperCase();
+          _infoText = "Captured ${_captureTypes[_currentStep - 1].toUpperCase()}! Now turn your face to the $nextType and press 'Capture $nextType'.";
+        } else {
+          _infoText = "All captures completed. Press 'Submit Face Registration'.";
         }
-      }
+      });
+    } catch (e) {
+      setState(() {
+        _infoText = "Capture error: $e";
+      });
+    }
+  }
 
-      // Store in local face data
-      _enrolledFace = LocalFaceData(
-        imagePath: savedPath,
-        landmarks: landmarkMap,
+  /// Submit self registration to V1 API
+  Future<void> _submitFaceRegistration() async {
+    if (_capturedImagePaths.length < 3) return;
+    setState(() {
+      _infoText = "Uploading enrollment profiles to server...";
+    });
+
+    try {
+      final success = await _store.submitRegistration(
+        imagePaths: _capturedImagePaths,
+        captureTypes: _captureTypes,
       );
 
-      // Send the enrolled data to server so that enrollment happens only once.
-      final sent = await _store.sendEnrollment(_enrolledFace!);
-      if (sent) {
+      if (success) {
         setState(() {
           _isEnrolled = true;
           _enrollMode = false;
-          _infoText = "Face enrolled & liveness OK. Now press 'Verify Face'.";
+          _infoText = "Face registration submitted successfully! Press 'Verify Face' to verify.";
         });
+        _loadEnrollOption();
+        _loadEnrollmentFromServer();
       } else {
         setState(() {
-          _infoText = "Enrollment upload failed. Please try again.";
+          _infoText = "Upload failed. Please press the refresh icon to reset and try again.";
         });
       }
     } catch (e) {
       setState(() {
-        _infoText = "Capture error: $e";
+        _infoText = "Submission error: $e";
       });
     }
   }
@@ -244,9 +263,8 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
         }
       }
 
-      // Compare with enrolled face data (naively comparing the distance between eyes)
-      final isMatch =
-          _naiveCompareFaces(_enrolledFace!.landmarks!, newLandmarks);
+      // Compare with enrolled face data naively
+      final isMatch = _naiveCompareFaces(_enrolledFace!.landmarks!, newLandmarks);
       setState(() {
         if (isMatch) {
           _infoText = "Face MATCHED & Liveness OK! Attendance success!";
@@ -266,8 +284,7 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
   /// Save image to local document directory
   Future<String> _saveImageLocally(File file) async {
     final docDir = await getApplicationDocumentsDirectory();
-    final newPath =
-        '${docDir.path}/face_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final newPath = '${docDir.path}/face_${DateTime.now().millisecondsSinceEpoch}.jpg';
     final newFile = await file.copy(newPath);
     return newFile.path;
   }
@@ -343,10 +360,63 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
     );
   }
 
+  // Row of captured thumbnails to show step-by-step progress
+  Widget _buildCapturedThumbnails() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: List.generate(3, (index) {
+          final type = _captureTypes[index].toUpperCase();
+          final hasImage = _capturedImagePaths.length > index;
+          return Column(
+            children: [
+              Container(
+                width: 70,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: Colors.white24,
+                  border: Border.all(
+                    color: _currentStep == index ? appStore.appColorPrimary : Colors.white24,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: hasImage
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: Image.file(
+                          File(_capturedImagePaths[index]),
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Center(
+                        child: Icon(
+                          index == 0
+                              ? Icons.face
+                              : index == 1
+                                  ? Icons.chevron_left
+                                  : Icons.chevron_right,
+                          color: Colors.white60,
+                          size: 28,
+                        ),
+                      ),
+              ),
+              4.height,
+              Text(
+                type,
+                style: const TextStyle(color: Colors.white70, fontSize: 11),
+              ),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Custom AppBar row.
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -360,8 +430,7 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
             children: [
               // Top AppBar row.
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -378,7 +447,9 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
                         // Reset enrollment locally
                         setState(() {
                           _enrollMode = true;
-                          _infoText = "Press 'Capture Face' to enroll again.";
+                          _capturedImagePaths.clear();
+                          _currentStep = 0;
+                          _infoText = "Look straight into the camera and press 'Capture Front'.";
                           _enrolledFace = null;
                           _livenessPassed = false;
                         });
@@ -391,8 +462,7 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
               // Camera Preview area inside a rounded container.
               Expanded(
                 child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(16),
@@ -414,6 +484,7 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
                   ),
                 ),
               ),
+              if (!_isEnrolled) _buildCapturedThumbnails(),
               // Information text container.
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -438,24 +509,43 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
                   children: [
                     if (!_isEnrolled)
                       Expanded(
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepOrangeAccent,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: _captureFace,
-                          icon: Icon(
-                            Icons.camera_alt,
-                            color: white,
-                          ),
-                          label: Text(
-                            "Capture Face",
-                            style: TextStyle(color: white),
-                          ),
-                        ),
+                        child: _currentStep < 3
+                            ? ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepOrangeAccent,
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                onPressed: _captureFaceStep,
+                                icon: const Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.white,
+                                ),
+                                label: Text(
+                                  "Capture ${_captureTypes[_currentStep].toUpperCase()}",
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              )
+                            : ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                onPressed: _submitFaceRegistration,
+                                icon: const Icon(
+                                  Icons.cloud_upload,
+                                  color: Colors.white,
+                                ),
+                                label: const Text(
+                                  "Submit Face Registration",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
                       ),
                     if (_isEnrolled)
                       Expanded(
@@ -468,13 +558,13 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
                             ),
                           ),
                           onPressed: _verifyFace,
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.verified_user,
-                            color: white,
+                            color: Colors.white,
                           ),
-                          label: Text(
+                          label: const Text(
                             "Verify Face",
-                            style: TextStyle(color: white),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),

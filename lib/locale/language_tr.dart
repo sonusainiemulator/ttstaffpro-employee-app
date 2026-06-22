@@ -4185,7 +4185,28 @@ class LanguageTr extends BaseLanguage {
   String get lblDueInDays => '%d gün içinde';
   @override
   String get lblPolicyNotFound => 'Politika bulunamadı';
+
+
+  @override
+  String get lblEditProfile => 'Edit Profile';
+  @override
+  String get lblSave => 'Save';
+  @override
+  String get lblSaveChanges => 'Save Changes';
+  @override
+  String get lblSelectImage => 'Select Photo';
+  @override
+  String get lblGallery => 'Gallery';
+  @override
+  String get lblTapToChangePhoto => 'Tap to change photo';
+  @override
+  String get lblProfileUpdatedSuccessfully => 'Profile updated successfully';
+  @override
+  String get lblContactInformation => 'Contact Information';
+  @override
+  String get lblPersonalDetails => 'Personal Details';
+  @override
+  String get lblAlternateNumber => 'Alternate Number';
+  @override
+  String get lblGender => 'Gender';
 }
-
-
-

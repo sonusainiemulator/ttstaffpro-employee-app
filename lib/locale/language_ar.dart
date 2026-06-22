@@ -4049,7 +4049,28 @@ class LanguageAr extends BaseLanguage {
   String get lblDueInDays => 'مستحق خلال %d يوم';
   @override
   String get lblPolicyNotFound => 'السياسة غير موجودة';
+
+
+  @override
+  String get lblEditProfile => 'Edit Profile';
+  @override
+  String get lblSave => 'Save';
+  @override
+  String get lblSaveChanges => 'Save Changes';
+  @override
+  String get lblSelectImage => 'Select Photo';
+  @override
+  String get lblGallery => 'Gallery';
+  @override
+  String get lblTapToChangePhoto => 'Tap to change photo';
+  @override
+  String get lblProfileUpdatedSuccessfully => 'Profile updated successfully';
+  @override
+  String get lblContactInformation => 'Contact Information';
+  @override
+  String get lblPersonalDetails => 'Personal Details';
+  @override
+  String get lblAlternateNumber => 'Alternate Number';
+  @override
+  String get lblGender => 'Gender';
 }
-
-
-

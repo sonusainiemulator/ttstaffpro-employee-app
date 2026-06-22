@@ -1,4 +1,6 @@
 import '../base_repository.dart';
+import '../../api_routes.dart';
+import 'package:flutter/foundation.dart';
 import '../../../models/Document/document_request_model.dart';
 import '../../../models/Document/document_type_model.dart';
 
@@ -58,14 +60,54 @@ class DocumentRequestRepository extends BaseRepository {
 
   /// Get available document types for requesting
   Future<List<DocumentTypeModel>> getAvailableDocumentTypes() async {
-    return await safeApiCall(
-      () => dioClient.get('document-requests/document-types'),
-      parser: (data) {
-        return (data['data']['document_types'] as List? ?? [])
-            .map((item) => DocumentTypeModel.fromJson(item))
-            .toList();
-      },
-    );
+    // Prefer new endpoint, then gracefully fallback to legacy endpoint/shape.
+    try {
+      if (kDebugMode) {
+        debugPrint('[DocumentTypes] Trying endpoint: document-requests/document-types');
+      }
+      return await safeApiCall(
+        () => dioClient.get('document-requests/document-types'),
+        parser: (data) {
+          final dynamic root = data['data'];
+          final List rawList = (root is Map<String, dynamic>)
+              ? (root['document_types'] as List? ?? [])
+              : (root as List? ?? []);
+
+          if (kDebugMode) {
+            debugPrint('[DocumentTypes] New endpoint success. Raw count: ${rawList.length}');
+          }
+
+          return rawList
+              .whereType<Map>()
+              .map((item) => DocumentTypeModel.fromJson(
+                    Map<String, dynamic>.from(item),
+                  ))
+              .where((item) => item.id != null)
+              .toList();
+        },
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('[DocumentTypes] New endpoint failed: $e');
+        debugPrint('[DocumentTypes] Falling back to endpoint: ${APIRoutes.getDocumentTypesURL}');
+      }
+      return await safeApiCall(
+        () => dioClient.get(APIRoutes.getDocumentTypesURL),
+        parser: (data) {
+          final List rawList = data['data'] as List? ?? [];
+          if (kDebugMode) {
+            debugPrint('[DocumentTypes] Legacy endpoint success. Raw count: ${rawList.length}');
+          }
+          return rawList
+              .whereType<Map>()
+              .map((item) => DocumentTypeModel.fromJson(
+                    Map<String, dynamic>.from(item),
+                  ))
+              .where((item) => item.id != null)
+              .toList();
+        },
+      );
+    }
   }
 
   /// Request a new document
@@ -73,17 +115,37 @@ class DocumentRequestRepository extends BaseRepository {
     required int documentTypeId,
     String? remarks,
   }) async {
-    return await safeApiCall(
-      () => dioClient.post('document-requests', data: {
-        'document_type_id': documentTypeId,
-        'remarks': ?remarks,
-      }),
-      parser: (data) {
-        return DocumentRequestModel.fromJson(
-          data['data']['document_request'],
-        );
-      },
-    );
+    try {
+      return await safeApiCall(
+        () => dioClient.post('document-requests', data: {
+          'document_type_id': documentTypeId,
+          if (remarks != null && remarks.trim().isNotEmpty) 'remarks': remarks,
+        }),
+        parser: (data) {
+          return DocumentRequestModel.fromJson(
+            data['data']['document_request'],
+          );
+        },
+      );
+    } catch (_) {
+      return await safeApiCall(
+        () => dioClient.post(APIRoutes.createDocumentRequestURL, data: {
+          'typeId': documentTypeId,
+          'comments': remarks ?? '',
+        }),
+        parser: (data) {
+          final dynamic responseData = data['data'];
+          if (responseData is Map<String, dynamic>) {
+            return DocumentRequestModel.fromJson(responseData);
+          }
+          return DocumentRequestModel(
+            id: 0,
+            status: 'pending',
+            requestedDate: DateTime.now().toIso8601String(),
+          );
+        },
+      );
+    }
   }
 
   /// Get single document request details

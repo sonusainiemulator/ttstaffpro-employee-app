@@ -15,6 +15,7 @@ import '../../utils/app_widgets.dart';
 import '../DigitalId/digital_id_card_screen.dart';
 import '../Support/support_screen.dart';
 import '../language_screen.dart';
+import 'edit_profile_screen.dart';
 
 class AccountScreen extends StatefulWidget {
   static String tag = '/AccountScreen';
@@ -383,8 +384,27 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                     ),
 
+                    // Edit Profile Button
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF696CFF).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Iconsax.edit,
+                            color: Color(0xFF696CFF), size: 20),
+                        tooltip: language.lblEditProfile,
+                        onPressed: () async {
+                          final updated = await const EditProfileScreen()
+                              .launch(context, pageRouteAnimation: PageRouteAnimation.Slide);
+                          if (updated == true) setState(() {});
+                        },
+                      ),
+                    ),
+
                     // ID Card Icon Button
-                    if (moduleService.isDigitalIdCardModuleEnabled())
+                    if (moduleService.isDigitalIdCardModuleEnabled()) ...[
+                      4.width,
                       Container(
                         decoration: BoxDecoration(
                           color: const Color(0xFF696CFF).withOpacity(0.1),
@@ -398,6 +418,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           },
                         ),
                       ),
+                    ],
                   ],
                 ),
 
