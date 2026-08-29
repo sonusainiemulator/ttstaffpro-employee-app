@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:path_provider/path_provider.dart';
@@ -145,7 +146,11 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
     if (!_isCameraInitialized) return;
     try {
       final XFile file = await _cameraController!.takePicture();
-      final inputImage = InputImage.fromFilePath(file.path);
+      // Bake the EXIF rotation into the pixels so the saved/uploaded image is
+      // upright on every device (some sensors return rotated pixels).
+      final File uprightFile =
+          await FlutterExifRotation.rotateImage(path: file.path);
+      final inputImage = InputImage.fromFilePath(uprightFile.path);
       final faces = await _faceDetector.processImage(inputImage);
 
       if (faces.isEmpty) {
@@ -169,7 +174,7 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
       }
 
       // Save image to a permanent location
-      final savedPath = await _saveImageLocally(File(file.path));
+      final savedPath = await _saveImageLocally(uprightFile);
 
       setState(() {
         _capturedImagePaths.add(savedPath);
@@ -324,6 +329,20 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
     return sqrt(dx * dx + dy * dy);
   }
 
+  /// Number of 90° turns to rotate the camera preview so it displays upright.
+  ///
+  /// The front-camera sensor is mounted landscape; how much the preview needs
+  /// rotating depends on the device's reported `sensorOrientation` (270° on
+  /// many Pixel phones, 90° on others, etc.). Hardcoding a fixed value (e.g.
+  /// `3`) shows a sideways/upside-down preview on devices with a different
+  /// sensor orientation.
+  int _previewQuarterTurns() {
+    final description = _cameraController!.description;
+    // The screen is locked to portraitUp (device rotation = 0), so the sensor
+    // orientation alone determines the required preview rotation.
+    return (description.sensorOrientation / 90).round() % 4;
+  }
+
   // Build the camera preview with aspect ratio.
   Widget _buildCameraPreview() {
     if (!_isCameraInitialized || _cameraController == null) {
@@ -337,7 +356,7 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
     }
     final ratio = _cameraController!.value.aspectRatio;
     return RotatedBox(
-      quarterTurns: 3,
+      quarterTurns: _previewQuarterTurns(),
       child: AspectRatio(
         aspectRatio: ratio,
         child: CameraPreview(_cameraController!),

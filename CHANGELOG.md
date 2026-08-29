@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3] - 2026-08-30
+
+### Fixed
+- Camera preview/capture no longer hardcodes a 90° rotation — it now derives
+  from the device's sensor orientation, fixing sideways/upside-down face images
+  on real devices (self face registration flow).
+
 ## [1.1.2] - 2026-08-30
 
 ### Added
