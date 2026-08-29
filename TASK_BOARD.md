@@ -21,6 +21,7 @@ Easy daily task tracking: **🆕 Todo → 🔨 In Progress → ⏳ Pending → �
 | | | | | ✅ Commit root repo face-attendance changes |
 | | | | | ✅ Gitignore release APK binaries (kiosk repo) |
 | | | | | ✅ Fix camera rotation on real devices (employee + kiosk) |
+| | | | | ✅ App version footer on all kiosk screens + home design fix |
 
 **Quick add for today:**
 - [ ] _(add your tasks here with `- [ ] task (priority)`)_
@@ -37,6 +38,7 @@ Easy daily task tracking: **🆕 Todo → 🔨 In Progress → ⏳ Pending → �
 - Committed + pushed root repo face-attendance integration: `feat: face attendance self/admin registration + kiosk profile fixes` (30 files) — version bumped to `1.1.2+20260830`; fixed `?year` syntax bug in `holiday_repository`; regenerated MobX `.g.dart`; `flutter analyze` 0 errors.
 - Gitignored `*.apk` binaries in kiosk repo → `chore: gitignore release apk binaries` (all 3 repos now clean & up to date).
 - Fixed **camera rotation** on real devices — preview/capture no longer hardcodes a 90° turn, now derives from device `sensorOrientation` (+ EXIF-baked captures): employee app `fix: correct face capture camera rotation` (v1.1.3) and kiosk `fix: derive camera preview rotation from sensor orientation` (v1.0.3, scan + register screens).
+- Added **app version footer** (`vX.Y.Z`) on all 7 kiosk screens via `KioskVersionFooter` + fixed home action-card labels wrapping mid-word (scale-to-fit) — kiosk `feat: show app version footer on all screens + fix home card text wrap` (v1.0.4).
 
 **Pending:**
 - **Real-device manual testing of kiosk release APK** — the only open task. Needs: install `TTStaffPro-Kiosk-v1.0.2-release.apk` on a real Android tablet/phone, verify company match → admin login → face register → scan check-in/check-out → daily report.
