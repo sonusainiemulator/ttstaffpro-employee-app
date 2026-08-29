@@ -35,8 +35,8 @@ class _SplashScreenState extends State<SplashScreen> {
       final connectivityResult = await (Connectivity().checkConnectivity());
 
       bool isAnyConnection = connectivityResult.any((element) =>
-          element == ConnectivityResult.mobile ||
-          element == ConnectivityResult.wifi);
+          element != ConnectivityResult.none &&
+          element != ConnectivityResult.bluetooth);
 
       if (isAnyConnection) {
         print('SplashScreen: baseURL is "${APIRoutes.baseURL}"');

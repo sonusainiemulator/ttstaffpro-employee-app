@@ -55,7 +55,7 @@ class _BarcodeScannerWithOverlayState extends State<BarcodeScannerWithOverlay> {
               fit: BoxFit.contain,
               controller: controller,
               scanWindow: scanWindow,
-              errorBuilder: (context, error, child) {
+              errorBuilder: (context, error) {
                 return ScannerErrorWidget(error: error);
               },
               overlayBuilder: (context, constraints) {
@@ -338,7 +338,7 @@ class SwitchCameraButton extends StatelessWidget {
         switch (state.cameraDirection) {
           case CameraFacing.front:
             icon = const Icon(Icons.camera_front);
-          case CameraFacing.back:
+          default:
             icon = const Icon(Icons.camera_rear);
         }
 

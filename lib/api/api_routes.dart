@@ -282,4 +282,13 @@ class APIRoutes {
   static const String adminSpoofEvents = '$faceAttendanceBase/admin/spoof-events';
   static const String adminDevicesHealth = '$faceAttendanceBase/admin/devices/health';
   static const String adminSettings = '$faceAttendanceBase/admin/settings';
+
+  // Face Attendance Kiosk (wall-mounted tablet) — single-point attendance
+  static const String kioskBase = '$faceAttendanceBase/kiosk';
+  static const String kioskCompanyMatch = '$kioskBase/company-match';
+  static const String kioskLogin = '$kioskBase/login';
+  static const String kioskDeviceToken = '$kioskBase/device-token';
+  static const String kioskReport = '$kioskBase/report';
+  static const String kioskEmployees = '$kioskBase/employees';
+  static const String kioskEnroll = '$kioskBase/enroll';
 }

@@ -11,6 +11,7 @@ import '../../utils/app_images.dart';
 import '../ForgotPassword/ForgotPassword.dart';
 import '../language_screen.dart';
 import '../org_choose_screen.dart';
+import '../Scanner/qr_scanner_screen.dart';
 import 'LoginStore.dart';
 
 class ModernLoginScreen extends StatefulWidget {
@@ -69,26 +70,19 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
       vsync: this,
       duration: const Duration(milliseconds: 800),
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+        );
 
     // Scale animation
     _scaleController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _scaleController,
-      curve: Curves.easeOutBack,
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _scaleController, curve: Curves.easeOutBack),
+    );
 
     // Start animations
     _fadeController.forward();
@@ -189,11 +183,7 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
                         );
                 },
               )
-            : Image.asset(
-                appLogoImg,
-                height: 80,
-                width: 80,
-              ),
+            : Image.asset(appLogoImg, height: 80, width: 80),
       ),
     );
   }
@@ -267,8 +257,9 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
             ? Container(
                 decoration: BoxDecoration(
                   color: AppDesignSystem.primaryLight.withOpacity(0.3),
-                  borderRadius:
-                      BorderRadius.circular(AppDesignSystem.radiusMedium),
+                  borderRadius: BorderRadius.circular(
+                    AppDesignSystem.radiusMedium,
+                  ),
                 ),
                 child: Center(
                   child: SizedBox(
@@ -300,13 +291,15 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
                       sharedHelper.routeBasedOnStatus(context, result);
                     }
                   },
-                  borderRadius:
-                      BorderRadius.circular(AppDesignSystem.radiusMedium),
+                  borderRadius: BorderRadius.circular(
+                    AppDesignSystem.radiusMedium,
+                  ),
                   child: Ink(
                     decoration: BoxDecoration(
                       gradient: AppDesignSystem.primaryGradient,
-                      borderRadius:
-                          BorderRadius.circular(AppDesignSystem.radiusMedium),
+                      borderRadius: BorderRadius.circular(
+                        AppDesignSystem.radiusMedium,
+                      ),
                       boxShadow: AppDesignSystem.shadowMedium,
                     ),
                     child: Center(
@@ -322,6 +315,49 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
                   ),
                 ),
               ),
+      ),
+    );
+  }
+
+  Future<void> _loginWithQrCode() async {
+    HapticFeedback.mediumImpact();
+    hideKeyboard(context);
+
+    final scannedValue = await const BarcodeScannerWithOverlay().launch(
+      context,
+    );
+    if (!mounted || scannedValue is! String || scannedValue.trim().isEmpty) {
+      return;
+    }
+
+    final result = await _loginStore.loginWithQrCode(scannedValue);
+    if (!mounted) return;
+
+    if (result.toLowerCase() == 'active') {
+      sharedHelper.refreshAppSettings();
+      const OrgChooseScreen().launch(context, isNewTask: true);
+    } else {
+      sharedHelper.routeBasedOnStatus(context, result);
+    }
+  }
+
+  Widget _buildQrLoginButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: OutlinedButton.icon(
+        onPressed: _loginStore.isLoginWithUidBtnLoading
+            ? null
+            : _loginWithQrCode,
+        icon: const Icon(Icons.qr_code_scanner_rounded),
+        label: const Text('Login with QR Code'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppDesignSystem.primaryColor,
+          side: BorderSide(color: AppDesignSystem.primaryColor),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDesignSystem.radiusMedium),
+          ),
+        ),
       ),
     );
   }
@@ -353,7 +389,8 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
         ),
         12.height,
         Text(
-          language.lblLooksLikeYouAlreadyRegisteredThisDeviceYouCanUseOneTapLogin,
+          language
+              .lblLooksLikeYouAlreadyRegisteredThisDeviceYouCanUseOneTapLogin,
           textAlign: TextAlign.center,
           style: AppDesignSystem.bodyMedium.copyWith(
             color: AppDesignSystem.neutral600,
@@ -369,8 +406,9 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
                 ? Container(
                     decoration: BoxDecoration(
                       color: AppDesignSystem.primaryLight.withOpacity(0.3),
-                      borderRadius:
-                          BorderRadius.circular(AppDesignSystem.radiusMedium),
+                      borderRadius: BorderRadius.circular(
+                        AppDesignSystem.radiusMedium,
+                      ),
                     ),
                     child: Center(
                       child: SizedBox(
@@ -394,13 +432,15 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
                         var result = await _loginStore.loginWithUid();
                         sharedHelper.routeBasedOnStatus(context, result);
                       },
-                      borderRadius:
-                          BorderRadius.circular(AppDesignSystem.radiusMedium),
+                      borderRadius: BorderRadius.circular(
+                        AppDesignSystem.radiusMedium,
+                      ),
                       child: Ink(
                         decoration: BoxDecoration(
                           gradient: AppDesignSystem.primaryGradient,
                           borderRadius: BorderRadius.circular(
-                              AppDesignSystem.radiusMedium),
+                            AppDesignSystem.radiusMedium,
+                          ),
                           boxShadow: AppDesignSystem.shadowMedium,
                         ),
                         child: Row(
@@ -448,7 +488,8 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
               12.width,
               Expanded(
                 child: Text(
-                  language.lblIfYouWantToLoginWithDifferentAccountPleaseContactAdministrator,
+                  language
+                      .lblIfYouWantToLoginWithDifferentAccountPleaseContactAdministrator,
                   style: AppDesignSystem.bodySmall.copyWith(
                     color: AppDesignSystem.neutral700,
                   ),
@@ -568,10 +609,9 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
                 ),
                 32.height,
                 _buildLoginButton(),
-                if (appStore.isDemoMode) ...[
-                  24.height,
-                  _buildDemoSection(),
-                ],
+                16.height,
+                _buildQrLoginButton(),
+                if (appStore.isDemoMode) ...[24.height, _buildDemoSection()],
               ],
             ),
           ),
@@ -640,14 +680,10 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
                         if (!mounted) return;
                         sharedHelper.refreshAppSettings();
                         // Skip device verification for Employee App
-                        PermissionScreen()
-                            .launch(context, isNewTask: true);
+                        PermissionScreen().launch(context, isNewTask: true);
                       }
                     },
-                    icon: Icon(
-                      Icons.person_add_outlined,
-                      size: 20,
-                    ),
+                    icon: Icon(Icons.person_add_outlined, size: 20),
                     label: Text(language.lblCreateDemoAccount),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppDesignSystem.warningColor,
@@ -683,16 +719,12 @@ class _ModernLoginScreenState extends State<ModernLoginScreen>
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: AppDesignSystem.backgroundGradient,
-        ),
+        decoration: BoxDecoration(gradient: AppDesignSystem.backgroundGradient),
         child: Stack(
           children: [
             // Background pattern
             Positioned.fill(
-              child: CustomPaint(
-                painter: BackgroundPatternPainter(),
-              ),
+              child: CustomPaint(painter: BackgroundPatternPainter()),
             ),
 
             // Main content

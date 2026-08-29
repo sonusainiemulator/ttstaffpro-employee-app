@@ -3,6 +3,8 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:open_core_hr/screens/ChangePassword/change_password_screen.dart';
+import 'package:open_core_hr/screens/FaceAttendance/face_registration_admin_screen.dart';
+import 'package:open_core_hr/screens/FaceAttendance/face_registration_screen.dart';
 import 'package:open_core_hr/screens/Settings/modules_screen.dart';
 
 import '../../main.dart';
@@ -145,6 +147,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     const ChangePasswordScreen().launch(context);
                   },
                 ),
+                if (moduleService.isFaceAttendanceModuleEnabled()) ...[
+                  const SizedBox(height: 12),
+                  _buildSettingsCard(
+                    isDark: isDark,
+                    title: language.lblFaceAttendance,
+                    icon: Iconsax.scanning,
+                    subtitle: 'Add your face for kiosk check-in',
+                    onTap: () {
+                      const FaceRegistrationScreen().launch(context);
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  _buildSettingsCard(
+                    isDark: isDark,
+                    title: language.lblFaceAttendanceDevice,
+                    icon: Iconsax.mobile,
+                    subtitle: 'View done & pending registrations',
+                    onTap: () {
+                      const FaceRegistrationAdminScreen().launch(context);
+                    },
+                  ),
+                ],
                 const SizedBox(height: 24),
                 // Theme Selector Section
                 _buildThemeSelector(isDark),

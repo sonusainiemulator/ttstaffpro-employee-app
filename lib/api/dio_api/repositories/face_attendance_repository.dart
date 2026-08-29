@@ -5,6 +5,7 @@ import '../../../models/face_attendance/face_device_model.dart';
 import '../../../models/face_attendance/face_event_model.dart';
 import '../../../models/face_attendance/face_dashboard_model.dart';
 import '../../../models/face_attendance/face_settings_model.dart';
+import '../../../models/face_attendance/kiosk_model.dart';
 import '../../api_routes.dart';
 import '../base_repository.dart';
 
@@ -346,14 +347,22 @@ class FaceAttendanceRepository extends BaseRepository {
     );
   }
 
-  /// Download profile package
+  /// Download profile package.
+  ///
+  /// Server returns `data: { meta: {...}, package: { generated_at, profiles:
+  /// [...] } }`. Unwrap `data.package.profiles`; fall back to a bare list for
+  /// older/alternate payloads.
   Future<List<FaceProfileDetail>> downloadProfilePackage() async {
     final path = '${APIRoutes.deviceProfilePackage}/download';
     return await safeApiCall(
       () => dioClient.get(path),
       parser: (data) {
-        final list = (data['data'] ?? data) as List;
-        return list.map((e) => FaceProfileDetail.fromJson(e as Map<String, dynamic>)).toList();
+        final map = (data['data'] as Map<String, dynamic>?) ?? data as Map<String, dynamic>;
+        final package = (map['package'] as Map<String, dynamic>?) ?? map;
+        final list = (package['profiles'] as List?) ?? const [];
+        return list
+            .map((e) => FaceProfileDetail.fromJson(e as Map<String, dynamic>))
+            .toList();
       },
       showError: true,
     );
@@ -547,6 +556,121 @@ class FaceAttendanceRepository extends BaseRepository {
   Future<bool> updateSettings(FaceModuleSettings settings) async {
     return await safeApiCall(
       () => dioClient.put(APIRoutes.adminSettings, data: settings.toJson()),
+      parser: (data) => true,
+      showError: true,
+    );
+  }
+
+  // ==========================================
+  // 9) Kiosk (wall-mounted tablet) APIs
+  // ==========================================
+
+  /// Match the company name typed on the kiosk login screen.
+  Future<KioskCompanyMatchResult> kioskCompanyMatch(String companyName) async {
+    return await safeApiCall(
+      () => dioClient.post(APIRoutes.kioskCompanyMatch, data: {'companyName': companyName}),
+      parser: (data) => KioskCompanyMatchResult.fromJson(data as Map<String, dynamic>),
+      showError: true,
+    );
+  }
+
+  /// Master login for the single-point kiosk tablet.
+  Future<KioskLoginResult> kioskLogin({
+    required String companyId,
+    required String username,
+    required String password,
+  }) async {
+    return await safeApiCall(
+      () => dioClient.post(
+        APIRoutes.kioskLogin,
+        data: {
+          'companyId': companyId,
+          'username': username,
+          'password': password,
+        },
+      ),
+      parser: (data) => KioskLoginResult.fromJson(data as Map<String, dynamic>),
+      showError: true,
+    );
+  }
+
+  /// Exchange a master token + device for a scoped device token.
+  Future<String?> kioskDeviceToken({
+    required String companyId,
+    required String deviceUuid,
+  }) async {
+    return await safeApiCall(
+      () => dioClient.post(
+        APIRoutes.kioskDeviceToken,
+        data: {
+          'companyId': companyId,
+          'deviceUuid': deviceUuid,
+        },
+      ),
+      parser: (data) {
+        final body = (data['data'] as Map<String, dynamic>?) ?? data as Map<String, dynamic>;
+        return (body['deviceToken'] ?? body['token'])?.toString();
+      },
+      showError: true,
+    );
+  }
+
+  /// Fetch the date-wise staff attendance report for the kiosk.
+  Future<KioskDailyReport> getKioskDailyReport(String date) async {
+    return await safeApiCall(
+      () => dioClient.get(
+        APIRoutes.kioskReport,
+        queryParameters: {'date': date},
+      ),
+      parser: (data) => KioskDailyReport.fromJson(data as Map<String, dynamic>),
+      showError: true,
+    );
+  }
+
+  /// List the tenant's active employees so the admin can register faces.
+  Future<List<KioskEmployee>> kioskEmployees() async {
+    return await safeApiCall(
+      () => dioClient.get(APIRoutes.kioskEmployees),
+      parser: (data) {
+        final body = (data['data'] as Map<String, dynamic>?) ??
+            data as Map<String, dynamic>;
+        final list = (body['employees'] as List?) ?? const [];
+        return list
+            .map((e) => KioskEmployee.fromJson(e as Map<String, dynamic>))
+            .toList();
+      },
+      showError: true,
+    );
+  }
+
+  /// Register a face for an employee directly from the kiosk (multipart).
+  Future<bool> kioskEnrollFace({
+    required int employeeId,
+    required List<String> imagePaths,
+    required List<String> captureTypes,
+    String? notes,
+  }) async {
+    final formData = FormData();
+    formData.fields.add(MapEntry('employeeId', employeeId.toString()));
+    if (notes != null) formData.fields.add(MapEntry('notes', notes));
+
+    for (final path in imagePaths) {
+      formData.files.add(MapEntry(
+        'images[]',
+        await MultipartFile.fromFile(path),
+      ));
+    }
+
+    for (final type in captureTypes) {
+      formData.fields.add(MapEntry('captureTypes[]', type));
+    }
+
+    return await safeApiCall(
+      () => dioClient.post(
+        APIRoutes.kioskEnroll,
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+      ),
       parser: (data) => true,
       showError: true,
     );

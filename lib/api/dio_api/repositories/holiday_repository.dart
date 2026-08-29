@@ -23,7 +23,7 @@ class HolidayRepository extends BaseRepository {
         () => dioClient.get(
           '/holidays/my-holidays',
           queryParameters: {
-            'year': ?year,
+            'year': year,
           },
           cancelToken: cancelToken,
         ),
@@ -84,7 +84,7 @@ class HolidayRepository extends BaseRepository {
         () => dioClient.get(
           '/holidays/by-year-grouped',
           queryParameters: {
-            'year': ?year,
+            'year': year,
           },
           cancelToken: cancelToken,
         ),

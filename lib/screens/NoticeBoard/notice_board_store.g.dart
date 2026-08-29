@@ -45,7 +45,7 @@ mixin _$NoticeBoardStore on NoticeBoardStoreBase, Store {
       AsyncAction('NoticeBoardStoreBase.getNoticeBoard', context: context);
 
   @override
-  Future getNoticeBoard() {
+  Future<void> getNoticeBoard() {
     return _$getNoticeBoardAsyncAction.run(() => super.getNoticeBoard());
   }
 

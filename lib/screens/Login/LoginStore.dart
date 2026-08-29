@@ -57,7 +57,7 @@ abstract class LoginStoreBase with Store {
   void setupValidations() {
     _disposers = [
       reaction((_) => employeeId, validateEmployeeId),
-      reaction((_) => password, validatePassword)
+      reaction((_) => password, validatePassword),
     ];
   }
 
@@ -84,8 +84,9 @@ abstract class LoginStoreBase with Store {
     }
 
     try {
-      employeeIdCheck =
-          ObservableFuture(apiService.checkValidEmployeeId(value!));
+      employeeIdCheck = ObservableFuture(
+        apiService.checkValidEmployeeId(value!),
+      );
       final isValid = await employeeIdCheck;
       if (!isValid) {
         error.employeeId = language.lblEmployeeIdDoesNotExists;
@@ -119,7 +120,7 @@ abstract class LoginStoreBase with Store {
     isLoading = true;
     Map payload = {
       'employeeId': employeeId!.trim(),
-      'password': password!.trim()
+      'password': password!.trim(),
     };
 
     String body = json.encode(payload);
@@ -140,10 +141,12 @@ abstract class LoginStoreBase with Store {
     log('Login Request URL: $baseUrl');
     log('Login Headers: $headers');
 
-    Response response = await post(Uri.parse(baseUrl),
-        headers: headers,
-        body: body,
-        encoding: Encoding.getByName("utf-8"));
+    Response response = await post(
+      Uri.parse(baseUrl),
+      headers: headers,
+      body: body,
+      encoding: Encoding.getByName("utf-8"),
+    );
 
     int statusCode = response.statusCode;
 
@@ -159,12 +162,16 @@ abstract class LoginStoreBase with Store {
       log('Login API Response Body: ${response.body}');
       var user = UserModel.fromJSON(apiResponse.data);
       if (user.token == null || user.token!.isEmpty) {
-        log('WARNING: Token is missing from UserModel! Attempting to parse from root...');
+        log(
+          'WARNING: Token is missing from UserModel! Attempting to parse from root...',
+        );
         if (data is Map && data.containsKey('token')) {
-            user.token = data['token'].toString();
-            log('Recovered token from root JSON.');
-        } else if (data is Map && data['data'] is Map && data['data'].containsKey('token')) {
-            user.token = data['data']['token'].toString();
+          user.token = data['token'].toString();
+          log('Recovered token from root JSON.');
+        } else if (data is Map &&
+            data['data'] is Map &&
+            data['data'].containsKey('token')) {
+          user.token = data['data']['token'].toString();
         }
       }
 
@@ -173,7 +180,9 @@ abstract class LoginStoreBase with Store {
         await setValue(isLoggedInPref, false);
         await setValue(isDeviceVerifiedPref, false);
         isLoading = false;
-        toast('Login response is incomplete. Please contact your administrator.');
+        toast(
+          'Login response is incomplete. Please contact your administrator.',
+        );
         return "";
       }
 
@@ -187,8 +196,10 @@ abstract class LoginStoreBase with Store {
         await setValue(avatarPref, user.avatar ?? '');
       }
 
-      await setValue(locationActivityTrackingEnabledPref,
-          user.locationActivityTrackingEnabled);
+      await setValue(
+        locationActivityTrackingEnabledPref,
+        user.locationActivityTrackingEnabled,
+      );
 
       await setValue(employeeCodePref, user.employeeCode);
 
@@ -286,6 +297,55 @@ abstract class LoginStoreBase with Store {
       await setValue(isDeviceVerifiedPref, false);
       isLoginWithUidBtnLoading = false;
       return "";
+    }
+  }
+
+  /// Logs in using the value encoded in the QR code.
+  ///
+  /// The current backend exposes the `loginWithUid` endpoint. The QR login
+  /// flow sends the scanned value to that endpoint; this keeps the session
+  /// handling identical to the existing one-tap login flow.
+  Future<String> loginWithQrCode(String qrValue) async {
+    final value = qrValue.trim();
+    if (value.isEmpty) {
+      toast('Invalid QR code. Please scan a valid login QR code.');
+      return '';
+    }
+
+    isLoginWithUidBtnLoading = true;
+    try {
+      final user = await apiService.loginWIthUid(value);
+      if (user == null || user.token.isEmptyOrNull) {
+        await setValue(isLoggedInPref, false);
+        await setValue(isDeviceVerifiedPref, false);
+        toast('This QR code is invalid or has expired.');
+        return '';
+      }
+
+      await setValue(userIdPref, user.id);
+      await setValue(isLoggedInPref, true);
+      await setValue(isDeviceVerifiedPref, false);
+      await setValue(firstNamePref, user.firstName);
+      await setValue(lastNamePref, user.lastName);
+      await setValue(genderPref, user.gender);
+      if (!user.avatar.isEmptyOrNull) {
+        await setValue(avatarPref, user.avatar ?? '');
+      }
+      await setValue(addressPref, user.address);
+      await setValue(phoneNumberPref, user.phoneNumber);
+      await setValue(alternateNumberPref, user.alternateNumber);
+      await setValue(statusPref, user.status);
+      await setValue(tokenPref, user.token);
+      await setValue(approverPref, user.isApprover);
+      return user.status.toString();
+    } catch (e) {
+      log('QR login failed: $e');
+      await setValue(isLoggedInPref, false);
+      await setValue(isDeviceVerifiedPref, false);
+      toast('QR login failed. Please try again.');
+      return '';
+    } finally {
+      isLoginWithUidBtnLoading = false;
     }
   }
 }

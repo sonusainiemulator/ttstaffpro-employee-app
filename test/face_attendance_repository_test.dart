@@ -146,6 +146,61 @@ void main() {
       expect(detail.assignedDevices!.first.deviceName, 'Main Entrance');
     });
 
+    test('downloadProfilePackage unwraps data.package.profiles', () async {
+      final jsonResponse = {
+        'statusCode': 200,
+        'status': 'success',
+        'data': {
+          'meta': {
+            'package_version': '3-2',
+            'profiles_count': 1,
+            'download_required': true,
+          },
+          'package': {
+            'generated_at': '2026-08-29T23:19:54+05:30',
+            'profiles': [
+              {
+                'id': 1,
+                'employee_id': 101,
+                'employee_name': 'John Doe',
+                'registration_mode': 'self',
+                'enrollment_version': 1,
+                'images': [
+                  {
+                    'capture_type': 'front',
+                    'file_path': 'face-attendance/profiles/1/a.jpg',
+                    'image_url': 'https://ttstaffpro.in/storage/face-attendance/profiles/1/a.jpg',
+                  }
+                ],
+              }
+            ],
+          },
+        },
+      };
+
+      mockAdapter.handler = (options) {
+        expect(options.path, contains('face-attendance/device/profile-package/download'));
+        expect(options.method, 'GET');
+        return ResponseBody.fromString(
+          jsonEncode(jsonResponse),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      };
+
+      final profiles = await repository.downloadProfilePackage();
+      expect(profiles, hasLength(1));
+      expect(profiles.first.employeeId, 101);
+      expect(profiles.first.employeeName, 'John Doe');
+      expect(profiles.first.images!.first.captureType, 'front');
+      expect(
+        profiles.first.images!.first.imageUrl,
+        'https://ttstaffpro.in/storage/face-attendance/profiles/1/a.jpg',
+      );
+    });
+
     test('checkSelfEligibility parses eligibility correctly', () async {
       final jsonResponse = {
         'statusCode': 200,
@@ -394,6 +449,124 @@ void main() {
       // Perform a dummy request
       final eligibility = await repository.checkSelfEligibility();
       expect(eligibility, isNotNull);
+    });
+  });
+
+  group('Kiosk repository methods', () {
+    test('kioskCompanyMatch parses matched company', () async {
+      final jsonResponse = {
+        'statusCode': 200,
+        'status': 'success',
+        'data': {
+          'ok': true,
+          'company': {
+            'id': 12,
+            'name': 'TT Staff Pro Pvt Ltd',
+            'logoUrl': 'https://example.com/logo.png',
+            'tenantId': 'tenant_abc',
+          }
+        }
+      };
+
+      mockAdapter.handler = (options) {
+        expect(options.path, contains('face-attendance/kiosk/company-match'));
+        expect(options.method, 'POST');
+        return ResponseBody.fromString(
+          jsonEncode(jsonResponse),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      };
+
+      final result = await repository.kioskCompanyMatch('TT Staff Pro');
+      expect(result.ok, isTrue);
+      expect(result.company?.id, 12);
+      expect(result.company?.name, 'TT Staff Pro Pvt Ltd');
+    });
+
+    test('kioskLogin returns master token', () async {
+      final jsonResponse = {
+        'statusCode': 200,
+        'status': 'success',
+        'data': {
+          'ok': true,
+          'token': 'master_tok_123',
+          'deviceRequired': true,
+        }
+      };
+
+      mockAdapter.handler = (options) {
+        expect(options.path, contains('face-attendance/kiosk/login'));
+        expect(options.method, 'POST');
+        return ResponseBody.fromString(
+          jsonEncode(jsonResponse),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      };
+
+      final result = await repository.kioskLogin(
+        companyId: '12',
+        username: 'kiosk',
+        password: 'secret',
+      );
+      expect(result.ok, isTrue);
+      expect(result.masterToken, 'master_tok_123');
+      expect(result.deviceRequired, isTrue);
+    });
+
+    test('getKioskDailyReport parses rows with late/early flags', () async {
+      final jsonResponse = {
+        'statusCode': 200,
+        'status': 'success',
+        'data': {
+          'date': '2026-08-29',
+          'presentCount': 2,
+          'rows': [
+            {
+              'employeeId': 154,
+              'employeeName': 'John Doe',
+              'checkIn': '2026-08-29T09:05:00Z',
+              'checkOut': '2026-08-29T18:00:00Z',
+              'isLate': true,
+              'isEarly': false,
+              'status': 'present',
+            },
+            {
+              'employeeId': 155,
+              'employeeName': 'Jane Smith',
+              'checkIn': '2026-08-29T08:58:00Z',
+              'checkOut': '2026-08-29T16:45:00Z',
+              'isLate': false,
+              'isEarly': true,
+              'status': 'present',
+            }
+          ]
+        }
+      };
+
+      mockAdapter.handler = (options) {
+        expect(options.path, contains('face-attendance/kiosk/report'));
+        expect(options.method, 'GET');
+        return ResponseBody.fromString(
+          jsonEncode(jsonResponse),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      };
+
+      final report = await repository.getKioskDailyReport('2026-08-29');
+      expect(report.rows, hasLength(2));
+      expect(report.presentCount, 2);
+      expect(report.rows.first.isLate, isTrue);
+      expect(report.rows.last.isEarly, isTrue);
+      expect(report.rows.first.employeeName, 'John Doe');
     });
   });
 }

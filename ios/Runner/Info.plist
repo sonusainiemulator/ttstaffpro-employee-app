@@ -11,7 +11,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Open Core Hr</string>
+	<string>TTStaffPro</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -32,6 +32,8 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>We need access to your media library to attach audio files as proof of expense or leave requests.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need your camera permission to share the update and also to mark a visit a the place you were visiting.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -40,10 +42,14 @@
 	<string>We need your location permission for attendance and to calculate the distance travelled during the work hour.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location permission for attendance and to calculate the distance travelled during the work hour.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need your microphone permission to record voice notes as proof of expense or leave requests.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>We need your motion sensor permission to know whether your walking or in transport, this information is only disclosed to admin and hr.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need gallery permission to pick images as proof of expense request to verify by your hr or admin.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>We need speech recognition permission to convert your voice notes into text for expense or leave requests.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

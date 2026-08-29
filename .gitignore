@@ -43,3 +43,19 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Local-only mock Firebase iOS config (no real iOS app registered yet).
+# Replace with the real file from Firebase Console before shipping.
+/ios/Runner/GoogleService-Info.plist
+/firebase.json
+
+# Build artifacts & local machine config (never commit)
+/*.apk
+/*.aab
+/android/build/
+
+# SSH connection helper (local, references hosts/credentials)
+/ssh-config.ttstaffpro
+
+# Standalone sub-apps live in their own GitHub repos
+/apps/

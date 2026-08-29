@@ -8,6 +8,7 @@ class DeviceRegistrationRequest {
   final String appVersion;
   final String mlRuntime;
   final int? branchId;
+  final int? companyId;
 
   DeviceRegistrationRequest({
     required this.deviceUuid,
@@ -19,6 +20,7 @@ class DeviceRegistrationRequest {
     required this.appVersion,
     required this.mlRuntime,
     this.branchId,
+    this.companyId,
   });
 
   Map<String, dynamic> toJson() {
@@ -32,6 +34,7 @@ class DeviceRegistrationRequest {
       'appVersion': appVersion,
       'mlRuntime': mlRuntime,
       if (branchId != null) 'branchId': branchId,
+      if (companyId != null) 'companyId': companyId,
     };
   }
 }
@@ -51,10 +54,11 @@ class DeviceRegistrationResult {
 
   factory DeviceRegistrationResult.fromJson(Map<String, dynamic> json) {
     return DeviceRegistrationResult(
-      deviceId: json['deviceId']?.toString(),
-      deviceToken: json['deviceToken']?.toString(),
+      deviceId: json['deviceId']?.toString() ?? json['device_id']?.toString(),
+      deviceToken:
+          json['deviceToken']?.toString() ?? json['device_token']?.toString(),
       status: json['status']?.toString(),
-      assignedBranch: json['assignedBranch'],
+      assignedBranch: json['assignedBranch'] ?? json['assigned_branch'],
     );
   }
 

@@ -19,6 +19,7 @@ import '../AttendanceHistory/attendance_history_screen.dart';
 import '../AttendanceHistory/actual_time_report_screen.dart';
 import '../AttendanceRegularization/attendance_regularization_list_screen.dart';
 import '../DigitalId/digital_id_card_screen.dart';
+import '../FaceAttendance/face_registration_screen.dart';
 // TODO: Approval screen needs to be implemented
 // import '../Approvals/approval_screen.dart';
 import '../Payroll/payroll_dashboard_screen.dart';
@@ -142,6 +143,16 @@ class _HomeScreenState extends State<HomeScreen>
       'gradient': const [Color(0xFF11998E), Color(0xFF38EF7D)],
       'onTap': () => const ActualTimeReportScreen().launch(context),
     });
+
+    // Face Attendance - Add your face for kiosk check-in
+    if (moduleService.isFaceAttendanceModuleEnabled()) {
+      modules.add({
+        'title': language.lblFaceAttendance,
+        'icon': Iconsax.scanning,
+        'gradient': const [Color(0xFF43CEA2), Color(0xFF185A9D)],
+        'onTap': () => const FaceRegistrationScreen().launch(context),
+      });
+    }
 
     // Digital ID Card
     if (moduleService.isDigitalIdCardModuleEnabled()) {

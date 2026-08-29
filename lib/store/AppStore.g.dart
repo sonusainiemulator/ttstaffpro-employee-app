@@ -314,7 +314,7 @@ mixin _$AppStore on AppStoreBase, Store {
       AsyncAction('AppStoreBase.refreshAttendanceStatus', context: context);
 
   @override
-  Future refreshAttendanceStatus() {
+  Future<void> refreshAttendanceStatus() {
     return _$refreshAttendanceStatusAsyncAction
         .run(() => super.refreshAttendanceStatus());
   }

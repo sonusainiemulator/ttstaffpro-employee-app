@@ -663,35 +663,35 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         margin: const EdgeInsets.only(top: 20),
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.15),
+                          color: AppDesignSystem.primaryColor.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.3),
+                            color: AppDesignSystem.primaryColor.withOpacity(0.3),
                             width: 1.5,
                           ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.business_outlined,
-                              color: Colors.white,
+                              color: AppDesignSystem.primaryColor,
                               size: 20,
                             ),
                             10.width,
                             Text(
                               appStore.centralDomainURL,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                                color: AppDesignSystem.primaryColor,
                               ),
                               textAlign: TextAlign.center,
                             ),
                             10.width,
-                            const Icon(
+                            Icon(
                               Icons.refresh_rounded,
-                              color: Colors.white,
+                              color: AppDesignSystem.primaryColor,
                               size: 20,
                             )
                           ],

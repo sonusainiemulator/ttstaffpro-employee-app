@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.2] - 2026-08-30
+
+### Added
+- Face Attendance integration: employee self-registration + admin approval screens (`FaceRegistrationScreen`, `FaceRegistrationAdminScreen`).
+- Kiosk models + updated `FaceAttendanceRepository` (profile-package download, kiosk endpoints).
+- Tests for face profile snake_case/camelCase parsing (`face_profile_parse_test.dart`).
+
+### Changed
+- Bumped `mobile_scanner` to `^7.2.0` and `google_mlkit_face_detection` to `^0.15.1`.
+- Login store/screen, settings, home, splash & QR scanner updated for face-attendance entry points.
+- `.gitignore` now excludes root `*.apk`/`*.aab`, `android/build/`, `ssh-config.ttstaffpro` and the standalone `/apps/` sub-apps (tracked in their own GitHub repos).
+
+### Fixed
+- Face profile parsing now handles snake_case API responses.
+
 ## [1.1.0] - 2026-04-22
 
 ### Changed

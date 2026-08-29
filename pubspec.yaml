@@ -7,10 +7,7 @@ description: Employee App for Open Core Business Suite
 # flutter build apk --debug
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.1.1+20260424
-
-
-
+version: 1.1.2+20260830
 
 environment:
   sdk: ^3.9.2
@@ -108,7 +105,7 @@ dependencies:
   public_ip_address: ^1.2.1
 
   #QR CODE
-  mobile_scanner: ^6.0.3
+  mobile_scanner: ^7.2.0
 
   video_player: ^2.10.0
   just_audio: ^0.10.3
@@ -131,7 +128,7 @@ dependencies:
   google_fonts: ^8.0.2
 
   camera: ^0.11.1
-  google_mlkit_face_detection: ^0.13.1
+  google_mlkit_face_detection: ^0.15.1
 
 
   flutter_localizations:
