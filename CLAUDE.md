@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **TT Staff Pro** — Flutter-based employee HRMS app (package: `open_core_hr`) connecting to a Laravel backend at `https://ttstaffpro.in/api/V1/`. Current version: `5.0.3+6`.
 
+> **⚠️ Read [AGENTS.md](AGENTS.md) too.** It defines the mandatory Git/version-control rules: after **every** task you must commit with a Conventional-Commits message, bump `pubspec.yaml` + `CHANGELOG.md`, and **push to GitHub (`origin main`)** before finishing. Those rules apply to Claude Code as well.
+
 ---
 
 ## Commands
