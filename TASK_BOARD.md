@@ -15,11 +15,11 @@ Easy daily task tracking: **🆕 Todo → 🔨 In Progress → ⏳ Pending → �
 
 | 🆕 Todo | 🔨 In Progress | ⏳ Pending (blocked/waiting) | 🧪 Testing | ✅ Done |
 |---|---|---|---|---|
-| Upload `apps/ttstaffpro_attend` (attendance app) to GitHub | | | | |
+| Upload `apps/ttstaffpro_attend` (attendance app) to GitHub | | | | ✅ Create daily task board |
+| Commit root repo's pending face-attendance changes | | | | ✅ Push kiosk app to GitHub + README |
 
 **Quick add for today:**
 - [ ] _(add your tasks here with `- [ ] task (priority)`)_
-- [ ]
 
 ---
 
@@ -27,10 +27,13 @@ Easy daily task tracking: **🆕 Todo → 🔨 In Progress → ⏳ Pending → �
 
 ### 2026-08-30
 **Completed:**
-- Created this daily task board (`TASK_BOARD.md`).
+- Created this daily task board (`TASK_BOARD.md`) → pushed `docs: add daily development task board`.
+- Pushed **Face Attendance Kiosk** app to GitHub as its own **private** repo `sonusainiemulator/ttstaffpro-face-attendance` (152 files) + rewrote README (badges, mermaid flow, API table).
 
 **Pending:**
-- Upload `apps/ttstaffpro_attend` attendance app code to GitHub (repo create + push).
+- Upload `apps/ttstaffpro_attend` (QR attendance app) to GitHub (repo create + push).
+- Commit root repo's uncommitted face-attendance changes (working tree dirty).
+- Real-device manual testing of kiosk release APK.
 
 **Notes:**
 
