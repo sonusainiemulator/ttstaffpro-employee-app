@@ -15,8 +15,10 @@ Easy daily task tracking: **🆕 Todo → 🔨 In Progress → ⏳ Pending → �
 
 | 🆕 Todo | 🔨 In Progress | ⏳ Pending (blocked/waiting) | 🧪 Testing | ✅ Done |
 |---|---|---|---|---|
-| Upload `apps/ttstaffpro_attend` (attendance app) to GitHub | | | | ✅ Create daily task board |
-| Commit root repo's pending face-attendance changes | | | | ✅ Push kiosk app to GitHub + README |
+| Real-device manual testing of kiosk release APK | | | | ✅ Create daily task board |
+| | | | | ✅ Push kiosk app to GitHub + README |
+| | | | | ✅ Push `ttstaffpro_attend` app to GitHub + README |
+| | | | | ✅ Commit root repo face-attendance changes |
 
 **Quick add for today:**
 - [ ] _(add your tasks here with `- [ ] task (priority)`)_
@@ -29,10 +31,10 @@ Easy daily task tracking: **🆕 Todo → 🔨 In Progress → ⏳ Pending → �
 **Completed:**
 - Created this daily task board (`TASK_BOARD.md`) → pushed `docs: add daily development task board`.
 - Pushed **Face Attendance Kiosk** app to GitHub as its own **private** repo `sonusainiemulator/ttstaffpro-face-attendance` (152 files) + rewrote README (badges, mermaid flow, API table).
+- Pushed **TTStaffPro Attend** (QR attendance) app to GitHub as its own **private** repo `sonusainiemulator/ttstaffpro-attend` (37 files) + rewrote README.
+- Committed + pushed root repo face-attendance integration: `feat: face attendance self/admin registration + kiosk profile fixes` (30 files) — version bumped to `1.1.2+20260830`; fixed `?year` syntax bug in `holiday_repository`; regenerated MobX `.g.dart`; `flutter analyze` 0 errors.
 
 **Pending:**
-- Upload `apps/ttstaffpro_attend` (QR attendance app) to GitHub (repo create + push).
-- Commit root repo's uncommitted face-attendance changes (working tree dirty).
 - Real-device manual testing of kiosk release APK.
 
 **Notes:**
