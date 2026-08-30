@@ -1,36 +1,38 @@
 # Build & Publish Kiosk APK — TTStaffPro monorepo (root repo)
 #
+# MANUAL ONLY: triggered from the GitHub Actions tab
+# (Actions → "Build & Publish Kiosk APK" → Run workflow). It does NOT auto-run
+# on push. Default mode = DEBUG (development). Pick `release` to build the
+# production APK and publish it to a GitHub Release.
+#
 # Runs from the ROOT repo because the kiosk app (`apps/ttstaffpro_face_attendance`)
 # depends on the private `open_core_hr` package via `path: ../..`. Building here
 # means NO cross-repo GitHub token is required (the default GITHUB_TOKEN has full
 # access to this repo).
 #
-#  - push to `main`             → builds DEBUG apk → updates the rolling
-#    "Kiosk Development Build (debug)" prerelease with the apk attached.
-#  - push tag `kiosk-v*`        → builds RELEASE apk → creates/updates the GitHub
-#    Release for that tag with the apk attached (production).
-#  - manual run                 → pick `debug` / `release` / `auto`.
-#
-# To publish a production release:
-#   git tag kiosk-v1.0.5 && git push origin kiosk-v1.0.5
+# Manual usage:
+#   - build_type = `debug`   → builds DEBUG apk → updates the rolling
+#     "Kiosk Development Build (debug)" prerelease.
+#   - build_type = `release` → builds RELEASE apk → publishes to the GitHub
+#     Release named by `release_tag` (default `kiosk-release`).
 
 name: Build & Publish Kiosk APK
 
 on:
-  push:
-    branches: [main]
-    tags: ['kiosk-v*']
   workflow_dispatch:
     inputs:
       build_type:
-        description: 'Build type (auto = release on tags, debug on main)'
-        required: false
-        default: 'auto'
+        description: 'Build type (debug = development, release = production)'
+        required: true
+        default: 'debug'
         type: choice
         options:
-          - auto
           - debug
           - release
+      release_tag:
+        description: 'GitHub Release tag (used when build_type = release)'
+        required: false
+        default: 'kiosk-release'
 
 env:
   FLUTTER_VERSION: '3.44.9'
@@ -72,11 +74,9 @@ jobs:
         shell: bash
         run: |
           type="${{ inputs.build_type }}"
-          if [ -z "$type" ] || [ "$type" = "auto" ]; then
-            if [ "${{ github.ref_type }}" = "tag" ]; then type="release"; else type="debug"; fi
-          fi
+          if [ -z "$type" ]; then type="debug"; fi
           echo "type=$type" >> "$GITHUB_OUTPUT"
-          echo "::notice::Building $type kiosk APK for ${{ github.ref }}"
+          echo "::notice::Building $type kiosk APK (manual dispatch)"
 
       - name: Build DEBUG APK (development)
         if: steps.plan.outputs.type == 'debug'
@@ -128,10 +128,10 @@ jobs:
         if: steps.plan.outputs.type == 'release'
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.ref_name }}
-          name: TTStaffPro Kiosk ${{ github.ref_name }}
+          tag: ${{ inputs.release_tag }}
+          name: TTStaffPro Kiosk ${{ inputs.release_tag }}
           body: |
-            Production **release APK** for `${{ github.ref_name }}`.
+            Production **release APK** (manual build).
 
             - Artifact: `${{ steps.stage.outputs.artifact }}`
           allowUpdates: true
