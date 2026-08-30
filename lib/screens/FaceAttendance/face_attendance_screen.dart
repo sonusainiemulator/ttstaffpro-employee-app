@@ -71,7 +71,8 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
   @override
   void initState() {
     super.initState();
-    // Lock device orientation to portrait.
+    // Keep the default mobile face-registration view in the user’s native
+    // portrait orientation instead of rotating the camera preview.
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     _initializeCamera();
     _loadEnrollOption();
@@ -100,7 +101,7 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     _cameraController?.dispose();
     _faceDetector.close();
     super.dispose();
@@ -329,21 +330,9 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
     return sqrt(dx * dx + dy * dy);
   }
 
-  /// Number of 90° turns to rotate the camera preview so it displays upright.
-  ///
-  /// The front-camera sensor is mounted landscape; how much the preview needs
-  /// rotating depends on the device's reported `sensorOrientation` (270° on
-  /// many Pixel phones, 90° on others, etc.). Hardcoding a fixed value (e.g.
-  /// `3`) shows a sideways/upside-down preview on devices with a different
-  /// sensor orientation.
-  int _previewQuarterTurns() {
-    final description = _cameraController!.description;
-    // The screen is locked to portraitUp (device rotation = 0), so the sensor
-    // orientation alone determines the required preview rotation.
-    return (description.sensorOrientation / 90).round() % 4;
-  }
-
-  // Build the camera preview with aspect ratio.
+  // Keep the face-registration preview in the natural portrait orientation the
+  // user expects. We intentionally do not auto-rotate the preview when the
+  // device is held upright.
   Widget _buildCameraPreview() {
     if (!_isCameraInitialized || _cameraController == null) {
       return Center(
@@ -355,12 +344,9 @@ class _FaceAttendanceScreenState extends State<FaceAttendanceScreen> {
       );
     }
     final ratio = _cameraController!.value.aspectRatio;
-    return RotatedBox(
-      quarterTurns: _previewQuarterTurns(),
-      child: AspectRatio(
-        aspectRatio: ratio,
-        child: CameraPreview(_cameraController!),
-      ),
+    return AspectRatio(
+      aspectRatio: ratio,
+      child: CameraPreview(_cameraController!),
     );
   }
 

@@ -56,6 +56,7 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
   @override
   void dispose() {
     _cameraController?.dispose();
+    // Keep the kiosk in portrait orientation for a consistent default view.
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     super.dispose();
   }

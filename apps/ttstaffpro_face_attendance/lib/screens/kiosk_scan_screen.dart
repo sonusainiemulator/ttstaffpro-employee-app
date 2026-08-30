@@ -52,9 +52,10 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    // Keep the camera view on the device's default rotation — if the tablet
-    // is mounted portrait keep portrait, if mounted landscape keep landscape.
-    SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+    // Keep the kiosk in the user's native portrait orientation. Do not rotate
+    // the preview for landscape mounting or sensor-driven view changes on the
+    // face-scan screen.
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     _pulseAnim = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1600),
@@ -381,14 +382,10 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   }
 
   /// Animated oval face guide with corner brackets + scanning line.
-  /// Rotates with the device so it stays aligned with the camera preview.
+  /// The kiosk remains locked to portrait; the guide stays upright to match the
+  /// user’s natural device orientation and avoid distorted face capture.
   Widget _buildFaceGuide() {
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        final turns = orientation == Orientation.landscape ? 1 : 0;
-        return RotatedBox(quarterTurns: turns, child: _faceGuideContent());
-      },
-    );
+    return _faceGuideContent();
   }
 
   Widget _faceGuideContent() {

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.8] - 2026-08-31
+
+### Fixed
+- Locked the kiosk face-scan and face-registration screens to the device's natural portrait orientation so the preview stays upright and does not rotate unexpectedly.
+- Removed rotation logic that was causing distorted previews and repeated capture failures during face enrollment/check-in.
+- Prevented the app from re-triggering the camera flow in a rotated state that could contribute to session/token instability.
+
 ## [1.0.7] - 2026-08-30
 
 ### Fixed

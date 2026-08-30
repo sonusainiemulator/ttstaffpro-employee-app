@@ -19,7 +19,9 @@ After you complete **any** task (feature, fix, refactor, config change, docs, de
 2. Stage **only relevant files** (never blindly `git add -A`).
 3. Commit with a proper message (see convention below).
 4. Push: `git push origin main`.
-5. Verify it succeeded — `git status` should show "up to date", and `git log origin/main..HEAD` should be empty.
+5. For release work, create and push the annotated tag: `git tag -a vX.Y.Z -m "release: vX.Y.Z - <short summary>" && git push origin vX.Y.Z`.
+6. Verify it succeeded — `git status` should show "up to date", `git log origin/main..HEAD` should be empty, and the GitHub Releases page or tag list should show the new release.
+7. If the task includes a release or version bump, confirm the new tag/release is visible on GitHub before ending the turn.
 
 **Never end a turn with uncommitted or unpushed work**, unless the user explicitly says not to push.
 
@@ -103,4 +105,4 @@ git tag -a vX.Y.Z -m "release: vX.Y.Z - <summary>" && git push origin vX.Y.Z
 
 ## 🔁 Repeat after every task
 
-> ✅ Task done → `flutter analyze` clean → version/CHANGELOG updated (if feature/fix) → stage relevant files → commit → **push to GitHub** → confirm up to date.
+> ✅ Task done → `flutter analyze` clean → version/CHANGELOG updated (if feature/fix) → stage relevant files → commit → **push to GitHub** → for release work, create/push tag and confirm GitHub Releases page shows it → confirm repo is up to date.
