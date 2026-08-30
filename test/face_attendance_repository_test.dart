@@ -568,5 +568,51 @@ void main() {
       expect(report.rows.last.isEarly, isTrue);
       expect(report.rows.first.employeeName, 'John Doe');
     });
+
+    test('kioskEmployees parses snake_case employees incl. string ids', () async {
+      // Live server returns snake_case keys; employee_id may be an int or a
+      // numeric string depending on the tenant DB/serializer.
+      final jsonResponse = {
+        'success': true,
+        'message': 'Employees',
+        'data': {
+          'employees': [
+            {
+              'employee_id': 2,
+              'name': 'Jagannath Chakanyn',
+              'email': 'tripathyt2@gmail.com',
+              'code': 'EMP01',
+            },
+            {
+              'employee_id': '3',
+              'name': 'Kanhu Charan Tripathy',
+              'email': 'dhanttinfo@gmail.com',
+              'code': '02',
+            },
+          ]
+        }
+      };
+
+      mockAdapter.handler = (options) {
+        expect(options.path, contains('face-attendance/kiosk/employees'));
+        expect(options.method, 'GET');
+        return ResponseBody.fromString(
+          jsonEncode(jsonResponse),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      };
+
+      final employees = await repository.kioskEmployees();
+      expect(employees, hasLength(2));
+      // Int id parses directly.
+      expect(employees[0].employeeId, 2);
+      // Numeric-string id is tolerated (not a cast crash).
+      expect(employees[1].employeeId, 3);
+      expect(employees[0].name, 'Jagannath Chakanyn');
+      expect(employees[1].code, '02');
+    });
   });
 }

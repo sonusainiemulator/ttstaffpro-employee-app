@@ -99,8 +99,12 @@ class KioskEmployee {
   });
 
   factory KioskEmployee.fromJson(Map<String, dynamic> json) {
+    // employee_id may arrive as an int or a numeric string depending on the
+    // tenant DB / serializer — tolerate both instead of hard-casting.
+    final rawId = json['employeeId'] ?? json['employee_id'];
+    final id = rawId is int ? rawId : int.tryParse('$rawId');
     return KioskEmployee(
-      employeeId: (json['employeeId'] ?? json['employee_id']) as int?,
+      employeeId: id,
       name: (json['name'] as String?) ?? '',
       email: json['email'] as String?,
       code: json['code'] as String?,

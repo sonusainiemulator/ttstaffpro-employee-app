@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.4] - 2026-08-30
+
+### Fixed
+- `KioskEmployee` parsing now tolerates `employee_id` arriving as a numeric
+  string (not just int) so the kiosk employee picker cannot crash on a
+  serialization mismatch.
+
+### Added
+- Repository test covering `kioskEmployees` snake_case + string-id parsing.
+
 ## [1.1.3] - 2026-08-30
 
 ### Fixed
