@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.0.7] - 2026-08-30
+
+### Fixed
+- Kiosk home screen no longer triggers heavy profile/sync work during the first paint,
+  reducing startup lag and keeping the dashboard responsive.
+- Scan loop now guards against stale widget lifecycle state and re-arming race conditions,
+  making the face-check-in/out flow smoother and more robust on wall-mounted tablets.
+- Flutter analyzer warnings on the kiosk scan screen were cleaned up without changing app behavior.
+
+## [1.0.6] - 2026-08-30
+
+### Fixed
+- Camera preview stays upright in portrait mode for face registration.
+- After a successful registration, the app returns to the staff list instead of
+  leaving the operator stuck on the capture screen.
+- Register Face employee picker now shows the real error reason instead of a
+  generic "Check connectivity" message (e.g. session expired vs. no network).
+- Added "Log in again" action on the Register Face screen when the kiosk
+  master session has expired (401) so a wall-mounted tablet can recover
+  without a manual app reset.
+- Registration failure messages now surface the underlying server reason.
+
 ## [1.0.5] - 2026-08-30
 
 ### Fixed

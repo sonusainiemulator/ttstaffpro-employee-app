@@ -74,9 +74,11 @@ jobs:
         shell: bash
         run: |
           type="${{ inputs.build_type }}"
-          if [ -z "$type" ]; then type="debug"; fi
+          if [ -z "$type" ] || [ "$type" = "auto" ]; then
+            if [ "${{ github.ref_type }}" = "tag" ]; then type="release"; else type="debug"; fi
+          fi
           echo "type=$type" >> "$GITHUB_OUTPUT"
-          echo "::notice::Building $type kiosk APK (manual dispatch)"
+          echo "::notice::Building $type kiosk APK for ${{ github.ref }}"
 
       - name: Build DEBUG APK (development)
         if: steps.plan.outputs.type == 'debug'
@@ -128,10 +130,10 @@ jobs:
         if: steps.plan.outputs.type == 'release'
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ inputs.release_tag }}
-          name: TTStaffPro Kiosk ${{ inputs.release_tag }}
+          tag: ${{ github.ref_name }}
+          name: TTStaffPro Kiosk ${{ github.ref_name }}
           body: |
-            Production **release APK** (manual build).
+            Production **release APK** for `${{ github.ref_name }}`.
 
             - Artifact: `${{ steps.stage.outputs.artifact }}`
           allowUpdates: true

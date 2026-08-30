@@ -51,7 +51,6 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     // Keep the camera view on the device's default rotation — if the tablet
     // is mounted portrait keep portrait, if mounted landscape keep landscape.
@@ -64,20 +63,25 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   }
 
   Future<void> _bootstrap() async {
+    if (!mounted) return;
     final status = await Permission.camera.request();
+    if (!mounted) return;
     if (status != PermissionStatus.granted) {
       setState(() => _status = 'Camera permission denied.');
       return;
     }
     await _initializeCamera();
     if (!mounted) return;
-    await kioskService.loadProfilePackage();
+    if (kioskService.enrolledSignatures.isEmpty) {
+      await kioskService.loadProfilePackage();
+    }
     if (!mounted) return;
     setState(() {
       _status = kioskService.enrolledSignatures.isEmpty
           ? 'Waiting for face...'
           : 'Look at the camera to check in / out';
     });
+    _scanTimer?.cancel();
     _scanTimer = Timer.periodic(
       const Duration(milliseconds: 1800),
       (_) => _scan(),
@@ -115,25 +119,28 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   // ---------------------------------------------------------------------------
 
   Future<void> _scan() async {
-    if (_busy || _resultHold || !_isCameraInitialized) return;
+    if (_busy || _resultHold || !_isCameraInitialized || !mounted) return;
     _busy = true;
     try {
       final XFile file = await _cameraController!.takePicture();
+      if (!mounted) return;
       final path = await _saveTemp(file);
 
       final face = await _matcher.detectInFile(path);
       if (face == null) {
-        if (mounted)
+        if (mounted) {
           setState(() => _status = 'No face detected. Align within the frame.');
+        }
         return;
       }
 
       final signature = _matcher.signatureOf(face);
       if (!signature.isLive) {
-        if (mounted)
+        if (mounted) {
           setState(
             () => _status = 'Please open your eyes and look at the camera.',
           );
+        }
         return;
       }
 

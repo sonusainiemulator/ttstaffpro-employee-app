@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Face Attendance Admin Dashboard Mockup</title>
+    <style>
+      :root {
+        --bg: #f3f7fb;
+        --panel: #ffffff;
+        --panel-alt: #eef4ff;
+        --sidebar: #0f172a;
+        --sidebar-soft: #1e293b;
+        --primary: #1d4ed8;
+        --primary-soft: #dbeafe;
+        --success: #16a34a;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --text: #0f172a;
+        --muted: #64748b;
+        --line: #e2e8f0;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .shell {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        background: linear-gradient(180deg, var(--sidebar) 0%, #111827 100%);
+        color: #e2e8f0;
+        padding: 24px 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 28px;
+        padding: 8px 10px;
+      }
+
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #60a5fa, #1d4ed8);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        color: white;
+      }
+
+      .nav {
+        display: grid;
+        gap: 8px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 12px;
+        border-radius: 12px;
+        color: #dbeafe;
+        opacity: 0.9;
+        font-weight: 500;
+      }
+
+      .nav-item.active {
+        background: rgba(96, 165, 250, 0.15);
+        border: 1px solid rgba(96, 165, 250, 0.25);
+      }
+
+      .nav-item .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #f8fafc;
+      }
+
+      .content {
+        padding: 28px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+
+      .title-wrap h1 {
+        margin: 0;
+        font-size: 32px;
+      }
+
+      .title-wrap p {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .date-pill, .button {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-weight: 600;
+      }
+
+      .button.primary {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(180px, 1fr));
+        gap: 18px;
+        margin-bottom: 24px;
+      }
+
+      .card {
+        background: var(--panel);
+        border-radius: 18px;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+      }
+
+      .stat {
+        padding: 18px 18px 16px;
+      }
+
+      .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .stat-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-size: 20px;
+      }
+
+      .stat-value {
+        font-size: 34px;
+        font-weight: 700;
+        margin: 0 0 6px;
+      }
+
+      .stat-sub {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .stat.success .stat-icon { background: #dcfce7; color: var(--success); }
+      .stat.warning .stat-icon { background: #fef3c7; color: var(--warning); }
+      .stat.danger .stat-icon { background: #fee2e2; color: var(--danger); }
+      .stat.primary .stat-icon { background: #dbeafe; color: var(--primary); }
+
+      .report-card {
+        padding: 18px 18px 8px;
+      }
+
+      .report-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      .report-head h2 {
+        margin: 0;
+        font-size: 22px;
+      }
+
+      .filters {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .mini {
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #f8fafc;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+      }
+
+      th, td {
+        text-align: left;
+        padding: 14px 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      th {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        background: #f8fafc;
+      }
+
+      td {
+        font-size: 14px;
+      }
+
+      .employee {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: 700;
+        color: white;
+        background: linear-gradient(135deg, #22c55e, #0ea5e9);
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .chip.success { background: #dcfce7; color: var(--success); }
+      .chip.warning { background: #fef3c7; color: var(--warning); }
+      .chip.danger { background: #fee2e2; color: var(--danger); }
+      .chip.info { background: #dbeafe; color: var(--primary); }
+
+      .device {
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      @media (max-width: 980px) {
+        .shell { grid-template-columns: 1fr; }
+        .sidebar { padding-bottom: 10px; }
+        .stats { grid-template-columns: repeat(2, minmax(160px, 1fr)); }
+      }
+
+      @media (max-width: 640px) {
+        .content { padding: 16px; }
+        .stats { grid-template-columns: 1fr; }
+        .topbar, .report-head { flex-direction: column; align-items: flex-start; }
+        table { display: block; overflow-x: auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo">T</div>
+          <div>
+            <strong>TT Staff Pro</strong><br>
+            <small>Admin</small>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <div class="nav-item"><span class="dot"></span> Dashboard</div>
+          <div class="nav-item active"><span class="dot"></span> Face Attendance</div>
+          <div class="nav-item"><span class="dot"></span> Employees</div>
+          <div class="nav-item"><span class="dot"></span> Devices</div>
+          <div class="nav-item"><span class="dot"></span> Reports</div>
+          <div class="nav-item"><span class="dot"></span> Settings</div>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <div class="topbar">
+          <div class="title-wrap">
+            <h1>Face Attendance Report</h1>
+            <p>Daily employee check-in and check-out overview</p>
+          </div>
+
+          <div class="top-actions">
+            <div class="date-pill">📅 30 Aug 2026</div>
+            <button class="button primary">Export</button>
+          </div>
+        </div>
+
+        <section class="stats">
+          <div class="card stat success">
+            <div class="stat-header">
+              <span>Present</span>
+              <div class="stat-icon">✓</div>
+            </div>
+            <div class="stat-value">88</div>
+            <div class="stat-sub">+12 vs yesterday</div>
+          </div>
+
+          <div class="card stat warning">
+            <div class="stat-header">
+              <span>Late</span>
+              <div class="stat-icon">⏰</div>
+            </div>
+            <div class="stat-value">12</div>
+            <div class="stat-sub">7% of workforce</div>
+          </div>
+
+          <div class="card stat danger">
+            <div class="stat-header">
+              <span>Absent</span>
+              <div class="stat-icon">×</div>
+            </div>
+            <div class="stat-value">21</div>
+            <div class="stat-sub">4 pending approvals</div>
+          </div>
+
+          <div class="card stat primary">
+            <div class="stat-header">
+              <span>On Leave</span>
+              <div class="stat-icon">☼</div>
+            </div>
+            <div class="stat-value">06</div>
+            <div class="stat-sub">2 half-day</div>
+          </div>
+        </section>
+
+        <section class="card report-card">
+          <div class="report-head">
+            <h2>All Employee Attendance</h2>
+            <div class="filters">
+              <div class="mini">Branch: Head Office</div>
+              <div class="mini">Department: All</div>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Status</th>
+                <th>Late</th>
+                <th>Device</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="employee">
+                    <div class="avatar">AR</div>
+                    <div>
+                      <strong>Ayesha Rahman</strong><br>
+                      <small>EMP-1024</small>
+                    </div>
+                  </div>
+                </td>
+                <td>08:35 AM</td>
+                <td>06:15 PM</td>
+                <td><span class="chip success">Present</span></td>
+                <td><span class="chip warning">Late</span></td>
+                <td class="device">Gate A / Door 01</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="employee">
+                    <div class="avatar" style="background: linear-gradient(135deg, #f97316, #ef4444);">MS</div>
+                    <div>
+                      <strong>Mehedi Sarker</strong><br>
+                      <small>EMP-2041</small>
+                    </div>
+                  </div>
+                </td>
+                <td>08:10 AM</td>
+                <td>05:50 PM</td>
+                <td><span class="chip success">Present</span></td>
+                <td><span class="chip info">On Time</span></td>
+                <td class="device">Lobby / Kiosk 2</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="employee">
+                    <div class="avatar" style="background: linear-gradient(135deg, #a78bfa, #6366f1);">NF</div>
+                    <div>
+                      <strong>Nasrin Farhana</strong><br>
+                      <small>EMP-1108</small>
+                    </div>
+                  </div>
+                </td>
+                <td>09:12 AM</td>
+                <td>06:05 PM</td>
+                <td><span class="chip success">Present</span></td>
+                <td><span class="chip warning">Late</span></td>
+                <td class="device">Gate B / Camera 4</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="employee">
+                    <div class="avatar" style="background: linear-gradient(135deg, #14b8a6, #0ea5e9);">TM</div>
+                    <div>
+                      <strong>Tamim Mahmud</strong><br>
+                      <small>EMP-3022</small>
+                    </div>
+                  </div>
+                </td>
+                <td>--</td>
+                <td>--</td>
+                <td><span class="chip danger">Absent</span></td>
+                <td><span class="chip danger">No check-in</span></td>
+                <td class="device">No Device</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="employee">
+                    <div class="avatar" style="background: linear-gradient(135deg, #facc15, #f59e0b);">RN</div>
+                    <div>
+                      <strong>Rafi Nayeem</strong><br>
+                      <small>EMP-1189</small>
+                    </div>
+                  </div>
+                </td>
+                <td>08:04 AM</td>
+                <td>05:58 PM</td>
+                <td><span class="chip success">Present</span></td>
+                <td><span class="chip info">On Time</span></td>
+                <td class="device">Main Gate</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="employee">
+                    <div class="avatar" style="background: linear-gradient(135deg, #34d399, #22c55e);">SH</div>
+                    <div>
+                      <strong>Shahana Haque</strong><br>
+                      <small>EMP-2210</small>
+                    </div>
+                  </div>
+                </td>
+                <td>08:00 AM</td>
+                <td>06:00 PM</td>
+                <td><span class="chip success">Present</span></td>
+                <td><span class="chip info">On Time</span></td>
+                <td class="device">Lobby / Kiosk 1</td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="employee">
+                    <div class="avatar" style="background: linear-gradient(135deg, #fb7185, #f43f5e);">AH</div>
+                    <div>
+                      <strong>Abdul Hossain</strong><br>
+                      <small>EMP-6012</small>
+                    </div>
+                  </div>
+                </td>
+                <td>08:48 AM</td>
+                <td>05:40 PM</td>
+                <td><span class="chip success">Present</span></td>
+                <td><span class="chip warning">Late</span></td>
+                <td class="device">Gate C / Camera 2</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

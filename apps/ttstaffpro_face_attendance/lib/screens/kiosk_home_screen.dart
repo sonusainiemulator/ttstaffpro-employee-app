@@ -22,6 +22,7 @@ class KioskHomeScreen extends StatefulWidget {
 class _KioskHomeScreenState extends State<KioskHomeScreen> {
   late Timer _clockTimer;
   int _pendingCount = 0;
+  bool _warmupStarted = false;
 
   @override
   void initState() {
@@ -30,13 +31,24 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
       if (mounted) setState(() {});
     });
     _pendingCount = offlineStore.pendingCount;
-    _warmUp();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _warmupStarted) return;
+      _warmupStarted = true;
+      _warmUp();
+    });
   }
 
   Future<void> _warmUp() async {
-    await kioskService.loadProfilePackage();
-    final synced = await kioskService.syncPendingEvents();
-    if (mounted && synced > 0) {
+    try {
+      await kioskService.loadProfilePackage();
+      final synced = await kioskService.syncPendingEvents();
+      if (!mounted) return;
+      if (synced > 0 || offlineStore.pendingCount != _pendingCount) {
+        setState(() => _pendingCount = offlineStore.pendingCount);
+      }
+    } catch (_) {
+      // Keep the kiosk usable even when background sync/profile refresh fails.
+      if (!mounted) return;
       setState(() => _pendingCount = offlineStore.pendingCount);
     }
   }

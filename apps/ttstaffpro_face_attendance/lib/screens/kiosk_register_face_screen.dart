@@ -228,6 +228,14 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
             ? 'Face registered successfully!'
             : 'Registration failed. Please retry.';
       });
+
+      if (ok) {
+        Future.delayed(const Duration(milliseconds: 1200), () {
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+        });
+      }
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -436,23 +444,9 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
 
   Widget _buildPreview() {
     final controller = _cameraController!;
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        // Front-camera sensor is landscape; in portrait it is rotated to
-        // display upright based on the device's sensor orientation (a fixed 3
-        // only matches devices whose sensor reports 270°). In landscape the
-        // preview already matches the screen.
-        final turns = orientation == Orientation.portrait
-            ? (controller.description.sensorOrientation / 90).round() % 4
-            : 0;
-        return RotatedBox(
-          quarterTurns: turns,
-          child: AspectRatio(
-            aspectRatio: controller.value.aspectRatio,
-            child: CameraPreview(controller),
-          ),
-        );
-      },
+    return AspectRatio(
+      aspectRatio: controller.value.aspectRatio,
+      child: CameraPreview(controller),
     );
   }
 
