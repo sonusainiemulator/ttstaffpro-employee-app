@@ -1,0 +1,140 @@
+# Build & Publish Kiosk APK — TTStaffPro monorepo (root repo)
+#
+# Runs from the ROOT repo because the kiosk app (`apps/ttstaffpro_face_attendance`)
+# depends on the private `open_core_hr` package via `path: ../..`. Building here
+# means NO cross-repo GitHub token is required (the default GITHUB_TOKEN has full
+# access to this repo).
+#
+#  - push to `main`             → builds DEBUG apk → updates the rolling
+#    "Kiosk Development Build (debug)" prerelease with the apk attached.
+#  - push tag `kiosk-v*`        → builds RELEASE apk → creates/updates the GitHub
+#    Release for that tag with the apk attached (production).
+#  - manual run                 → pick `debug` / `release` / `auto`.
+#
+# To publish a production release:
+#   git tag kiosk-v1.0.5 && git push origin kiosk-v1.0.5
+
+name: Build & Publish Kiosk APK
+
+on:
+  push:
+    branches: [main]
+    tags: ['kiosk-v*']
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type (auto = release on tags, debug on main)'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - debug
+          - release
+
+env:
+  FLUTTER_VERSION: '3.44.9'
+  APP_DIR: apps/ttstaffpro_face_attendance
+
+concurrency:
+  group: kiosk-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-kiosk-apk:
+    name: Build & publish kiosk APK
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Resolve dependencies (kiosk)
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter pub get
+
+      - name: Determine build type
+        id: plan
+        shell: bash
+        run: |
+          type="${{ inputs.build_type }}"
+          if [ -z "$type" ] || [ "$type" = "auto" ]; then
+            if [ "${{ github.ref_type }}" = "tag" ]; then type="release"; else type="debug"; fi
+          fi
+          echo "type=$type" >> "$GITHUB_OUTPUT"
+          echo "::notice::Building $type kiosk APK for ${{ github.ref }}"
+
+      - name: Build DEBUG APK (development)
+        if: steps.plan.outputs.type == 'debug'
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter build apk --debug
+
+      - name: Build RELEASE APK (production)
+        if: steps.plan.outputs.type == 'release'
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter build apk --release
+
+      - name: Stage APK with versioned name
+        id: stage
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "${{ env.APP_DIR }}"
+          VER="$(grep '^version:' pubspec.yaml | sed 's/version:[[:space:]]*//; s/[[:space:]]//g')"
+          if [ "${{ steps.plan.outputs.type }}" = "release" ]; then
+            SRC=build/app/outputs/flutter-apk/app-release.apk
+            DST="TTStaffPro-Kiosk-v${VER}-release.apk"
+          else
+            SRC=build/app/outputs/flutter-apk/app-debug.apk
+            DST="TTStaffPro-Kiosk-v${VER}-debug-${GITHUB_SHA:0:8}.apk"
+          fi
+          mkdir -p "$GITHUB_WORKSPACE/dist"
+          cp "$SRC" "$GITHUB_WORKSPACE/dist/$DST"
+          echo "artifact=$DST" >> "$GITHUB_OUTPUT"
+          ls -lh "$GITHUB_WORKSPACE/dist"
+
+      - name: Publish DEV build → rolling GitHub Release
+        if: steps.plan.outputs.type == 'debug'
+        uses: ncipollo/release-action@v1
+        with:
+          tag: kiosk-dev-latest
+          name: Kiosk Development Build (debug)
+          body: |
+            Auto-generated **debug APK** from the latest `main` push.
+
+            - Commit: `${{ github.sha }}`
+            - Artifact: `${{ steps.stage.outputs.artifact }}`
+          prerelease: true
+          allowUpdates: true
+          removeArtifacts: true
+          replacesArtifacts: true
+          artifacts: ${{ github.workspace }}/dist/${{ steps.stage.outputs.artifact }}
+
+      - name: Publish RELEASE build → GitHub Release (tag)
+        if: steps.plan.outputs.type == 'release'
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: TTStaffPro Kiosk ${{ github.ref_name }}
+          body: |
+            Production **release APK** for `${{ github.ref_name }}`.
+
+            - Artifact: `${{ steps.stage.outputs.artifact }}`
+          allowUpdates: true
+          removeArtifacts: true
+          replacesArtifacts: true
+          artifacts: ${{ github.workspace }}/dist/${{ steps.stage.outputs.artifact }}

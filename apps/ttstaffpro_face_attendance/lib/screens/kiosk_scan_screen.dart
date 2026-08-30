@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 
 import '../kiosk/face_matcher.dart';
 import '../kiosk/kiosk_theme.dart';
+import '../kiosk/kiosk_version_footer.dart';
 import '../main.dart';
 
 /// Requirement 5 & 6: wall-mounted always-on face scan screen.
@@ -122,13 +123,17 @@ class _KioskScanScreenState extends State<KioskScanScreen>
 
       final face = await _matcher.detectInFile(path);
       if (face == null) {
-        if (mounted) setState(() => _status = 'No face detected. Align within the frame.');
+        if (mounted)
+          setState(() => _status = 'No face detected. Align within the frame.');
         return;
       }
 
       final signature = _matcher.signatureOf(face);
       if (!signature.isLive) {
-        if (mounted) setState(() => _status = 'Please open your eyes and look at the camera.');
+        if (mounted)
+          setState(
+            () => _status = 'Please open your eyes and look at the camera.',
+          );
         return;
       }
 
@@ -161,7 +166,8 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     required double distance,
     required String snapshotPath,
   }) async {
-    final name = kioskService.employeeNames[employeeId] ?? 'Employee $employeeId';
+    final name =
+        kioskService.employeeNames[employeeId] ?? 'Employee $employeeId';
     setState(() => _status = 'Verifying $name...');
 
     final result = await kioskService.uploadEvent(
@@ -182,11 +188,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
       );
     } else {
       // Offline — queued for sync.
-      _showResult(
-        success: true,
-        name: name,
-        action: 'saved offline',
-      );
+      _showResult(success: true, name: name, action: 'saved offline');
     }
   }
 
@@ -250,7 +252,8 @@ class _KioskScanScreenState extends State<KioskScanScreen>
 
   Future<String> _saveTemp(XFile file) async {
     final dir = await getApplicationDocumentsDirectory();
-    final newPath = '${dir.path}/kiosk_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final newPath =
+        '${dir.path}/kiosk_${DateTime.now().millisecondsSinceEpoch}.jpg';
     await File(file.path).copy(newPath);
     return newPath;
   }
@@ -326,7 +329,13 @@ class _KioskScanScreenState extends State<KioskScanScreen>
               top: false,
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: _resultHold ? _buildResultCard() : _buildStatusBar(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _resultHold ? _buildResultCard() : _buildStatusBar(),
+                    const KioskVersionFooter(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -354,8 +363,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Text(
                 _status,
-                style: TextStyle(
-                    color: c.textSecondary, fontSize: 16),
+                style: TextStyle(color: c.textSecondary, fontSize: 16),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -444,18 +452,16 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   /// Four L-shaped brackets at the corners of the face guide.
   List<Widget> _cornerBrackets(Color color, double len) {
     Widget bracket(double w, double h) => Container(
-          width: len,
-          height: len,
-          decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(color: color.withValues(alpha: 0.9), width: 4),
-              top: BorderSide(color: color.withValues(alpha: 0.9), width: 4),
-            ),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-            ),
-          ),
-        );
+      width: len,
+      height: len,
+      decoration: BoxDecoration(
+        border: Border(
+          left: BorderSide(color: color.withValues(alpha: 0.9), width: 4),
+          top: BorderSide(color: color.withValues(alpha: 0.9), width: 4),
+        ),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
+      ),
+    );
 
     return [
       Positioned(top: 0, left: 0, child: bracket(0, 0)),
@@ -494,9 +500,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.45),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.1),
-          ),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
         ),
         child: Row(
           children: [
@@ -514,7 +518,9 @@ class _KioskScanScreenState extends State<KioskScanScreen>
                   Text(
                     kioskSettings.companyName ?? 'TT Staff Pro',
                     style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w600),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const Text(
@@ -525,8 +531,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
               ),
             ),
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20),
@@ -538,8 +543,9 @@ class _KioskScanScreenState extends State<KioskScanScreen>
                   Text(
                     '$_scanCount',
                     style: const TextStyle(
-                        color: Colors.white70,
-                        fontWeight: FontWeight.w600),
+                      color: Colors.white70,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
@@ -552,7 +558,8 @@ class _KioskScanScreenState extends State<KioskScanScreen>
 
   /// Live status pill shown while scanning (no result on screen).
   Widget _buildStatusBar() {
-    final scanning = kioskService.enrolledSignatures.isNotEmpty &&
+    final scanning =
+        kioskService.enrolledSignatures.isNotEmpty &&
         _status.contains('Look at the camera');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
@@ -624,9 +631,10 @@ class _KioskScanScreenState extends State<KioskScanScreen>
           Text(
             _lastEmployeeName ?? '',
             style: const TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w700),
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 2),
@@ -644,9 +652,13 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     final controller = _cameraController!;
     return OrientationBuilder(
       builder: (context, orientation) {
-        // Front-camera sensor is landscape; in portrait it is rotated 90° to
-        // display upright. In landscape it already matches the screen.
-        final turns = orientation == Orientation.portrait ? 3 : 0;
+        // Front-camera sensor is landscape; in portrait it is rotated to
+        // display upright based on the device's sensor orientation (a fixed 3
+        // only matches devices whose sensor reports 270°). In landscape the
+        // preview already matches the screen.
+        final turns = orientation == Orientation.portrait
+            ? (controller.description.sensorOrientation / 90).round() % 4
+            : 0;
         return RotatedBox(
           quarterTurns: turns,
           child: AspectRatio(
@@ -673,10 +685,7 @@ class _ScanScrim extends StatelessWidget {
           gradient: LinearGradient(
             begin: fromTop ? Alignment.topCenter : Alignment.bottomCenter,
             end: Alignment.center,
-            colors: [
-              Colors.black.withValues(alpha: 0.55),
-              Colors.transparent,
-            ],
+            colors: [Colors.black.withValues(alpha: 0.55), Colors.transparent],
           ),
         ),
       ),

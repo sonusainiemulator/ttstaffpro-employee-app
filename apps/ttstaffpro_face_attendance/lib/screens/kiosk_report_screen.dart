@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:open_core_hr/models/face_attendance/kiosk_model.dart';
 
 import '../kiosk/kiosk_theme.dart';
+import '../kiosk/kiosk_version_footer.dart';
 import '../main.dart';
 
 /// Requirement 6: date-wise staff attendance report with check-in / check-out
@@ -65,10 +66,7 @@ class _KioskReportScreenState extends State<KioskReportScreen> {
       appBar: AppBar(
         title: Text(
           'Daily Attendance Report',
-          style: TextStyle(
-            color: c.textPrimary,
-            fontWeight: FontWeight.w700,
-          ),
+          style: TextStyle(color: c.textPrimary, fontWeight: FontWeight.w700),
         ),
         backgroundColor: c.background,
         iconTheme: IconThemeData(color: c.textPrimary),
@@ -86,7 +84,9 @@ class _KioskReportScreenState extends State<KioskReportScreen> {
                     borderRadius: BorderRadius.circular(14),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 14),
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                       decoration: BoxDecoration(
                         color: c.surface,
                         border: Border.all(color: c.border),
@@ -101,10 +101,13 @@ class _KioskReportScreenState extends State<KioskReportScreen> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            DateFormat('dd MMM yyyy (EEEE)')
-                                .format(_selectedDate),
+                            DateFormat(
+                              'dd MMM yyyy (EEEE)',
+                            ).format(_selectedDate),
                             style: TextStyle(
-                                fontSize: 16, color: c.textPrimary),
+                              fontSize: 16,
+                              color: c.textPrimary,
+                            ),
                           ),
                         ],
                       ),
@@ -151,22 +154,28 @@ class _KioskReportScreenState extends State<KioskReportScreen> {
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
                 : _error != null
-                    ? Center(
-                        child: Text(_error!,
-                            style: const TextStyle(
-                                color: KioskColors.error)))
-                    : rows.isEmpty
-                        ? Center(
-                            child: Text('No attendance for this day.',
-                                style: TextStyle(
-                                    color: c.textSecondary)))
-                        : ListView.builder(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                            itemCount: rows.length,
-                            itemBuilder: (context, index) =>
-                                _ReportRowCard(row: rows[index]),
-                          ),
+                ? Center(
+                    child: Text(
+                      _error!,
+                      style: const TextStyle(color: KioskColors.error),
+                    ),
+                  )
+                : rows.isEmpty
+                ? Center(
+                    child: Text(
+                      'No attendance for this day.',
+                      style: TextStyle(color: c.textSecondary),
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    itemCount: rows.length,
+                    itemBuilder: (context, index) =>
+                        _ReportRowCard(row: rows[index]),
+                  ),
           ),
+          const SizedBox(height: 4),
+          const KioskVersionFooter(),
         ],
       ),
     );
@@ -197,14 +206,15 @@ class _SummaryChip extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Text(value,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: color)),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 12, color: c.textSecondary)),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            Text(label, style: TextStyle(fontSize: 12, color: c.textSecondary)),
           ],
         ),
       ),
@@ -244,12 +254,13 @@ class _ReportRowCard extends StatelessWidget {
               child: Text(
                 (row.employeeName ?? '?').isNotEmpty
                     ? (row.employeeName!.trim().isNotEmpty
-                        ? row.employeeName!.trim()[0].toUpperCase()
-                        : '?')
+                          ? row.employeeName!.trim()[0].toUpperCase()
+                          : '?')
                     : '?',
                 style: TextStyle(
-                    color: KioskColors.primaryLight,
-                    fontWeight: FontWeight.w600),
+                  color: KioskColors.primaryLight,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -260,17 +271,26 @@ class _ReportRowCard extends StatelessWidget {
                   Text(
                     row.employeeName ?? 'Employee ${row.employeeId}',
                     style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w600,
-                        color: c.textPrimary),
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: c.textPrimary,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      _TimePill(icon: Icons.login, label: 'In', time: _fmt(row.checkIn)),
+                      _TimePill(
+                        icon: Icons.login,
+                        label: 'In',
+                        time: _fmt(row.checkIn),
+                      ),
                       const SizedBox(width: 8),
-                      _TimePill(icon: Icons.logout, label: 'Out', time: _fmt(row.checkOut)),
+                      _TimePill(
+                        icon: Icons.logout,
+                        label: 'Out',
+                        time: _fmt(row.checkOut),
+                      ),
                     ],
                   ),
                 ],
@@ -284,7 +304,10 @@ class _ReportRowCard extends StatelessWidget {
                 if (row.isEarly == true)
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
-                    child: _Badge(text: 'Early', color: KioskColors.primaryLight),
+                    child: _Badge(
+                      text: 'Early',
+                      color: KioskColors.primaryLight,
+                    ),
                   ),
               ],
             ),
@@ -313,9 +336,10 @@ class _TimePill extends StatelessWidget {
       children: [
         Icon(icon, size: 14, color: c.textMuted),
         const SizedBox(width: 4),
-        Text('$label $time',
-            style: TextStyle(
-                fontSize: 13, color: c.textSecondary)),
+        Text(
+          '$label $time',
+          style: TextStyle(fontSize: 13, color: c.textSecondary),
+        ),
       ],
     );
   }
@@ -338,7 +362,10 @@ class _Badge extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-            color: color, fontSize: 12, fontWeight: FontWeight.bold),
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

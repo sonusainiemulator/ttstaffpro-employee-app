@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.0.5] - 2026-08-30
+
+### Fixed
+- Register Face employee picker now shows the real error reason instead of a
+  generic "Check connectivity" message (e.g. session expired vs. no network).
+- Added "Log in again" action on the Register Face screen when the kiosk
+  master session has expired (401) so a wall-mounted tablet can recover
+  without a manual app reset.
+- Registration failure messages now surface the underlying server reason.
+
+## [1.0.4] - 2026-08-30
+
+### Added
+- App version label ("v1.0.4") pinned to the bottom of every kiosk screen
+  (splash, company login, admin login, home, scan, register face, report).
+
+### Fixed
+- Home action-card titles no longer wrap mid-word on narrow screens — labels
+  scale to fit on one line; sync-status text no longer truncates.
+
+## [1.0.3] - 2026-08-30
+
+### Fixed
+- Camera preview rotation now derives from the device's sensor orientation
+  instead of a fixed 3-quarter turn, so face scan & face registration previews
+  stay upright on all devices (kiosk_scan_screen, kiosk_register_face_screen).
+
 ## [1.0.2] - 2026-08-30
 
 ### Fixed

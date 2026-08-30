@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../kiosk/kiosk_theme.dart';
+import '../kiosk/kiosk_version_footer.dart';
 import '../main.dart';
 import 'company_login_screen.dart';
 import 'kiosk_register_face_screen.dart';
@@ -61,10 +62,10 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
   }
 
   IconData _themeIcon(ThemeMode mode) => switch (mode) {
-        ThemeMode.light => Icons.light_mode_outlined,
-        ThemeMode.dark => Icons.dark_mode_outlined,
-        ThemeMode.system => Icons.brightness_auto_outlined,
-      };
+    ThemeMode.light => Icons.light_mode_outlined,
+    ThemeMode.dark => Icons.dark_mode_outlined,
+    ThemeMode.system => Icons.brightness_auto_outlined,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +79,7 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
       body: Container(
         width: MediaQuery.sizeOf(context).width,
         height: MediaQuery.sizeOf(context).height,
-        decoration: BoxDecoration(
-          gradient: c.backgroundGradient,
-        ),
+        decoration: BoxDecoration(gradient: c.backgroundGradient),
         child: Stack(
           children: [
             // Soft brand glow
@@ -117,7 +116,9 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                     // Header card
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: c.surface.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(22),
@@ -129,12 +130,15 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: KioskColors.primary
-                                  .withValues(alpha: 0.16),
+                              color: KioskColors.primary.withValues(
+                                alpha: 0.16,
+                              ),
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
-                                  color: KioskColors.primary
-                                      .withValues(alpha: 0.4)),
+                                color: KioskColors.primary.withValues(
+                                  alpha: 0.4,
+                                ),
+                              ),
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
@@ -209,8 +213,7 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                           IconButton(
                             tooltip: 'Logout',
                             onPressed: _logout,
-                            icon: Icon(Icons.logout,
-                                color: c.textSecondary),
+                            icon: Icon(Icons.logout, color: c.textSecondary),
                           ),
                         ],
                       ),
@@ -306,7 +309,9 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                     // Sync status
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: c.surface.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(16),
@@ -325,14 +330,18 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                           ),
                           const SizedBox(width: 8),
                           Expanded(
-                            child: Text(
-                              _pendingCount > 0
-                                  ? '$_pendingCount event(s) pending sync'
-                                  : 'All attendance events synced',
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: c.textSecondary,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                _pendingCount > 0
+                                    ? '$_pendingCount event(s) pending sync'
+                                    : 'All attendance events synced',
+                                maxLines: 1,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: c.textSecondary,
+                                ),
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Text(
@@ -344,6 +353,8 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 4),
+                    const KioskVersionFooter(),
                   ],
                 ),
               ),
@@ -416,20 +427,36 @@ class _ActionCard extends StatelessWidget {
                 child: Icon(icon, size: 30, color: Colors.white),
               ),
               const SizedBox(height: 14),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: c.textPrimary,
-                  fontWeight: FontWeight.w700,
+              // Scale to fit so titles stay on one line (no mid-word wrap)
+              // even on narrow action cards.
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: c.textPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: c.textSecondary,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    subtitle,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: c.textSecondary,
+                    ),
+                  ),
                 ),
               ),
             ],

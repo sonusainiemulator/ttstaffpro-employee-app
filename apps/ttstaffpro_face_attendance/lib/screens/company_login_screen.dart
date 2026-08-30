@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../kiosk/kiosk_theme.dart';
+import '../kiosk/kiosk_version_footer.dart';
 import '../main.dart';
 import 'master_login_screen.dart';
 
@@ -49,7 +50,8 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen> {
         );
       } else {
         setState(() {
-          _error = result.message ?? 'Company not found. Please check the name.';
+          _error =
+              result.message ?? 'Company not found. Please check the name.';
         });
       }
     } catch (e) {
@@ -73,11 +75,16 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen> {
       body: Container(
         width: MediaQuery.sizeOf(context).width,
         height: MediaQuery.sizeOf(context).height,
-        decoration: BoxDecoration(
-          gradient: c.backgroundGradient,
-        ),
+        decoration: BoxDecoration(gradient: c.backgroundGradient),
         child: Stack(
           children: [
+            // App version footer (pinned to the bottom).
+            const Positioned(
+              left: 0,
+              right: 0,
+              bottom: 8,
+              child: KioskVersionFooter(),
+            ),
             // Soft brand glow orbs
             Positioned(
               top: -120,
@@ -87,8 +94,7 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen> {
                 height: 320,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color:
-                      KioskColors.primary.withValues(alpha: 0.12),
+                  color: KioskColors.primary.withValues(alpha: 0.12),
                 ),
               ),
             ),
@@ -100,8 +106,7 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen> {
                 height: 240,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color:
-                      KioskColors.primaryLight.withValues(alpha: 0.08),
+                  color: KioskColors.primaryLight.withValues(alpha: 0.08),
                 ),
               ),
             ),
@@ -120,15 +125,11 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen> {
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
-                              c.surfaceAlt,
-                              c.surface,
-                            ],
+                            colors: [c.surfaceAlt, c.surface],
                           ),
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(
-                            color:
-                                KioskColors.primary.withValues(alpha: 0.4),
+                            color: KioskColors.primary.withValues(alpha: 0.4),
                           ),
                           boxShadow: c.softGlow,
                         ),
@@ -149,9 +150,7 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen> {
                         decoration: BoxDecoration(
                           color: c.surface.withValues(alpha: 0.92),
                           borderRadius: BorderRadius.circular(28),
-                          border: Border.all(
-                            color: c.border,
-                          ),
+                          border: Border.all(color: c.border),
                           boxShadow: c.cardShadow,
                         ),
                         child: Column(
@@ -177,15 +176,12 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen> {
                               controller: _controller,
                               textCapitalization: TextCapitalization.words,
                               cursorColor: KioskColors.primary,
-                              style: TextStyle(
-                                  color: c.textPrimary),
+                              style: TextStyle(color: c.textPrimary),
                               decoration: InputDecoration(
                                 labelText: 'Company Name',
-                                labelStyle: TextStyle(
-                                    color: c.textSecondary),
+                                labelStyle: TextStyle(color: c.textSecondary),
                                 hintText: 'Enter registered company name',
-                                hintStyle: TextStyle(
-                                    color: c.textMuted),
+                                hintStyle: TextStyle(color: c.textMuted),
                                 prefixIcon: const Icon(
                                   Icons.storefront_outlined,
                                   size: 20,
@@ -194,21 +190,23 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen> {
                                 filled: true,
                                 fillColor: c.backgroundAlt,
                                 contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 16),
+                                  horizontal: 16,
+                                  vertical: 16,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
-                                  borderSide:
-                                      BorderSide(color: c.border),
+                                  borderSide: BorderSide(color: c.border),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
-                                  borderSide:
-                                      BorderSide(color: c.border),
+                                  borderSide: BorderSide(color: c.border),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(14),
                                   borderSide: const BorderSide(
-                                      color: KioskColors.primary, width: 2),
+                                    color: KioskColors.primary,
+                                    width: 2,
+                                  ),
                                 ),
                               ),
                               onSubmitted: (_) => _matchCompany(),
@@ -227,22 +225,22 @@ class _CompanyLoginScreenState extends State<CompanyLoginScreen> {
                               width: double.infinity,
                               height: 52,
                               child: FilledButton.icon(
-                                onPressed:
-                                    _loading ? null : _matchCompany,
+                                onPressed: _loading ? null : _matchCompany,
                                 icon: _loading
                                     ? const SizedBox(
                                         width: 20,
                                         height: 20,
                                         child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Colors.white),
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
                                       )
                                     : const Icon(Icons.arrow_forward),
                                 label: Text(
-                                    _loading ? 'Matching...' : 'Continue'),
+                                  _loading ? 'Matching...' : 'Continue',
+                                ),
                                 style: FilledButton.styleFrom(
-                                  backgroundColor:
-                                      KioskColors.primary,
+                                  backgroundColor: KioskColors.primary,
                                   foregroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),

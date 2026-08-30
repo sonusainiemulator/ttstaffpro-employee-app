@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../kiosk/kiosk_theme.dart';
+import '../kiosk/kiosk_version_footer.dart';
 import '../main.dart';
 import 'kiosk_home_screen.dart';
 
@@ -87,11 +88,16 @@ class _MasterLoginScreenState extends State<MasterLoginScreen> {
       body: Container(
         width: MediaQuery.sizeOf(context).width,
         height: MediaQuery.sizeOf(context).height,
-        decoration: BoxDecoration(
-          gradient: c.backgroundGradient,
-        ),
+        decoration: BoxDecoration(gradient: c.backgroundGradient),
         child: Stack(
           children: [
+            // App version footer (pinned to the bottom).
+            const Positioned(
+              left: 0,
+              right: 0,
+              bottom: 8,
+              child: KioskVersionFooter(),
+            ),
             Positioned(
               top: -120,
               right: -120,
@@ -131,10 +137,7 @@ class _MasterLoginScreenState extends State<MasterLoginScreen> {
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: [
-                              c.surfaceAlt,
-                              c.surface,
-                            ],
+                            colors: [c.surfaceAlt, c.surface],
                           ),
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(
@@ -169,8 +172,7 @@ class _MasterLoginScreenState extends State<MasterLoginScreen> {
                             Row(
                               children: [
                                 IconButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(),
+                                  onPressed: () => Navigator.of(context).pop(),
                                   icon: const Icon(Icons.arrow_back),
                                   color: c.textPrimary,
                                 ),
@@ -199,8 +201,7 @@ class _MasterLoginScreenState extends State<MasterLoginScreen> {
                               keyboardType: TextInputType.emailAddress,
                               textCapitalization: TextCapitalization.none,
                               cursorColor: KioskColors.primary,
-                              style: TextStyle(
-                                  color: c.textPrimary),
+                              style: TextStyle(color: c.textPrimary),
                               decoration: _kioskInputDecoration(
                                 label: 'Admin Email',
                                 icon: Icons.alternate_email,
@@ -212,8 +213,7 @@ class _MasterLoginScreenState extends State<MasterLoginScreen> {
                               obscureText: _obscure,
                               onSubmitted: (_) => _login(),
                               cursorColor: KioskColors.primary,
-                              style: TextStyle(
-                                  color: c.textPrimary),
+                              style: TextStyle(color: c.textPrimary),
                               decoration: _kioskInputDecoration(
                                 label: 'Password',
                                 icon: Icons.lock_outline,
@@ -249,13 +249,14 @@ class _MasterLoginScreenState extends State<MasterLoginScreen> {
                                         width: 20,
                                         height: 20,
                                         child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Colors.white),
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
                                       )
                                     : const Icon(Icons.login),
-                                label: Text(_loading
-                                    ? 'Signing in...'
-                                    : 'Start Kiosk'),
+                                label: Text(
+                                  _loading ? 'Signing in...' : 'Start Kiosk',
+                                ),
                                 style: FilledButton.styleFrom(
                                   backgroundColor: KioskColors.primary,
                                   foregroundColor: Colors.white,
@@ -292,8 +293,7 @@ class _MasterLoginScreenState extends State<MasterLoginScreen> {
       suffixIcon: suffix,
       filled: true,
       fillColor: c.backgroundAlt,
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: BorderSide(color: c.border),

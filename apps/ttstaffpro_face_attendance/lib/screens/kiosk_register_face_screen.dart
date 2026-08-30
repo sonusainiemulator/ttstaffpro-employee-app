@@ -4,12 +4,15 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:open_core_hr/api/dio_api/exceptions/api_exceptions.dart';
 import 'package:open_core_hr/models/face_attendance/kiosk_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../kiosk/kiosk_theme.dart';
+import '../kiosk/kiosk_version_footer.dart';
 import '../main.dart';
+import 'company_login_screen.dart';
 
 /// Kiosk admin face registration.
 ///
@@ -31,6 +34,7 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
   List<KioskEmployee> _employees = [];
   bool _loadingEmployees = true;
   String? _listError;
+  bool _sessionError = false;
   KioskEmployee? _selected;
 
   // Phase B — face capture.
@@ -66,6 +70,7 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
   Future<void> _loadEmployees() async {
     setState(() {
       _loadingEmployees = true;
+      _sessionError = false;
       _listError = null;
     });
     try {
@@ -74,10 +79,44 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       setState(() => _employees = employees);
     } catch (e) {
       if (!mounted) return;
-      setState(() => _listError = 'Could not load employees. Check connectivity.');
+      setState(() {
+        _sessionError = e is UnauthorizedException;
+        _listError = _friendlyError(
+          e,
+          fallback: 'Could not load employees. Check connectivity.',
+        );
+      });
     } finally {
       if (mounted) setState(() => _loadingEmployees = false);
     }
+  }
+
+  /// Maps an API exception to a message a kiosk operator can act on instead of
+  /// hiding the real reason behind a generic connectivity message.
+  String _friendlyError(Object e, {required String fallback}) {
+    if (e is UnauthorizedException) {
+      return 'Session expired. Please log in again.';
+    }
+    if (e is NetworkException || e is TimeoutException) {
+      return 'Could not reach the server. Check connectivity and retry.';
+    }
+    if (e is ServerException) {
+      return 'Server error. Please try again.';
+    }
+    if (e is ApiException && e.message.trim().isNotEmpty) {
+      return e.message;
+    }
+    return fallback;
+  }
+
+  /// Clears the kiosk session and returns to the company login screen.
+  Future<void> _goToLogin() async {
+    await kioskSettings.clearSession();
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const CompanyLoginScreen()),
+      (route) => false,
+    );
   }
 
   Future<void> _selectEmployee(KioskEmployee employee) async {
@@ -89,7 +128,9 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
     }
     await _initializeCamera();
     if (mounted && _isCameraInitialized) {
-      setState(() => _status = 'Look straight at the camera and press capture.');
+      setState(
+        () => _status = 'Look straight at the camera and press capture.',
+      );
     }
   }
 
@@ -140,8 +181,10 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       final face = await kioskService.matcher.detectInFile(path);
       if (face == null) {
         if (mounted) {
-          setState(() =>
-              _status = 'No face detected. Align within the frame and retry.');
+          setState(
+            () =>
+                _status = 'No face detected. Align within the frame and retry.',
+          );
         }
         return;
       }
@@ -189,7 +232,10 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       if (!mounted) return;
       setState(() {
         _uploading = false;
-        _status = 'Registration failed. Please retry.';
+        _status = _friendlyError(
+          e,
+          fallback: 'Registration failed. Please retry.',
+        );
       });
     }
   }
@@ -210,9 +256,7 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _selected == null
-          ? _buildEmployeePicker()
-          : _buildCaptureScreen(),
+      body: _selected == null ? _buildEmployeePicker() : _buildCaptureScreen(),
     );
   }
 
@@ -265,7 +309,9 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
               child: Text(
                 'Select an employee to register their face. They can then check '
                 'in / out on this kiosk or with their mobile app.',
-                style: theme.textTheme.bodySmall?.copyWith(color: c.textSecondary),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: c.textSecondary,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -273,41 +319,57 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
               child: _loadingEmployees
                   ? const Center(child: CircularProgressIndicator())
                   : _listError != null
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.cloud_off, size: 56, color: Colors.grey),
-                                const SizedBox(height: 12),
-                                Text(_listError!, textAlign: TextAlign.center),
-                                const SizedBox(height: 16),
-                                FilledButton(
-                                  onPressed: _loadEmployees,
-                                  child: const Text('Retry'),
-                                ),
-                              ],
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.cloud_off,
+                              size: 56,
+                              color: Colors.grey,
                             ),
-                          ),
-                        )
-                      : _employees.isEmpty
-                          ? Center(
-                              child: Text('No active employees found.',
-                                  style: TextStyle(color: c.textSecondary)))
-                          : ListView.separated(
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                              itemCount: _employees.length,
-                              separatorBuilder: (_, _) => const SizedBox(height: 10),
-                              itemBuilder: (context, index) {
-                                final emp = _employees[index];
-                                return _EmployeeTile(
-                                  employee: emp,
-                                  onTap: () => _selectEmployee(emp),
-                                );
-                              },
+                            const SizedBox(height: 12),
+                            Text(_listError!, textAlign: TextAlign.center),
+                            const SizedBox(height: 16),
+                            FilledButton(
+                              onPressed: _loadEmployees,
+                              child: const Text('Retry'),
                             ),
+                            if (_sessionError) ...[
+                              const SizedBox(height: 8),
+                              TextButton(
+                                onPressed: _goToLogin,
+                                child: const Text('Log in again'),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    )
+                  : _employees.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No active employees found.',
+                        style: TextStyle(color: c.textSecondary),
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                      itemCount: _employees.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 10),
+                      itemBuilder: (context, index) {
+                        final emp = _employees[index];
+                        return _EmployeeTile(
+                          employee: emp,
+                          onTap: () => _selectEmployee(emp),
+                        );
+                      },
+                    ),
             ),
+            const SizedBox(height: 4),
+            const KioskVersionFooter(),
           ],
         ),
       ),
@@ -329,9 +391,7 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
           else
             Container(
               color: KioskTheme.of(context).background,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: const Center(child: CircularProgressIndicator()),
             ),
           // Scrims.
           const _CaptureScrim(alignment: Alignment.topCenter),
@@ -359,7 +419,13 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
               top: false,
               child: Padding(
                 padding: const EdgeInsets.all(20),
-                child: _done ? _buildDoneCard() : _buildCaptureActions(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _done ? _buildDoneCard() : _buildCaptureActions(),
+                    const KioskVersionFooter(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -372,7 +438,13 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
     final controller = _cameraController!;
     return OrientationBuilder(
       builder: (context, orientation) {
-        final turns = orientation == Orientation.portrait ? 3 : 0;
+        // Front-camera sensor is landscape; in portrait it is rotated to
+        // display upright based on the device's sensor orientation (a fixed 3
+        // only matches devices whose sensor reports 270°). In landscape the
+        // preview already matches the screen.
+        final turns = orientation == Orientation.portrait
+            ? (controller.description.sensorOrientation / 90).round() % 4
+            : 0;
         return RotatedBox(
           quarterTurns: turns,
           child: AspectRatio(
@@ -410,7 +482,9 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
                   Text(
                     _selected?.name ?? 'Employee',
                     style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w600),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
@@ -437,9 +511,7 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
               width: 28,
               height: 2,
               margin: const EdgeInsets.symmetric(horizontal: 4),
-              color: i <= _currentStep
-                  ? KioskColors.primary
-                  : Colors.white24,
+              color: i <= _currentStep ? KioskColors.primary : Colors.white24,
             ),
           Container(
             width: 40,
@@ -448,9 +520,7 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
               shape: BoxShape.circle,
               color: i < _currentStep
                   ? KioskColors.success
-                  : (i == _currentStep
-                      ? KioskColors.primary
-                      : Colors.white24),
+                  : (i == _currentStep ? KioskColors.primary : Colors.white24),
             ),
             child: Center(
               child: i < _currentStep
@@ -458,7 +528,9 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
                   : Text(
                       '${i + 1}',
                       style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w700),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
             ),
           ),
@@ -501,10 +573,15 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
                         width: 26,
                         height: 26,
                         child: CircularProgressIndicator(
-                            strokeWidth: 3, color: Colors.white),
+                          strokeWidth: 3,
+                          color: Colors.white,
+                        ),
                       )
-                    : Icon(_steps[_currentStep].icon,
-                        size: 34, color: Colors.white),
+                    : Icon(
+                        _steps[_currentStep].icon,
+                        size: 34,
+                        color: Colors.white,
+                      ),
               ),
             )
           else
@@ -518,15 +595,18 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
                             width: 18,
                             height: 18,
                             child: CircularProgressIndicator(
-                                strokeWidth: 2.5, color: Colors.white),
+                              strokeWidth: 2.5,
+                              color: Colors.white,
+                            ),
                           )
                         : const Icon(Icons.person_add_alt_1),
-                    label: Text(_uploading ? 'Registering...' : 'Register Face'),
+                    label: Text(
+                      _uploading ? 'Registering...' : 'Register Face',
+                    ),
                     style: FilledButton.styleFrom(
                       backgroundColor: KioskColors.primary,
                       foregroundColor: Colors.white,
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -556,8 +636,9 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
           end: Alignment.bottomRight,
           colors: [
             success ? KioskColors.success : KioskColors.error,
-            (success ? KioskColors.success : KioskColors.error)
-                .withValues(alpha: 0.8),
+            (success ? KioskColors.success : KioskColors.error).withValues(
+              alpha: 0.8,
+            ),
           ],
         ),
         borderRadius: BorderRadius.circular(22),
@@ -575,9 +656,10 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
             _status,
             textAlign: TextAlign.center,
             style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w700),
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: 12),
           Row(
@@ -704,10 +786,7 @@ class _CaptureScrim extends StatelessWidget {
           gradient: LinearGradient(
             begin: fromTop ? Alignment.topCenter : Alignment.bottomCenter,
             end: Alignment.center,
-            colors: [
-              Colors.black.withValues(alpha: 0.55),
-              Colors.transparent,
-            ],
+            colors: [Colors.black.withValues(alpha: 0.55), Colors.transparent],
           ),
         ),
       ),
