@@ -1259,7 +1259,7 @@ packages:
       path: "../.."
       relative: true
     source: path
-    version: "1.1.4+20260830"
+    version: "1.1.6+20260831"
   open_filex:
     dependency: transitive
     description:
