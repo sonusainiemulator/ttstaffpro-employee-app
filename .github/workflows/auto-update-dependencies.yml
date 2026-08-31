@@ -1,0 +1,123 @@
+# Daily dependency auto-update — TTStaffPro monorepo
+#
+# Runs every day (04:00 UTC) and on manual dispatch. It:
+#   1. Reports `flutter pub outdated` for the root package and the kiosk app.
+#   2. Runs `flutter pub upgrade` (root + kiosk) and regenerates generated code.
+#   3. Verifies `flutter analyze` has no errors and `flutter test` passes.
+#   4. If there are dependency changes AND everything is green, opens (or
+#      updates) an auto-update PR on branch `deps/auto-update` for review.
+#
+# It intentionally opens a PR instead of pushing straight to `main`, so a
+# breaking upstream change can be reviewed before it lands. Merge the PR to
+# apply the updates; the next daily run will keep the PR current.
+
+name: Auto-update dependencies
+
+on:
+  schedule:
+    # Every day at 04:00 UTC.
+    - cron: '0 4 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  FLUTTER_VERSION: '3.44.9'
+  APP_DIR: apps/ttstaffpro_face_attendance
+
+concurrency:
+  group: deps-auto-update
+  cancel-in-progress: true
+
+jobs:
+  update-deps:
+    name: Check & upgrade dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Report outdated packages (root)
+        run: flutter pub outdated || true
+
+      - name: Report outdated packages (kiosk)
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter pub outdated || true
+
+      - name: Upgrade root dependencies
+        run: flutter pub upgrade
+
+      - name: Upgrade kiosk dependencies
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter pub upgrade
+
+      - name: Regenerate generated code (root)
+        run: dart run build_runner build --delete-conflicting-outputs || true
+
+      - name: Analyze (fail on errors; pre-existing info lints are tolerated)
+        shell: bash
+        run: |
+          set +e
+          OUT=$(flutter analyze 2>&1)
+          echo "$OUT"
+          if echo "$OUT" | grep -qE "error •"; then
+            echo "ANALYZE_HAS_ERRORS=true" >> "$GITHUB_ENV"
+            exit 1
+          fi
+
+      - name: Test (root)
+        run: flutter test
+
+      - name: Test (kiosk)
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter test
+
+      - name: Check for dependency changes
+        id: changes
+        shell: bash
+        run: |
+          set +e
+          # Only tracked modifications count (ignore untracked/build artifacts).
+          STATUS=$(git status --porcelain | grep -v '^??')
+          if [ -n "$STATUS" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "$STATUS"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Get date
+        id: date
+        run: echo "day=$(date +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Create/update auto-update PR
+        if: steps.changes.outputs.changed == 'true' && env.ANALYZE_HAS_ERRORS != 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: auto-update dependencies (${{ steps.date.outputs.day }})'
+          branch: deps/auto-update
+          base: main
+          title: 'chore: auto-update dependencies'
+          body: |
+            Automated daily dependency update.
+
+            - Ran `flutter pub outdated` — full report in the Actions log.
+            - Ran `flutter pub upgrade` (root + kiosk) and regenerated generated code.
+            - `flutter analyze` reports no errors and `flutter test` passes (root + kiosk).
+            - If a dependency needs a version-constraint bump, review the diff before merging.
+
+            **Review and merge** to apply. The next daily run keeps this PR current.
+          labels:
+            - dependencies
+            - automation
+          delete-branch: true
