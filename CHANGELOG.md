@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.7] - 2026-08-31
+
+### Fixed
+- `RecognitionUploadResult` now parses both snake_case and camelCase event payloads (`attendance_action`/`attendance_id`), so the kiosk can display the actual check-in / check-out action returned by the server.
+- `uploadRecognitionEvent` surfaces the ApiResponse top-level `message` so the kiosk can show the server's human-readable result.
+
 ## [1.1.6] - 2026-08-31
 
 ### Fixed

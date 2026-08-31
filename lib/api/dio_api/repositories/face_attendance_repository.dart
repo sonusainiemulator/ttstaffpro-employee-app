@@ -426,7 +426,14 @@ class FaceAttendanceRepository extends BaseRepository {
         options: Options(contentType: 'multipart/form-data'),
       ),
       parser: (data) {
-        final body = (data['data'] as Map<String, dynamic>?) ?? data as Map<String, dynamic>;
+        final dataMap = data as Map<String, dynamic>;
+        final body = (dataMap['data'] as Map<String, dynamic>?) ?? dataMap;
+        // ApiResponse wraps the payload under `data` and keeps the
+        // human-readable `message` at the top level — surface it when the
+        // event payload itself has no message.
+        if (body['message'] == null && dataMap['message'] != null) {
+          body['message'] = dataMap['message'];
+        }
         return RecognitionUploadResult.fromJson(body);
       },
       showError: true,

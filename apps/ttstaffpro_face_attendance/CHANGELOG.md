@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.11] - 2026-08-31
+
+### Fixed
+- Fixed the live camera preview appearing rotated 90° so an upright face no longer shows sideways during a scan.
+- The same employee is no longer scanned twice in a row within 20 seconds, preventing an accidental check-in from being flipped into a check-out.
+- Recognition results now read the backend's snake_case response (`attendance_action`/`attendance_id`), so the screen shows the real "Check-in recorded" / "Check-out recorded" action instead of a generic message.
+
 ## [1.0.10] - 2026-08-31
 
 ### Added

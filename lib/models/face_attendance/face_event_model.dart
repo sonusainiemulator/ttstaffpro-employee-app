@@ -13,11 +13,19 @@ class RecognitionUploadResult {
 
   factory RecognitionUploadResult.fromJson(Map<String, dynamic> json) {
     return RecognitionUploadResult(
-      eventUuid: json['eventUuid'] as String?,
-      attendanceAction: json['attendanceAction'] as String?,
-      attendanceId: json['attendanceId'] as int?,
+      eventUuid: json['eventUuid'] as String? ?? json['event_uuid'] as String?,
+      attendanceAction: json['attendanceAction'] as String? ??
+          json['attendance_action'] as String?,
+      attendanceId:
+          _asInt(json['attendanceId'] ?? json['attendance_id']),
       message: json['message'] as String?,
     );
+  }
+
+  static int? _asInt(dynamic v) {
+    if (v == null) return null;
+    if (v is int) return v;
+    return int.tryParse(v.toString());
   }
 
   Map<String, dynamic> toJson() {

@@ -48,6 +48,13 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   bool _lastSuccess = false;
   int _scanCount = 0;
 
+  /// Tracks the last successful scan so the same person standing in front of
+  /// the camera is not immediately scanned again (which would flip their
+  /// check-in into a check-out while they are still reading the result).
+  int? _lastScannedEmployeeId;
+  DateTime? _lastScanAt;
+  static const Duration _rescanCooldown = Duration(seconds: 20);
+
   @override
   void initState() {
     super.initState();
@@ -153,6 +160,23 @@ class _KioskScanScreenState extends State<KioskScanScreen>
           : null;
 
       if (match != null) {
+        final now = DateTime.now();
+        final cooldownActive = _lastScannedEmployeeId == match.employeeId &&
+            _lastScanAt != null &&
+            now.difference(_lastScanAt!) < _rescanCooldown;
+        if (cooldownActive) {
+          // The same employee was just scanned — ignore this frame so their
+          // check-in is not immediately turned into a check-out while they are
+          // still standing in front of the camera.
+          if (mounted) {
+            setState(
+              () => _status = 'Scan complete. Please step aside for the next person.',
+            );
+          }
+          return;
+        }
+        _lastScannedEmployeeId = match.employeeId;
+        _lastScanAt = now;
         await _handleMatch(
           employeeId: match.employeeId,
           distance: match.distance,
@@ -192,11 +216,28 @@ class _KioskScanScreenState extends State<KioskScanScreen>
       _showResult(
         success: true,
         name: name,
-        action: result.attendanceAction ?? 'attendance updated',
+        action: _actionLabel(result.attendanceAction),
       );
     } else {
       // Offline — queued for sync.
       _showResult(success: true, name: name, action: 'saved offline');
+    }
+  }
+
+  /// Maps the server's attendance action to a clear, human-readable label so
+  /// staff can tell at a glance whether they checked in or out.
+  String _actionLabel(String? action) {
+    switch ((action ?? '').toLowerCase().replaceAll('-', '_')) {
+      case 'check_in':
+      case 'checkin':
+        return 'Check-in recorded';
+      case 'check_out':
+      case 'checkout':
+        return 'Check-out recorded';
+      case '':
+        return 'attendance updated';
+      default:
+        return action!;
     }
   }
 
@@ -214,7 +255,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
       _showResult(
         success: true,
         name: result.message ?? 'Attendance recorded',
-        action: result.attendanceAction ?? 'ok',
+        action: _actionLabel(result.attendanceAction),
       );
     } else if (result != null && (result.attendanceId == null)) {
       // Server processed but no attendance record (e.g. face not registered).
@@ -653,25 +694,11 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   }
 
   Widget _buildPreview() {
-    final controller = _cameraController!;
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        // Front-camera sensor is landscape; in portrait it is rotated to
-        // display upright based on the device's sensor orientation (a fixed 3
-        // only matches devices whose sensor reports 270°). In landscape the
-        // preview already matches the screen.
-        final turns = orientation == Orientation.portrait
-            ? (controller.description.sensorOrientation / 90).round() % 4
-            : 0;
-        return RotatedBox(
-          quarterTurns: turns,
-          child: AspectRatio(
-            aspectRatio: controller.value.aspectRatio,
-            child: CameraPreview(controller),
-          ),
-        );
-      },
-    );
+    // The camera plugin's CameraPreview already applies the correct rotation
+    // and aspect ratio for the locked portrait orientation. Wrapping it in an
+    // extra RotatedBox based on the raw sensor orientation double-rotated the
+    // image, which made upright faces appear lying sideways in the live view.
+    return CameraPreview(_cameraController!);
   }
 }
 
