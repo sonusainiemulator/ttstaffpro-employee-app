@@ -88,6 +88,50 @@ void main() {
       expect(profiles.first.status, 'active');
     });
 
+    test('getAdminProfiles parses Laravel paginator (data.data) response', () async {
+      // Real server payload: ApiResponse wraps the paginator, which puts the
+      // rows under `data.data` and snake_cases every key.
+      final jsonResponse = {
+        'success': true,
+        'message': 'Success',
+        'data': {
+          'current_page': 1,
+          'data': [
+            {
+              'id': 7,
+              'employee_id': '3',
+              'employee_name': 'Kanhu Charan Tripathy',
+              'registration_mode': 'kiosk',
+              'status': 'active',
+              'approval_status': 'approved',
+            }
+          ],
+          'first_page_url': 'http://localhost?page=1',
+          'last_page': 1,
+          'total': 1,
+        },
+      };
+
+      mockAdapter.handler = (options) {
+        expect(options.path, contains('face-attendance/admin/profiles'));
+        expect(options.method, 'GET');
+        return ResponseBody.fromString(
+          jsonEncode(jsonResponse),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      };
+
+      final profiles = await repository.getAdminProfiles(status: 'active');
+      expect(profiles, isNotEmpty);
+      expect(profiles.first.employeeId, 3);
+      expect(profiles.first.employeeName, 'Kanhu Charan Tripathy');
+      expect(profiles.first.approvalStatus, 'approved');
+      expect(profiles.first.status, 'active');
+    });
+
     test('getAdminProfileDetail parses detailed response successfully', () async {
       final jsonResponse = {
         'statusCode': 200,

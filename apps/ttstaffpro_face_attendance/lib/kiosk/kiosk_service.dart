@@ -119,9 +119,15 @@ class KioskService {
   Future<List<KioskEmployee>> getEmployeesWithFaceStatus() async {
     final employees = await getEmployees();
     try {
-      final profiles = await _repo.getAdminProfiles(status: 'approved');
+      // The server's admin-profiles endpoint filters on the profile `status`
+      // column (`active`/`pending`/`inactive`), not on approval — query active
+      // profiles and keep only the approved ones so a freshly enrolled face is
+      // correctly reported as "Registered".
+      final profiles = await _repo.getAdminProfiles(status: 'active');
       final registeredIds = profiles
-          .where((p) => p.employeeId != null)
+          .where((p) =>
+              p.employeeId != null &&
+              (p.approvalStatus == null || p.approvalStatus == 'approved'))
           .map((p) => p.employeeId!)
           .toSet();
       return employees.map((emp) {

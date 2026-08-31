@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.8] - 2026-08-31
+
+### Fixed
+- `FaceProfileSummary` now parses both snake_case and camelCase admin-profiles payloads (`employee_id`, `approval_status`, ...) with int-tolerant ids, so the kiosk can tell which employees already have a registered face.
+- `getAdminProfiles` now unwraps both the `{ profiles: [...] }` body and the Laravel paginator (`data.data`) shape returned by the server.
+
 ## [1.1.7] - 2026-08-31
 
 ### Fixed

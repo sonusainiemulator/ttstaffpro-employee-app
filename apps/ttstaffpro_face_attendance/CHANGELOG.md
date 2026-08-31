@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.12] - 2026-08-31
+
+### Fixed
+- Register Face list no longer shows every employee as "Unregistered" after enrollment.
+- The backend's admin-profiles payload (Laravel paginator + snake_case keys) is now parsed correctly, so freshly registered faces show "Registered" on the picker.
+- After a successful registration the picker reloads automatically and the employee's status updates to "Registered" right away.
+
 ## [1.0.11] - 2026-08-31
 
 ### Fixed

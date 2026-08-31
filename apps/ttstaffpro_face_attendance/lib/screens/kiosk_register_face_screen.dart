@@ -231,10 +231,12 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       });
 
       if (ok) {
+        // Return to the employee picker and reload so the just-registered
+        // employee immediately shows "Registered" instead of staying stale.
         Future.delayed(const Duration(milliseconds: 1200), () {
-          if (mounted) {
-            Navigator.of(context).pop();
-          }
+          if (!mounted) return;
+          _backToPicker();
+          _loadEmployees();
         });
       }
     } catch (e) {

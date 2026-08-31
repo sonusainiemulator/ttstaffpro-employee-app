@@ -40,8 +40,24 @@ class FaceAttendanceRepository extends BaseRepository {
     return await safeApiCall(
       () => dioClient.get(APIRoutes.adminProfiles, queryParameters: queryParameters),
       parser: (data) {
-        final list = (data['data']?['profiles'] ?? data['data'] ?? data) as List;
-        return list.map((e) => FaceProfileSummary.fromJson(e as Map<String, dynamic>)).toList();
+        // The endpoint may return a `{ profiles: [...] }` body or a Laravel
+        // paginator `{ data: [...] }`. Unwrap whichever shape is present so
+        // profile rows are never dropped by a cast error.
+        final dataMap = data as Map<String, dynamic>;
+        final payload = dataMap['data'];
+        List<dynamic> list;
+        if (payload is List) {
+          list = payload;
+        } else if (payload is Map) {
+          final items =
+              payload['profiles'] ?? payload['data'] ?? payload['items'];
+          list = items is List ? items : const [];
+        } else {
+          list = const [];
+        }
+        return list
+            .map((e) => FaceProfileSummary.fromJson(e as Map<String, dynamic>))
+            .toList();
       },
       showError: true,
     );

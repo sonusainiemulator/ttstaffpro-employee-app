@@ -88,4 +88,21 @@ void main() {
     expect(profile.images!.first.imageUrl, 'https://x/storage/1.jpg');
     expect(profile.images!.first.captureType, 'front');
   });
+
+  test('FaceProfileSummary parses snake_case admin-profiles payload', () {
+    final summary = FaceProfileSummary.fromJson({
+      'id': 5,
+      'employee_id': '3',
+      'employee_name': 'Kanhu Charan Tripathy',
+      'registration_mode': 'kiosk',
+      'status': 'active',
+      'approval_status': 'approved',
+      'enrollment_version': 1,
+    });
+
+    expect(summary.employeeId, 3);
+    expect(summary.employeeName, 'Kanhu Charan Tripathy');
+    expect(summary.approvalStatus, 'approved');
+    expect(summary.status, 'active');
+  });
 }

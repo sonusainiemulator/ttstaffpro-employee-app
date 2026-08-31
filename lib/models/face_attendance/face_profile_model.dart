@@ -1,3 +1,11 @@
+/// Tolerant int parsing for face-attendance payloads — accepts int, numeric
+/// strings and null so a serializer mismatch can never crash a parser.
+int? _intValue(dynamic v) {
+  if (v == null) return null;
+  if (v is int) return v;
+  return int.tryParse(v.toString());
+}
+
 class FaceProfileSummary {
   final int? id;
   final int? employeeId;
@@ -20,15 +28,22 @@ class FaceProfileSummary {
   });
 
   factory FaceProfileSummary.fromJson(Map<String, dynamic> json) {
+    // Accept both camelCase and snake_case keys (ApiResponse snake_cases keys
+    // on the wire) so `employee_id` / `approval_status` are not dropped.
     return FaceProfileSummary(
-      id: json['id'] as int?,
-      employeeId: json['employeeId'] as int?,
-      employeeName: json['employeeName'] as String?,
-      registrationMode: json['registrationMode'] as String?,
+      id: _intValue(json['id']),
+      employeeId: _intValue(json['employeeId'] ?? json['employee_id']),
+      employeeName:
+          json['employeeName'] as String? ?? json['employee_name'] as String?,
+      registrationMode: json['registrationMode'] as String? ??
+          json['registration_mode'] as String?,
       status: json['status'] as String?,
-      approvalStatus: json['approvalStatus'] as String?,
-      enrollmentVersion: json['enrollmentVersion']?.toString(),
-      lastSyncedAt: json['lastSyncedAt'] as String?,
+      approvalStatus: json['approvalStatus'] as String? ??
+          json['approval_status'] as String?,
+      enrollmentVersion:
+          (json['enrollmentVersion'] ?? json['enrollment_version'])?.toString(),
+      lastSyncedAt:
+          (json['lastSyncedAt'] ?? json['last_synced_at'])?.toString(),
     );
   }
 
@@ -170,8 +185,8 @@ class FaceProfileDetail {
     // Accept both camelCase and snake_case keys (ApiResponse snake_cases keys
     // on the wire).
     return FaceProfileDetail(
-      id: json['id'] as int?,
-      employeeId: json['employeeId'] as int? ?? json['employee_id'] as int?,
+      id: _intValue(json['id']),
+      employeeId: _intValue(json['employeeId'] ?? json['employee_id']),
       employeeName: json['employeeName'] as String? ??
           json['employee_name'] as String?,
       registrationMode: json['registrationMode'] as String? ??
