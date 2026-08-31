@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:open_core_hr/models/face_attendance/kiosk_model.dart';
 
 import '../kiosk/kiosk_theme.dart';
+import '../kiosk/kiosk_time.dart';
 import '../kiosk/kiosk_version_footer.dart';
 import '../main.dart';
 
@@ -227,19 +228,9 @@ class _ReportRowCard extends StatelessWidget {
 
   const _ReportRowCard({required this.row});
 
-  String _fmt(String? iso) {
-    if (iso == null || iso.isEmpty) return '--:--';
-    final dt = DateTime.tryParse(iso);
-    if (dt == null) return iso;
-    return DateFormat('hh:mm a').format(dt);
-  }
+  String _fmt(String? iso) => formatKioskTime(iso);
 
-  String _fmtDateTime(String? iso) {
-    if (iso == null || iso.isEmpty) return '—';
-    final dt = DateTime.tryParse(iso);
-    if (dt == null) return iso;
-    return DateFormat('dd MMM yyyy, hh:mm a').format(dt);
-  }
+  String _fmtDateTime(String? iso) => formatKioskDateTime(iso);
 
   @override
   Widget build(BuildContext context) {

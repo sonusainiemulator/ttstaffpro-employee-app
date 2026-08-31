@@ -1,4 +1,10 @@
 # Changelog
+## [1.0.13] - 2026-08-31
+
+### Fixed
+- Daily attendance report now shows check-in/check-out date & time in Asia/Kolkata, so a scan just after midnight is not shown as the previous day.
+- After a successful scan the kiosk now holds the result for 20 seconds (with a live countdown) before re-arming, so the same face is not captured again immediately.
+- Added server-side 20s cooldown so lingering faces cannot flip check-in/check-out state within seconds.
 
 ## [1.0.12] - 2026-08-31
 

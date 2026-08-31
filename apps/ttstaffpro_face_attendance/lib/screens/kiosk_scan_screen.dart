@@ -55,6 +55,13 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   DateTime? _lastScanAt;
   static const Duration _rescanCooldown = Duration(seconds: 20);
 
+  /// How long the success/result card stays on screen before the scanner
+  /// re-arms. 20 seconds gives the person time to step away and prevents an
+  /// immediate second capture of the same face.
+  static const Duration _resultHoldDuration = Duration(seconds: 20);
+  Timer? _resultTimer;
+  int _resultSecondsLeft = 0;
+
   @override
   void initState() {
     super.initState();
@@ -274,28 +281,42 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     }
   }
 
-  /// Shows a result overlay for ~2.6s, then automatically re-arms the scanner.
+  /// Shows a result overlay for [_resultHoldDuration] (20s) with a live
+  /// countdown, then automatically re-arms the scanner. This gives the person
+  /// time to step away so the same face is not immediately scanned again.
   void _showResult({
     required bool success,
     required String name,
     required String action,
   }) {
+    _resultTimer?.cancel();
     setState(() {
       _resultHold = true;
       _lastSuccess = success;
       _lastEmployeeName = name;
       _lastAction = action;
+      _resultSecondsLeft = _resultHoldDuration.inSeconds;
     });
-    Timer(const Duration(milliseconds: 2600), () {
-      if (!mounted) return;
-      setState(() {
-        _resultHold = false;
-        _lastEmployeeName = null;
-        _lastAction = null;
-        _status = kioskService.enrolledSignatures.isEmpty
-            ? 'Waiting for face...'
-            : 'Look at the camera to check in / out';
-      });
+
+    _resultTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_resultSecondsLeft <= 1) {
+        timer.cancel();
+        setState(() {
+          _resultHold = false;
+          _lastEmployeeName = null;
+          _lastAction = null;
+          _resultSecondsLeft = 0;
+          _status = kioskService.enrolledSignatures.isEmpty
+              ? 'Waiting for face...'
+              : 'Look at the camera to check in / out';
+        });
+      } else {
+        setState(() => _resultSecondsLeft--);
+      }
     });
   }
 
@@ -310,6 +331,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   @override
   void dispose() {
     _scanTimer?.cancel();
+    _resultTimer?.cancel();
     _pulseAnim.dispose();
     _cameraController?.dispose();
     _matcher.close();
@@ -686,6 +708,16 @@ class _KioskScanScreenState extends State<KioskScanScreen>
           Text(
             _lastAction ?? '',
             style: const TextStyle(color: Colors.white70, fontSize: 15),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Next scan in ${_resultSecondsLeft}s',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
             textAlign: TextAlign.center,
           ),
         ],
