@@ -516,7 +516,8 @@ class FaceAttendanceRepository extends BaseRepository {
     return await safeApiCall(
       () => dioClient.get(APIRoutes.adminAuditLog, queryParameters: queryParameters),
       parser: (data) {
-        final list = (data['data'] ?? data) as List;
+        final payload = (data as Map<String, dynamic>)['data'] ?? data;
+        final list = _unwrapList(payload);
         return list.map((e) => RecognitionAuditEntry.fromJson(e as Map<String, dynamic>)).toList();
       },
       showError: true,
@@ -528,7 +529,8 @@ class FaceAttendanceRepository extends BaseRepository {
     return await safeApiCall(
       () => dioClient.get(APIRoutes.adminFailedRecognitions),
       parser: (data) {
-        final list = (data['data'] ?? data) as List;
+        final payload = (data as Map<String, dynamic>)['data'] ?? data;
+        final list = _unwrapList(payload);
         return list.map((e) => FailedRecognitionEntry.fromJson(e as Map<String, dynamic>)).toList();
       },
       showError: true,
@@ -540,7 +542,8 @@ class FaceAttendanceRepository extends BaseRepository {
     return await safeApiCall(
       () => dioClient.get(APIRoutes.adminSpoofEvents),
       parser: (data) {
-        final list = (data['data'] ?? data) as List;
+        final payload = (data as Map<String, dynamic>)['data'] ?? data;
+        final list = _unwrapList(payload);
         return list.map((e) => SpoofEventEntry.fromJson(e as Map<String, dynamic>)).toList();
       },
       showError: true,
@@ -552,7 +555,8 @@ class FaceAttendanceRepository extends BaseRepository {
     return await safeApiCall(
       () => dioClient.get(APIRoutes.adminDevicesHealth),
       parser: (data) {
-        final list = (data['data'] ?? data) as List;
+        final payload = (data as Map<String, dynamic>)['data'] ?? data;
+        final list = _unwrapList(payload);
         return list.map((e) => DeviceHealthStatus.fromJson(e as Map<String, dynamic>)).toList();
       },
       showError: true,
@@ -577,8 +581,27 @@ class FaceAttendanceRepository extends BaseRepository {
 
   /// Update module settings
   Future<bool> updateSettings(FaceModuleSettings settings) async {
+    // The server validates snake_case field names, so send a snake_cased body
+    // (not the camelCase toJson()).
+    final body = <String, dynamic>{
+      if (settings.defaultThreshold != null)
+        'default_threshold': settings.defaultThreshold,
+      if (settings.minThreshold != null) 'min_threshold': settings.minThreshold,
+      if (settings.maxThreshold != null) 'max_threshold': settings.maxThreshold,
+      if (settings.requireLiveness != null)
+        'require_liveness': settings.requireLiveness,
+      if (settings.allowSelfRegistration != null)
+        'allow_self_registration': settings.allowSelfRegistration,
+      if (settings.selfRegistrationRequiresApproval != null)
+        'self_registration_requires_approval':
+            settings.selfRegistrationRequiresApproval,
+      if (settings.snapshotRetentionDays != null)
+        'snapshot_retention_days': settings.snapshotRetentionDays,
+      if (settings.attendanceModes != null)
+        'attendance_modes': settings.attendanceModes,
+    };
     return await safeApiCall(
-      () => dioClient.put(APIRoutes.adminSettings, data: settings.toJson()),
+      () => dioClient.put(APIRoutes.adminSettings, data: body),
       parser: (data) => true,
       showError: true,
     );
@@ -697,5 +720,16 @@ class FaceAttendanceRepository extends BaseRepository {
       parser: (data) => true,
       showError: true,
     );
+  }
+
+  /// Unwraps a list from either a bare list, a `{ profiles: [...] }` body, or a
+  /// Laravel paginator (`{ data: [...], ... }` / `{ items: [...] }`).
+  List<dynamic> _unwrapList(dynamic payload) {
+    if (payload is List) return payload;
+    if (payload is Map) {
+      final items = payload['data'] ?? payload['items'] ?? payload['profiles'];
+      if (items is List) return items;
+    }
+    return const [];
   }
 }

@@ -1,4 +1,15 @@
 # Changelog
+## [1.2.0] - 2026-08-31
+
+### Added
+- New **Face Attendance Admin** console (Settings → Face Attendance Admin) with six tabs: Dashboard, Audit Log, Failed, Spoof, Devices and Settings.
+- Backend endpoints now fully wired and verified on the live server: `admin/dashboard`, `admin/audit-log`, `admin/failed-recognitions`, `admin/spoof-events`, `admin/devices/health`, `admin/settings` (GET/PUT, DB-persisted), `admin/self-registration/audits`, `admin/profiles/{id}/re-enroll`, `self/refresh`, `device/events/{eventUuid}`.
+
+### Fixed
+- `admin/profiles/{id}/show|approve|reject|reset|re-enroll` previously returned 404 because implicit route-model binding did not resolve the tenant-scoped profile — now resolved explicitly per request.
+- Dashboard, audit, failed, spoof, device and settings models now parse the backend's snake_case payloads (`present_employees`, `confidence_score`, `approval_status`, ...) and handle the Laravel paginator (`data.data`) shape.
+- `updateSettings` now sends a snake_case body so the server accepts it.
+
 ## [1.1.10] - 2026-08-31
 
 ### Fixed

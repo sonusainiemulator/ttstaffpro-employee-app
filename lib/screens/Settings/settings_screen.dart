@@ -3,6 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:open_core_hr/screens/ChangePassword/change_password_screen.dart';
+import 'package:open_core_hr/screens/FaceAttendance/face_attendance_admin_console_screen.dart';
 import 'package:open_core_hr/screens/FaceAttendance/face_registration_admin_screen.dart';
 import 'package:open_core_hr/screens/FaceAttendance/face_registration_screen.dart';
 import 'package:open_core_hr/screens/Settings/modules_screen.dart';
@@ -166,6 +167,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     subtitle: 'View done & pending registrations',
                     onTap: () {
                       const FaceRegistrationAdminScreen().launch(context);
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  _buildSettingsCard(
+                    isDark: isDark,
+                    title: 'Face Attendance Admin',
+                    icon: Iconsax.chart,
+                    subtitle: 'Dashboard, audit log, devices & settings',
+                    onTap: () {
+                      const FaceAttendanceAdminConsoleScreen().launch(context);
                     },
                   ),
                 ],

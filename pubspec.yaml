@@ -7,7 +7,7 @@ description: Employee App for Open Core Business Suite
 # flutter build apk --debug
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.1.10+20260831
+version: 1.2.0+20260831
 
 environment:
   sdk: ^3.9.2
