@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.9] - 2026-08-31
+
+### Fixed
+- Admin "Done / Pending" face-registration screen: the Approved and Rejected tabs were empty because the profile `status` filter used values (`approved`/`rejected`) that do not exist in the `status` column — it now queries `active`/`inactive`.
+- Self face-registration screen: `FaceEligibility` and `OwnFaceProfileStatus` now parse the snake_case payload (`can_register`, `employee_id`, `approval_status`, `created_at`, ...) so the status card shows the real registered / approved state instead of always "Not registered".
+
 ## [1.1.8] - 2026-08-31
 
 ### Fixed

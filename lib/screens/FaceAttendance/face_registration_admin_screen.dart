@@ -52,8 +52,11 @@ class _FaceRegistrationAdminScreenState
     try {
       final results = await Future.wait([
         _repo.getAdminProfiles(status: 'pending'),
-        _repo.getAdminProfiles(status: 'approved'),
-        _repo.getAdminProfiles(status: 'rejected'),
+        // The server filters on the profile `status` column (active / pending /
+        // inactive), NOT on approval — "approved" rows are status=active and
+        // "rejected" rows are status=inactive.
+        _repo.getAdminProfiles(status: 'active'),
+        _repo.getAdminProfiles(status: 'inactive'),
       ]);
       if (!mounted) return;
       setState(() {

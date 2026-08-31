@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:open_core_hr/models/face_attendance/face_eligibility_model.dart';
 import 'package:open_core_hr/models/face_attendance/face_profile_model.dart';
 
 /// Verifies the kiosk profile-package parser handles the actual snake_case
@@ -104,5 +105,44 @@ void main() {
     expect(summary.employeeName, 'Kanhu Charan Tripathy');
     expect(summary.approvalStatus, 'approved');
     expect(summary.status, 'active');
+  });
+
+  test('FaceEligibility parses snake_case eligibility payload', () {
+    final eligibility = FaceEligibility.fromJson({
+      'can_register': true,
+      'employee_id': '3',
+      'has_existing_profile': true,
+      'profile_status': 'active',
+      'requires_approval': false,
+    });
+
+    expect(eligibility.canRegister, isTrue);
+    expect(eligibility.employeeId, 3);
+    expect(eligibility.hasExistingProfile, isTrue);
+    expect(eligibility.profileStatus, 'active');
+    expect(eligibility.requiresApproval, isFalse);
+  });
+
+  test('OwnFaceProfileStatus parses snake_cased FaceProfile model', () {
+    final status = OwnFaceProfileStatus.fromJson({
+      'status': 'active',
+      'approval_status': 'approved',
+      'created_at': '2026-08-29T22:16:54+05:30',
+      'approved_at': '2026-08-29T22:20:00+05:30',
+      'images': [
+        {
+          'capture_type': 'front',
+          'file_path': 'face-attendance/profiles/3/x.jpg',
+          'image_url': 'https://ttstaffpro.in/storage/face-attendance/profiles/3/x.jpg',
+        }
+      ],
+    });
+
+    expect(status.profileStatus, 'active');
+    expect(status.approvalStatus, 'approved');
+    expect(status.lastRegisteredAt, '2026-08-29T22:16:54+05:30');
+    expect(status.lastApprovedAt, '2026-08-29T22:20:00+05:30');
+    expect(status.images, isNotNull);
+    expect(status.images!.first.captureType, 'front');
   });
 }
