@@ -1,4 +1,13 @@
 # Changelog
+## [1.0.15] - 2026-08-31
+
+### Fixed
+- **Face recognition no longer accepts every face.** The local matcher compared only five facial-proportion ratios with a permissive distance threshold (0.32), so virtually any scanned face was matched to a registered employee (impostor accept rate ≈ 100 %).
+- The matcher now uses a richer 12-feature normalized signature with a calibrated, strict distance threshold plus a nearest-neighbour margin: a scan is accepted only when the closest enrolled face is far closer than the second-closest, so an ambiguous or random face is rejected instead of guessed.
+- Scans must now be frontal (yaw/pitch/roll within limits) and live (both eyes open) before any event is recorded; side profiles and closed eyes are rejected with a clear on-screen hint.
+- The scan screen now requires exactly one face in frame (multiple faces are rejected) and unknown/ambiguous faces are logged for admin review instead of being accepted as an employee.
+- Enrolled profile images are only loaded into the on-device gallery when they contain the key landmarks and are frontal, so a noisy enrolled photo can no longer poison matching.
+
 ## [1.0.14] - 2026-08-31
 
 ### Added

@@ -1,4 +1,9 @@
 # Changelog
+## [1.2.2] - 2026-08-31
+
+### Fixed
+- Kiosk face scan no longer accepts every face: on-device matching now uses a calibrated strict distance threshold, a nearest-neighbour margin (ambiguous scans are rejected), a frontal-pose gate and a liveness (eyes-open) gate, and requires exactly one face in frame. Previously the permissive 0.32 threshold accepted virtually any face as a registered employee.
+
 ## [1.2.1] - 2026-08-31
 
 ### Added

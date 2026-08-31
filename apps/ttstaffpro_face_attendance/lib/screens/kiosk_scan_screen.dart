@@ -56,6 +56,11 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   DateTime? _lastScanAt;
   static const Duration _rescanCooldown = Duration(seconds: 20);
 
+  /// Throttles "unknown face" uploads so a stranger standing in front of the
+  /// kiosk does not spam the server with an event every scan frame.
+  DateTime? _lastUnknownAt;
+  static const Duration _unknownCooldown = Duration(seconds: 10);
+
   /// How long the success/result card stays on screen before the scanner
   /// re-arms. 20 seconds gives the person time to step away and prevents an
   /// immediate second capture of the same face.
@@ -142,13 +147,20 @@ class _KioskScanScreenState extends State<KioskScanScreen>
       if (!mounted) return;
       final path = await _saveTemp(file);
 
-      final face = await _matcher.detectInFile(path);
-      if (face == null) {
+      final faces = await _matcher.detectFaces(path);
+      if (faces.isEmpty) {
         if (mounted) {
           setState(() => _status = 'No face detected. Align within the frame.');
         }
         return;
       }
+      if (faces.length > 1) {
+        if (mounted) {
+          setState(() => _status = 'Only one person at a time, please.');
+        }
+        return;
+      }
+      final face = faces.first;
 
       final signature = _matcher.signatureOf(face);
       if (!signature.isLive) {
@@ -159,12 +171,20 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         }
         return;
       }
+      if (!signature.isFrontal) {
+        if (mounted) {
+          setState(
+            () => _status = 'Look straight at the camera to check in / out.',
+          );
+        }
+        return;
+      }
 
       _scanCount++;
       if (!mounted) return;
 
       final match = kioskService.enrolledSignatures.isNotEmpty
-          ? _matcher.bestMatch(signature, kioskService.enrolledSignatures)
+          ? _matcher.identify(signature, kioskService.enrolledSignatures)
           : null;
 
       if (match != null) {
@@ -188,10 +208,23 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         await _handleMatch(
           employeeId: match.employeeId,
           distance: match.distance,
+          confidence: match.confidence,
           snapshotPath: path,
         );
       } else {
-        // No local match — let the server try, or log an unknown event.
+        // No confident local match — log an unknown event for admin review
+        // instead of guessing an identity, but throttle it so a lingering
+        // stranger does not spam the server with an event every frame.
+        final now = DateTime.now();
+        final throttled = _lastUnknownAt != null &&
+            now.difference(_lastUnknownAt!) < _unknownCooldown;
+        if (throttled) {
+          if (mounted) {
+            setState(() => _status = 'Face not recognized. Please try again.');
+          }
+          return;
+        }
+        _lastUnknownAt = now;
         await _handleUnknown(path);
       }
     } catch (e) {
@@ -204,6 +237,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   Future<void> _handleMatch({
     required int employeeId,
     required double distance,
+    required double confidence,
     required String snapshotPath,
   }) async {
     final name =
@@ -215,7 +249,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
       eventType: 'attendance',
       employeeId: employeeId,
       recognitionStatus: 'matched',
-      confidenceScore: (1 - distance).clamp(0, 1),
+      confidenceScore: confidence,
       snapshotPath: snapshotPath,
     );
 

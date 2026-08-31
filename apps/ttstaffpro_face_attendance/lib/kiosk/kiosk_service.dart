@@ -250,7 +250,13 @@ class KioskService {
         final face = await matcher.detectInFile(localPath);
         if (face == null) continue;
 
-        enrolledSignatures[employeeId] = matcher.signatureOf(face);
+        // Only enroll a clean frontal reference with the key landmarks
+        // present; a noisy / angled enrolled image would poison matching.
+        if (!matcher.hasUsableLandmarks(face)) continue;
+        final signature = matcher.signatureOf(face);
+        if (!signature.isFrontal) continue;
+
+        enrolledSignatures[employeeId] = signature;
         employeeNames[employeeId] = profile.employeeName ?? 'Employee $employeeId';
       }
 
