@@ -121,6 +121,35 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
   }
 
   Future<void> _selectEmployee(KioskEmployee employee) async {
+    // If this employee already has a registered face, surface it clearly
+    // instead of letting the operator hit a confusing server error later.
+    if (employee.faceRegistered == true) {
+      final name =
+          (employee.name ?? '').isNotEmpty ? employee.name! : 'this employee';
+      final proceed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Face already registered'),
+          content: Text(
+            '$name already has a registered face.\n\n'
+            'Re-registering will replace the existing face. Do you want to '
+            'continue?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('Re-register'),
+            ),
+          ],
+        ),
+      );
+      if (proceed != true || !mounted) return;
+    }
+
     setState(() => _selected = employee);
     final status = await Permission.camera.request();
     if (status != PermissionStatus.granted) {
@@ -243,10 +272,14 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       if (!mounted) return;
       setState(() {
         _uploading = false;
-        _status = _friendlyError(
-          e,
-          fallback: 'Registration failed. Please retry.',
-        );
+        // If the employee already has a registered face, tell the operator it
+        // is a duplicate instead of a generic server error.
+        _status = _selected?.faceRegistered == true
+            ? 'Duplicate face — this employee is already registered.'
+            : _friendlyError(
+                e,
+                fallback: 'Registration failed. Please retry.',
+              );
       });
     }
   }

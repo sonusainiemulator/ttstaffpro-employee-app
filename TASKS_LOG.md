@@ -9,6 +9,11 @@ Running log of completed tasks. **Newest entries go at the top.**
 
 ---
 
+## 2026-09-01
+
+- **Register Face duplicate UX + server 500 fix**: selecting an already-registered employee now shows a “Face already registered” confirm (Cancel/Re-register); enroll failure for a registered employee shows “Duplicate face — this employee is already registered” instead of “Server error” (`kiosk_register_face_screen.dart`).
+- **Root cause (server)**: kiosk re-enroll 500 = `SQLSTATE 23000 Duplicate entry '3-5-1' for key face_profiles_company_employee_version_unique` — `nextVersion()` `MAX+1` raced on concurrent enrolls. Fixed `FaceProfileService::createProfile` to retry on 1062 with a recomputed version + `nextVersion` now `MAX(CAST(enrollment_version AS UNSIGNED))`; `KioskController::enroll` returns clean 422 “Face already registered” on a real duplicate. Deployed to `/www/wwwroot/ttstaffpro.in` (backups `/tmp/FaceProfileService.php.bak.20260901_010131`, `KioskController.php.bak.*`), `optimize:clear` + `httpd graceful`. Verified live: login 200, enroll 401/422. Kiosk v1.0.17+18.
+
 ## 2026-08-31
 
 - **MVP launch pain/gap analysis** → `docs/MVP_LAUNCH_ANALYSIS.md` (P0/P1/P2, launch-readiness sprints, product decisions). Root `1.2.3`, kiosk `1.0.16`.

@@ -1,4 +1,10 @@
 # Changelog
+## [1.0.17] - 2026-09-01
+
+### Fixed
+- **Register Face no longer shows a generic “Server error” when an employee already has a face registered.** Selecting an already-registered employee now shows a clear “Face already registered” confirmation (Cancel / Re-register), and a failed re-registration is reported as “Duplicate face — this employee is already registered” instead of a server error.
+- Backend: re-enrolling a face no longer throws a 500 due to a profile-version collision — concurrent/duplicate enrolls now retry with a fresh version, and a genuine duplicate returns a clear 422 “Face already registered for this employee.”
+
 ## [1.0.16] - 2026-08-31
 
 ### Fixed
