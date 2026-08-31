@@ -20,8 +20,9 @@ After you complete **any** task (feature, fix, refactor, config change, docs, de
 3. Commit with a proper message (see convention below).
 4. Push: `git push origin main`.
 5. For release work, create and push the annotated tag: `git tag -a vX.Y.Z -m "release: vX.Y.Z - <short summary>" && git push origin vX.Y.Z`.
-6. Verify it succeeded — `git status` should show "up to date", `git log origin/main..HEAD` should be empty, and the GitHub Releases page or tag list should show the new release.
-7. If the task includes a release or version bump, confirm the new tag/release is visible on GitHub before ending the turn.
+6. Create the GitHub Release object for that tag and upload the APK artifact to the release, e.g.: `gh release create vX.Y.Z --title "vX.Y.Z" --notes "<release notes>"` and `gh release upload vX.Y.Z path/to/app-release.apk --clobber`.
+7. Verify it succeeded — `git status` should show "up to date", `git log origin/main..HEAD` should be empty, and the GitHub Releases page or tag list should show the new release with the APK attached.
+8. If the task includes a release or version bump, confirm the new tag/release and APK are visible on GitHub before ending the turn.
 
 **Never end a turn with uncommitted or unpushed work**, unless the user explicitly says not to push.
 
@@ -99,10 +100,12 @@ git add <relevant files>
 git commit -m "<type>: <summary>"
 git push origin main
 git tag -a vX.Y.Z -m "release: vX.Y.Z - <summary>" && git push origin vX.Y.Z
+gh release create vX.Y.Z --title "vX.Y.Z" --notes "<release notes>"
+gh release upload vX.Y.Z path/to/app-release.apk --clobber
 ```
 
 ---
 
 ## 🔁 Repeat after every task
 
-> ✅ Task done → `flutter analyze` clean → version/CHANGELOG updated (if feature/fix) → stage relevant files → commit → **push to GitHub** → for release work, create/push tag and confirm GitHub Releases page shows it → confirm repo is up to date.
+> ✅ Task done → `flutter analyze` clean → version/CHANGELOG updated (if feature/fix) → stage relevant files → commit → **push to GitHub** → for release work, create/push tag → create GitHub Release → upload APK → confirm GitHub Releases page shows the tag and APK → confirm repo is up to date.
