@@ -7,10 +7,11 @@ import 'package:open_core_hr/main.dart';
 
 import '../models/api_response_model.dart';
 import '../utils/app_constants.dart';
+import '../utils/token_storage.dart';
 import 'config.dart';
 
 Map<String, String> buildHeader() {
-  String? token = getStringAsync(tokenPref);
+  String? token = TokenStorage.cached ?? '';
   String? tenantId = getStringAsync(tenantPref);
   String? tenantSubDomain = getStringAsync(tenantSubDomainPref);
 

@@ -1,4 +1,10 @@
 # Changelog
+## [1.0.16] - 2026-08-31
+
+### Fixed
+- Kiosk now reports device health to the backend every 60s from the home screen (heartbeats were implemented but never scheduled, so the admin Devices screen always showed the kiosk as offline/stale).
+- The master login token is now stored in platform-secure storage (shared `TokenStorage`) and restored on startup, so a rebooted kiosk keeps its authenticated session.
+
 ## [1.0.15] - 2026-08-31
 
 ### Fixed

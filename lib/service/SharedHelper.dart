@@ -13,6 +13,7 @@ import '../main.dart';
 import '../screens/Permission/permissions_screen.dart';
 import '../screens/org_choose_screen.dart';
 import '../utils/app_constants.dart';
+import '../utils/token_storage.dart';
 
 class SharedHelper {
   void vibrate() async {
@@ -84,6 +85,7 @@ class SharedHelper {
     log('SharedHelper: wasSaaSMode during logout = $wasSaaSMode');
 
     await clearSharedPref();
+    await TokenStorage.clear();
     
     isLoggingOut = false;
     log('SharedHelper: Navigating to ${wasSaaSMode ? 'OrgChooseScreen' : 'LoginScreen'}');
@@ -109,6 +111,7 @@ class SharedHelper {
     
     // Clear preferences but capture what we need first
     await clearSharedPref();
+    await TokenStorage.clear();
     
     // Re-set initial states if needed
     await setValue(isLoggedInPref, false);

@@ -9,6 +9,14 @@ Running log of completed tasks. **Newest entries go at the top.**
 
 ---
 
+## 2026-08-31
+
+- **MVP launch pain/gap analysis** → `docs/MVP_LAUNCH_ANALYSIS.md` (P0/P1/P2, launch-readiness sprints, product decisions). Root `1.2.3`, kiosk `1.0.16`.
+- **Secure token storage**: new `lib/utils/token_storage.dart` (flutter_secure_storage, Keystore/Keychain) replaces plaintext `tokenPref` in SharedPreferences. Wired into LoginStore (4 write sites), `AuthInterceptor`, `network_utils.buildHeader`, `SharedHelper.logout/logoutAlt`, kiosk `activateMasterSession` + kiosk `main.dart` restore. Sync in-memory cache keeps header builders sync; legacy prefs migrate + get cleared; fallback keeps login safe. `test/token_storage_test.dart` (6 tests).
+- **Kiosk heartbeat bug fixed**: `sendHeartbeat()` was never scheduled → now a 60s `Timer` on `kiosk_home_screen.dart` reports device health (admin Devices tab now shows live devices).
+- **Gradle 8.13/8.12 → 8.14.1** wrapper bump (root + kiosk) — removes the "will be dropped" Flutter warning.
+- Validated: root analyze 0 errors, root tests 37/37, kiosk analyze clean, kiosk tests 21/21, build_runner OK. Committed + pushed.
+
 ## 2026-08-30
 
 - Built kiosk **debug APK**: `apps/ttstaffpro_face_attendance/build/app/outputs/flutter-apk/app-debug.apk` (~280 MB).

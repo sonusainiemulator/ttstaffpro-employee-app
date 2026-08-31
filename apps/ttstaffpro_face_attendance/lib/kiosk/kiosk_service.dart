@@ -9,6 +9,7 @@ import 'package:open_core_hr/models/face_attendance/face_event_model.dart';
 import 'package:open_core_hr/models/face_attendance/face_profile_model.dart';
 import 'package:open_core_hr/models/face_attendance/kiosk_model.dart';
 import 'package:open_core_hr/utils/app_constants.dart';
+import 'package:open_core_hr/utils/token_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -96,7 +97,7 @@ class KioskService {
   Future<void> activateMasterSession() async {
     final token = settings.masterToken;
     if (token == null || token.isEmpty) return;
-    await setValue(tokenPref, token);
+    await TokenStorage.write(token);
   }
 
   /// Requirement 6: date-wise staff attendance report.

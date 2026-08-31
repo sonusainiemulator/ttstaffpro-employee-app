@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:open_core_hr/api/api_routes.dart';
+import 'package:open_core_hr/utils/token_storage.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'kiosk/kiosk_service.dart';
@@ -55,6 +56,10 @@ Future<void> _initializeApp() async {
     // runs (this was the white-screen bug: setValue('baseurl') was called
     // before nb_utils' `initialize()`).
     await initialize();
+
+    // Restore the master API token from secure storage into memory before any
+    // API call so a restarted kiosk keeps its authenticated session.
+    await TokenStorage.restore();
 
     // Always point the API client at the production base URL — never rely on
     // a possibly-stale 'baseurl' pref on a fresh tablet install.

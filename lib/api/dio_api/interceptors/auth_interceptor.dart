@@ -1,13 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:nb_utils/nb_utils.dart';
 import '../../../utils/app_constants.dart';
+import '../../../utils/token_storage.dart';
 import '../../../main.dart';
 
 /// Interceptor to handle authentication and tenant context
 class AuthInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final token = getStringAsync(tokenPref);
+    final token = TokenStorage.cached ?? '';
     final tenantId = getStringAsync(tenantPref);
     final tenantSubDomain = getStringAsync(tenantSubDomainPref);
 

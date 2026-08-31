@@ -10,6 +10,7 @@ import '../../main.dart';
 import '../../models/api_response_model.dart';
 import '../../models/user_model.dart';
 import '../../utils/app_constants.dart';
+import '../../utils/token_storage.dart';
 
 part 'LoginStore.g.dart';
 
@@ -207,7 +208,7 @@ abstract class LoginStoreBase with Store {
       await setValue(phoneNumberPref, user.phoneNumber);
       await setValue(alternateNumberPref, user.alternateNumber);
       await setValue(statusPref, user.status);
-      await setValue(tokenPref, user.token);
+      await TokenStorage.write(user.token);
       await setValue(emailPref, user.email);
       await setValue(designationPref, user.designation);
       await setValue(approverPref, user.isApprover);
@@ -243,7 +244,7 @@ abstract class LoginStoreBase with Store {
         await setValue(phoneNumberPref, user.phoneNumber);
         await setValue(alternateNumberPref, user.alternateNumber);
         await setValue(statusPref, user.status);
-        await setValue(tokenPref, user.token);
+        await TokenStorage.write(user.token);
         return user.status.toString();
       } else {
         await setValue(isLoggedInPref, false);
@@ -287,7 +288,7 @@ abstract class LoginStoreBase with Store {
       await setValue(phoneNumberPref, user.phoneNumber);
       await setValue(alternateNumberPref, user.alternateNumber);
       await setValue(statusPref, user.status);
-      await setValue(tokenPref, user.token);
+      await TokenStorage.write(user.token);
       await setValue(approverPref, user.isApprover);
       //await validateDevice();
       isLoginWithUidBtnLoading = false;
@@ -335,7 +336,7 @@ abstract class LoginStoreBase with Store {
       await setValue(phoneNumberPref, user.phoneNumber);
       await setValue(alternateNumberPref, user.alternateNumber);
       await setValue(statusPref, user.status);
-      await setValue(tokenPref, user.token);
+      await TokenStorage.write(user.token);
       await setValue(approverPref, user.isApprover);
       return user.status.toString();
     } catch (e) {

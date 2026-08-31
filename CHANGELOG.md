@@ -1,4 +1,18 @@
 # Changelog
+## [1.2.3] - 2026-08-31
+
+### Security
+- Auth tokens are now stored in platform-secure storage (Android Keystore / iOS Keychain) instead of plaintext SharedPreferences. Existing sessions migrate automatically and a safe fallback keeps login working if secure storage is unavailable (`lib/utils/token_storage.dart`, +6 unit tests).
+
+### Fixed
+- Kiosk now sends device-health heartbeats every 60s — they were implemented but never scheduled, so registered kiosks always appeared offline in the admin console.
+
+### Changed
+- Gradle wrapper upgraded to 8.14.1 (removes the “Gradle 8.13 will be dropped” warning) for the employee app and the kiosk.
+
+### Added
+- `docs/MVP_LAUNCH_ANALYSIS.md` — market-launch pain/gap analysis and prioritized roadmap.
+
 ## [1.2.2] - 2026-08-31
 
 ### Fixed

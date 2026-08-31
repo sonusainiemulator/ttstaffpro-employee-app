@@ -21,8 +21,13 @@ class KioskHomeScreen extends StatefulWidget {
 
 class _KioskHomeScreenState extends State<KioskHomeScreen> {
   late Timer _clockTimer;
+  Timer? _heartbeatTimer;
   int _pendingCount = 0;
   bool _warmupStarted = false;
+
+  /// How often the kiosk reports device health to the backend (the admin
+  /// Devices screen expects a heartbeat roughly every 60s).
+  static const Duration _heartbeatInterval = Duration(seconds: 60);
 
   @override
   void initState() {
@@ -30,11 +35,23 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
     _clockTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (mounted) setState(() {});
     });
+    // Previously nothing ever scheduled sendHeartbeat(), so registered kiosks
+    // always appeared offline/stale on the admin device-health screen.
+    _startHeartbeat();
     _pendingCount = offlineStore.pendingCount;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || _warmupStarted) return;
       _warmupStarted = true;
       _warmUp();
+    });
+  }
+
+  /// Periodically reports device health (sendHeartbeat is a no-op until the
+  /// device is registered, so it is safe to run even before login completes).
+  void _startHeartbeat() {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = Timer.periodic(_heartbeatInterval, (_) {
+      kioskService.sendHeartbeat();
     });
   }
 
@@ -56,6 +73,7 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
   @override
   void dispose() {
     _clockTimer.cancel();
+    _heartbeatTimer?.cancel();
     super.dispose();
   }
 

@@ -43,6 +43,7 @@ import 'store/form_builder_store.dart';
 import 'store/payroll_store.dart';
 import 'stores/leave_store.dart';
 import 'utils/app_data_provider.dart';
+import 'utils/token_storage.dart';
 
 AppStore appStore = AppStore();
 GlobalAttendanceStore globalAttendanceStore = GlobalAttendanceStore();
@@ -223,6 +224,10 @@ void main() async {
   } else {
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   }
+
+  // Restore the auth token into memory from secure storage before any widget
+  // or API call runs (the legacy plaintext prefs copy is migrated/cleared here).
+  await TokenStorage.restore();
 
   runApp(const MyApp());
 }
