@@ -405,44 +405,32 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: KioskTheme.of(context).background,
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Full-bleed camera preview (or standby message).
-          if (_isCameraInitialized && _cameraController != null)
-            _buildPreview()
-          else
-            _buildStandby(),
-          // Legibility scrims (top + bottom).
-          const _ScanScrim(alignment: Alignment.topCenter),
-          const _ScanScrim(alignment: Alignment.bottomCenter),
-          // Animated face guide.
-          Center(child: _buildFaceGuide()),
-          // Top bar.
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: SafeArea(child: _buildTopBar()),
-          ),
-          // Bottom: status bar OR result card.
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _resultHold ? _buildResultCard() : _buildStatusBar(),
-                    const KioskVersionFooter(color: Colors.white70),
-                  ],
+          // Themed branded background (no full-bleed camera).
+          _buildBackground(),
+          SafeArea(
+            child: Column(
+              children: [
+                _buildTopBar(),
+                const SizedBox(height: 12),
+                // Framed "device screen" that holds the camera preview, the
+                // face guide and the live hint / result card — matching the
+                // wall-mounted tablet look of the product poster.
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _buildDeviceScreen(),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 8),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 6),
+                  child: KioskVersionFooter(),
+                ),
+              ],
             ),
           ),
         ],
@@ -450,31 +438,144 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     );
   }
 
-  /// Standby state before the camera is ready (or when it is unavailable).
-  Widget _buildStandby() {
+  /// Themed gradient background with soft brand glows (no full-bleed camera).
+  Widget _buildBackground() {
     final c = KioskTheme.of(context);
     return Container(
-      color: c.background,
+      decoration: BoxDecoration(gradient: c.backgroundGradient),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -90,
+            right: -70,
+            child: _glowOrb(KioskColors.primaryLight.withValues(alpha: 0.18)),
+          ),
+          Positioned(
+            bottom: -110,
+            left: -80,
+            child: _glowOrb(KioskColors.primaryLight.withValues(alpha: 0.12)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _glowOrb(Color color) {
+    return Container(
+      width: 260,
+      height: 260,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(colors: [color, Colors.transparent]),
+      ),
+    );
+  }
+
+  /// Standby state before the camera is ready (or when it is unavailable).
+  Widget _buildStandby() {
+    return Container(
+      color: Colors.black,
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(
               Icons.face_retouching_natural,
-              size: 64,
-              color: KioskColors.primaryLight,
+              size: 56,
+              color: Colors.white38,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(
-                _status,
-                style: TextStyle(color: c.textSecondary, fontSize: 16),
+                _status.isEmpty ? 'Starting camera…' : _status,
+                style: const TextStyle(color: Colors.white70, fontSize: 15),
                 textAlign: TextAlign.center,
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// The framed "device screen" that contains the camera preview, the face
+  /// guide and the live hint / result card — the poster’s wall-mounted tablet
+  /// look instead of a full-bleed camera.
+  Widget _buildDeviceScreen() {
+    final c = KioskTheme.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: c.border, width: 3),
+        boxShadow: c.cardShadow,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          if (_isCameraInitialized && _cameraController != null)
+            _buildPreview()
+          else
+            _buildStandby(),
+          // Legibility scrims (top + bottom) over the camera.
+          const _ScanScrim(alignment: Alignment.topCenter),
+          const _ScanScrim(alignment: Alignment.bottomCenter),
+          // Animated face guide.
+          Center(child: _buildFaceGuide()),
+          // Bottom overlay inside the screen: result card or live hint.
+          Positioned(
+            left: 12,
+            right: 12,
+            bottom: 12,
+            child: _resultHold ? _buildResultCard() : _buildInViewHint(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Compact live-status pill shown over the camera while scanning.
+  Widget _buildInViewHint() {
+    final scanning =
+        kioskService.enrolledSignatures.isNotEmpty &&
+        _status.contains('Look at the camera');
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.45),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (scanning)
+            const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.2,
+                color: KioskColors.primaryLight,
+              ),
+            )
+          else
+            const Icon(
+              Icons.face_retouching_natural,
+              size: 16,
+              color: KioskColors.primaryLight,
+            ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              _status,
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -595,21 +696,23 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   }
 
   Widget _buildTopBar() {
+    final c = KioskTheme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.45),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+          color: c.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: c.border),
+          boxShadow: c.cardShadow,
         ),
         child: Row(
           children: [
             IconButton(
               tooltip: 'Exit',
               onPressed: _exit,
-              icon: const Icon(Icons.close, color: Colors.white70),
+              icon: Icon(Icons.close, color: c.textSecondary),
               visualDensity: VisualDensity.compact,
             ),
             const SizedBox(width: 4),
@@ -627,10 +730,10 @@ class _KioskScanScreenState extends State<KioskScanScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'TT STAFF PRO',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: c.textPrimary,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.6,
                       fontSize: 14,
@@ -639,8 +742,8 @@ class _KioskScanScreenState extends State<KioskScanScreen>
                   ),
                   Text(
                     kioskSettings.companyName ?? 'Face Attendance Kiosk',
-                    style: const TextStyle(
-                      color: Colors.white54,
+                    style: TextStyle(
+                      color: c.textSecondary,
                       fontSize: 11,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -651,18 +754,19 @@ class _KioskScanScreenState extends State<KioskScanScreen>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.1),
+                color: KioskColors.primaryLight.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.face, size: 14, color: Colors.white54),
+                  Icon(Icons.face, size: 14, color: KioskColors.primaryLight),
                   const SizedBox(width: 4),
                   Text(
                     '$_scanCount',
-                    style: const TextStyle(
-                      color: Colors.white70,
+                    style: TextStyle(
+                      color: c.textPrimary,
                       fontWeight: FontWeight.w600,
+                      fontSize: 13,
                     ),
                   ),
                 ],
@@ -674,49 +778,11 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     );
   }
 
-  /// Live status pill shown while scanning (no result on screen).
-  Widget _buildStatusBar() {
-    final scanning =
-        kioskService.enrolledSignatures.isNotEmpty &&
-        _status.contains('Look at the camera');
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (scanning)
-            const SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(
-                strokeWidth: 2.5,
-                color: KioskColors.primaryLight,
-              ),
-            )
-          else
-            Icon(
-              Icons.face_retouching_natural,
-              size: 18,
-              color: KioskColors.primaryLight,
-            ),
-          const SizedBox(width: 12),
-          Flexible(
-            child: Text(
-              _status,
-              style: const TextStyle(color: Colors.white, fontSize: 15),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
+
+  /// Success / failure card shown over the framed camera — matches the
+  /// "Face Verified / Attendance Marked / Welcome {name}!" result card on the
+  /// product poster.
   Widget _buildResultCard() {
     final color = _lastSuccess ? KioskColors.success : KioskColors.error;
     // Live timestamp, matching the "Face Verified / Attendance Marked" poster.
@@ -726,19 +792,19 @@ class _KioskScanScreenState extends State<KioskScanScreen>
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [color, color.withValues(alpha: 0.8)],
+          colors: [color, color.withValues(alpha: 0.85)],
         ),
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.4),
-            blurRadius: 24,
-            offset: const Offset(0, 8),
+            color: color.withValues(alpha: 0.35),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
@@ -748,14 +814,14 @@ class _KioskScanScreenState extends State<KioskScanScreen>
           Icon(
             _lastSuccess ? Icons.check_circle_rounded : Icons.error_rounded,
             color: Colors.white,
-            size: 46,
+            size: 40,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             title,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 24,
+              fontSize: 21,
               fontWeight: FontWeight.w700,
             ),
             textAlign: TextAlign.center,
@@ -763,15 +829,15 @@ class _KioskScanScreenState extends State<KioskScanScreen>
           const SizedBox(height: 2),
           Text(
             subtitle,
-            style: const TextStyle(color: Colors.white70, fontSize: 16),
+            style: const TextStyle(color: Colors.white70, fontSize: 15),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Text(
             timeStr,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
@@ -783,17 +849,17 @@ class _KioskScanScreenState extends State<KioskScanScreen>
                 : (_lastEmployeeName ?? ''),
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 17,
+              fontSize: 15,
               fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             'Next scan in ${_resultSecondsLeft}s',
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,

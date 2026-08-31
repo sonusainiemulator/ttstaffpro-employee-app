@@ -1,4 +1,9 @@
 # Changelog
+## [1.0.18] - 2026-09-01
+
+### Changed
+- **Face scan screen redesigned to match the product poster** — the camera is no longer shown full-screen. It now sits inside a framed, rounded “device screen” on the themed branded background: brand header on top, face guide + live status pill inside the camera, and the green “Face Verified / Attendance Marked / time / Welcome {name}!” result card overlaid at the bottom of the framed view.
+
 ## [1.0.17] - 2026-09-01
 
 ### Fixed
