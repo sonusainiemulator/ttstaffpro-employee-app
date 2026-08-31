@@ -6,6 +6,20 @@
 ///  - Date-wise staff attendance report with check-in / check-out
 library;
 
+/// Tolerant bool parsing for kiosk payloads — accepts real bools, 0/1 and
+/// common string forms so a mismatch in the server serializer can never crash
+/// or drop a row.
+bool? _kioskBoolValue(dynamic value) {
+  if (value is bool) return value;
+  if (value is num) return value != 0;
+  if (value is String) {
+    final lowered = value.trim().toLowerCase();
+    if (lowered == 'true' || lowered == '1' || lowered == 'yes') return true;
+    if (lowered == 'false' || lowered == '0' || lowered == 'no') return false;
+  }
+  return null;
+}
+
 /// A matched company returned by `POST face-attendance/kiosk/company-match`.
 class KioskCompany {
   final int? id;
@@ -91,11 +105,19 @@ class KioskEmployee {
   final String? email;
   final String? code;
 
+  /// Whether this employee already has a registered face. When the employees
+  /// endpoint does not provide it, the kiosk fills it from the approved
+  /// admin-profiles list so the picker can show “Face Registered”.
+  final bool? faceRegistered;
+  final String? profileStatus;
+
   KioskEmployee({
     this.employeeId,
     this.name,
     this.email,
     this.code,
+    this.faceRegistered,
+    this.profileStatus,
   });
 
   factory KioskEmployee.fromJson(Map<String, dynamic> json) {
@@ -108,8 +130,43 @@ class KioskEmployee {
       name: (json['name'] as String?) ?? '',
       email: json['email'] as String?,
       code: json['code'] as String?,
+      faceRegistered: _kioskBoolValue(
+        json['faceRegistered'] ??
+            json['face_registered'] ??
+            json['hasFace'] ??
+            json['has_face'] ??
+            json['isRegistered'] ??
+            json['is_registered'],
+      ),
+      profileStatus: (json['profileStatus'] ??
+              json['profile_status'] ??
+              json['faceProfileStatus'] ??
+              json['face_profile_status'])
+          ?.toString(),
     );
   }
+
+  /// Returns a copy with face-registration status filled in (used to enrich
+  /// employees from the approved-profiles list without mutating the original).
+  KioskEmployee copyWith({bool? faceRegistered, String? profileStatus}) {
+    return KioskEmployee(
+      employeeId: employeeId,
+      name: name,
+      email: email,
+      code: code,
+      faceRegistered: faceRegistered ?? this.faceRegistered,
+      profileStatus: profileStatus ?? this.profileStatus,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'employeeId': employeeId,
+        'name': name,
+        'email': email,
+        'code': code,
+        'faceRegistered': faceRegistered,
+        'profileStatus': profileStatus,
+      };
 }
 
 /// One staff row in the date-wise kiosk report.
@@ -147,22 +204,12 @@ class KioskReportRow {
       employeeName: name,
       checkIn: checkInRaw?.toString(),
       checkOut: checkOutRaw?.toString(),
-      isLate: _boolValue(json['isLate'] ?? json['is_late'] ?? json['late']),
-      isEarly: _boolValue(json['isEarly'] ?? json['is_early'] ?? json['early']),
+      isLate: _kioskBoolValue(json['isLate'] ?? json['is_late'] ?? json['late']),
+      isEarly:
+          _kioskBoolValue(json['isEarly'] ?? json['is_early'] ?? json['early']),
       status: (json['status'] ?? json['attendance_status'])?.toString(),
       markedAt: markedAtRaw?.toString(),
     );
-  }
-
-  static bool? _boolValue(dynamic value) {
-    if (value is bool) return value;
-    if (value is num) return value != 0;
-    if (value is String) {
-      final lowered = value.trim().toLowerCase();
-      if (lowered == 'true' || lowered == '1' || lowered == 'yes') return true;
-      if (lowered == 'false' || lowered == '0' || lowered == 'no') return false;
-    }
-    return null;
   }
 
   Map<String, dynamic> toJson() => {

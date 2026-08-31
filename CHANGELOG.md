@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.6] - 2026-08-31
+
+### Fixed
+- Kiosk employee model now parses face-registration status (faceRegistered / face_registered / hasFace / has_face / isRegistered), so the picker can tell registered from unregistered staff.
+- Added `copyWith` on `KioskEmployee` so the kiosk can enrich employees with approved-profile status without mutating the source list.
+- Added regression coverage for face-registration status parsing.
+
 ## [1.1.5] - 2026-08-31
 
 ### Fixed

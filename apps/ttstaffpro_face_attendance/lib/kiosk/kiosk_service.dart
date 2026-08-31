@@ -109,6 +109,36 @@ class KioskService {
     return _repo.kioskEmployees();
   }
 
+  /// List employees enriched with face-registration status.
+  ///
+  /// The `/kiosk/employees` payload may not include a registration flag, so we
+  /// cross-reference the approved admin profiles and mark each employee as
+  /// registered / unregistered for the picker. If the profiles call fails we
+  /// still return the employee list (with whatever the endpoint itself said)
+  /// so the operator is never blocked.
+  Future<List<KioskEmployee>> getEmployeesWithFaceStatus() async {
+    final employees = await getEmployees();
+    try {
+      final profiles = await _repo.getAdminProfiles(status: 'approved');
+      final registeredIds = profiles
+          .where((p) => p.employeeId != null)
+          .map((p) => p.employeeId!)
+          .toSet();
+      return employees.map((emp) {
+        if (emp.employeeId == null) return emp;
+        final hasFace =
+            emp.faceRegistered ?? registeredIds.contains(emp.employeeId);
+        if (hasFace == emp.faceRegistered) return emp;
+        return emp.copyWith(
+          faceRegistered: hasFace,
+          profileStatus: hasFace ? (emp.profileStatus ?? 'approved') : null,
+        );
+      }).toList();
+    } catch (_) {
+      return employees;
+    }
+  }
+
   /// Register a face for an employee directly from the kiosk.
   Future<bool> enrollFace({
     required int employeeId,

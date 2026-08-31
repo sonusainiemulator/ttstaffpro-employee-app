@@ -659,5 +659,71 @@ void main() {
       expect(employees[0].name, 'Jagannath Chakanyn');
       expect(employees[1].code, '02');
     });
+
+    test('kioskEmployees parses face-registration status fields', () async {
+      // The employees endpoint may include a registration flag; both camel and
+      // snake case (and numeric booleans) must be tolerated so the picker can
+      // show “Face Registered” / “Unregistered” under every staff member.
+      final jsonResponse = {
+        'success': true,
+        'message': 'Employees',
+        'data': {
+          'employees': [
+            {
+              'employee_id': 2,
+              'name': 'Jagannath Chakanyn',
+              'email': 'tripathyt2@gmail.com',
+              'code': 'EMP01',
+              'face_registered': true,
+              'profile_status': 'approved',
+            },
+            {
+              'employee_id': '3',
+              'name': 'Kanhu Charan Tripathy',
+              'email': 'dhanttinfo@gmail.com',
+              'code': '02',
+              'hasFace': '1',
+            },
+            {
+              'employee_id': 4,
+              'name': 'No Face Yet',
+              'email': 'new@example.com',
+              'code': 'EMP09',
+              'faceRegistered': false,
+            },
+          ]
+        }
+      };
+
+      mockAdapter.handler = (options) {
+        expect(options.path, contains('face-attendance/kiosk/employees'));
+        expect(options.method, 'GET');
+        return ResponseBody.fromString(
+          jsonEncode(jsonResponse),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      };
+
+      final employees = await repository.kioskEmployees();
+      expect(employees, hasLength(3));
+      // camelCase bool
+      expect(employees[0].faceRegistered, isTrue);
+      expect(employees[0].profileStatus, 'approved');
+      // snake_case with numeric string "1"
+      expect(employees[1].faceRegistered, isTrue);
+      // explicit false
+      expect(employees[2].faceRegistered, isFalse);
+      expect(employees[2].profileStatus, isNull);
+
+      // copyWith fills an unknown status without mutating the source row.
+      final enriched = employees[2]
+          .copyWith(faceRegistered: true, profileStatus: 'approved');
+      expect(enriched.faceRegistered, isTrue);
+      expect(enriched.name, 'No Face Yet');
+      expect(employees[2].faceRegistered, isFalse);
+    });
   });
 }

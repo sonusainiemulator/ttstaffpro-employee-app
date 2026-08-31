@@ -75,7 +75,7 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       _listError = null;
     });
     try {
-      final employees = await kioskService.getEmployees();
+      final employees = await kioskService.getEmployeesWithFaceStatus();
       if (!mounted) return;
       setState(() => _employees = employees);
     } catch (e) {
@@ -755,6 +755,8 @@ class _EmployeeTile extends StatelessWidget {
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
+                    const SizedBox(height: 6),
+                    _FaceStatusChip(registered: employee.faceRegistered == true),
                   ],
                 ),
               ),
@@ -762,6 +764,46 @@ class _EmployeeTile extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Small status caption shown under each employee: green “Face Registered”
+/// when the employee already has an approved face profile, neutral
+/// “Unregistered” otherwise.
+class _FaceStatusChip extends StatelessWidget {
+  final bool registered;
+
+  const _FaceStatusChip({required this.registered});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = registered ? KioskColors.success : Colors.grey;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            registered ? Icons.check_circle : Icons.person_off_outlined,
+            size: 13,
+            color: color,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            registered ? 'Face Registered' : 'Unregistered',
+            style: TextStyle(
+              color: color,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.10] - 2026-08-31
+
+### Added
+- Register Face employee list now shows a status caption under every staff member: green “Face Registered” when they already have an approved face profile, and “Unregistered” otherwise.
+- Registration status is cross-checked against the approved admin profiles so it stays correct even when the employees endpoint omits the flag.
+
 ## [1.0.9] - 2026-08-31
 
 ### Fixed
