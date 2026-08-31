@@ -1,4 +1,11 @@
 # Changelog
+## [1.0.14] - 2026-08-31
+
+### Added
+- TT Staff Pro branded footer ("TT STAFF PRO | ttstaffpro.in" + app version) now shows on every kiosk screen.
+- Face-scan success now shows the full branding result card: green check, "Face Verified", "Attendance Marked", the live time (e.g. 09:12 AM) and "Welcome <Name>!" — matching the product poster.
+- Scan screen top bar now shows the TT Staff Pro logo + wordmark.
+
 ## [1.0.13] - 2026-08-31
 
 ### Fixed

@@ -1,4 +1,10 @@
 # Changelog
+## [1.2.1] - 2026-08-31
+
+### Added
+- Kiosk face-scan result now matches the product poster: green check, "Face Verified", "Attendance Marked", a live timestamp and "Welcome <Name>!".
+- Kiosk screens now show a TT Staff Pro branded footer ("TT STAFF PRO | ttstaffpro.in") together with the app version.
+
 ## [1.2.0] - 2026-08-31
 
 ### Added

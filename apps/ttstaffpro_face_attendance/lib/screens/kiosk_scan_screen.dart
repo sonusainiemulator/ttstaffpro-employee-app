@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
@@ -404,7 +405,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _resultHold ? _buildResultCard() : _buildStatusBar(),
-                    const KioskVersionFooter(),
+                    const KioskVersionFooter(color: Colors.white70),
                   ],
                 ),
               ),
@@ -578,21 +579,37 @@ class _KioskScanScreenState extends State<KioskScanScreen>
               visualDensity: VisualDensity.compact,
             ),
             const SizedBox(width: 4),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Image.asset(
+                'assets/images/app_logo.png',
+                width: 26,
+                height: 26,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(width: 8),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    kioskSettings.companyName ?? 'TT Staff Pro',
-                    style: const TextStyle(
+                  const Text(
+                    'TT STAFF PRO',
+                    style: TextStyle(
                       color: Colors.white,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.6,
+                      fontSize: 14,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const Text(
-                    'Face Attendance',
-                    style: TextStyle(color: Colors.white54, fontSize: 11),
+                  Text(
+                    kioskSettings.companyName ?? 'Face Attendance Kiosk',
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 11,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -668,6 +685,11 @@ class _KioskScanScreenState extends State<KioskScanScreen>
 
   Widget _buildResultCard() {
     final color = _lastSuccess ? KioskColors.success : KioskColors.error;
+    // Live timestamp, matching the "Face Verified / Attendance Marked" poster.
+    final timeStr = DateFormat('hh:mm a').format(DateTime.now());
+    final title = _lastSuccess ? 'Face Verified' : 'Face Not Verified';
+    final subtitle = _lastSuccess ? 'Attendance Marked' : (_lastAction ?? '');
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
@@ -692,22 +714,44 @@ class _KioskScanScreenState extends State<KioskScanScreen>
           Icon(
             _lastSuccess ? Icons.check_circle_rounded : Icons.error_rounded,
             color: Colors.white,
-            size: 44,
+            size: 46,
           ),
           const SizedBox(height: 8),
           Text(
-            _lastEmployeeName ?? '',
+            title,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: FontWeight.w700,
             ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 2),
           Text(
-            _lastAction ?? '',
-            style: const TextStyle(color: Colors.white70, fontSize: 15),
+            subtitle,
+            style: const TextStyle(color: Colors.white70, fontSize: 16),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            timeStr,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            _lastSuccess
+                ? 'Welcome ${_lastEmployeeName ?? ''}'
+                : (_lastEmployeeName ?? ''),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
