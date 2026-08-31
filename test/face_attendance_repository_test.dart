@@ -569,6 +569,51 @@ void main() {
       expect(report.rows.first.employeeName, 'John Doe');
     });
 
+    test('getKioskDailyReport parses snake_case keys and exposes full date-time details', () async {
+      final jsonResponse = {
+        'statusCode': 200,
+        'status': 'success',
+        'data': {
+          'date': '2026-08-29',
+          'present_count': 1,
+          'rows': [
+            {
+              'employee_id': 210,
+              'employee_name': 'Rahul Kumar',
+              'check_in': '2026-08-29T09:15:00Z',
+              'check_out': '2026-08-29T18:25:00Z',
+              'is_late': true,
+              'is_early': false,
+              'status': 'present',
+              'marked_at': '2026-08-29T09:15:00Z',
+            }
+          ]
+        }
+      };
+
+      mockAdapter.handler = (options) {
+        expect(options.path, contains('face-attendance/kiosk/report'));
+        expect(options.method, 'GET');
+        return ResponseBody.fromString(
+          jsonEncode(jsonResponse),
+          200,
+          headers: {
+            Headers.contentTypeHeader: [Headers.jsonContentType],
+          },
+        );
+      };
+
+      final report = await repository.getKioskDailyReport('2026-08-29');
+      expect(report.rows, hasLength(1));
+      expect(report.presentCount, 1);
+      expect(report.rows.first.employeeId, 210);
+      expect(report.rows.first.employeeName, 'Rahul Kumar');
+      expect(report.rows.first.checkIn, '2026-08-29T09:15:00Z');
+      expect(report.rows.first.checkOut, '2026-08-29T18:25:00Z');
+      expect(report.rows.first.isLate, isTrue);
+      expect(report.rows.first.markedAt, '2026-08-29T09:15:00Z');
+    });
+
     test('kioskEmployees parses snake_case employees incl. string ids', () async {
       // Live server returns snake_case keys; employee_id may be an int or a
       // numeric string depending on the tenant DB/serializer.

@@ -121,6 +121,7 @@ class KioskReportRow {
   final bool? isLate;
   final bool? isEarly;
   final String? status;
+  final String? markedAt;
 
   KioskReportRow({
     this.employeeId,
@@ -130,18 +131,38 @@ class KioskReportRow {
     this.isLate,
     this.isEarly,
     this.status,
+    this.markedAt,
   });
 
   factory KioskReportRow.fromJson(Map<String, dynamic> json) {
+    final rawId = json['employeeId'] ?? json['employee_id'];
+    final id = rawId is int ? rawId : int.tryParse('$rawId');
+    final name = (json['employeeName'] ?? json['employee_name'])?.toString();
+    final checkInRaw = json['checkIn'] ?? json['check_in'] ?? json['checkin'];
+    final checkOutRaw = json['checkOut'] ?? json['check_out'] ?? json['checkout'];
+    final markedAtRaw = json['markedAt'] ?? json['marked_at'] ?? json['attendanceTime'];
+
     return KioskReportRow(
-      employeeId: json['employeeId'] as int?,
-      employeeName: json['employeeName'] as String?,
-      checkIn: json['checkIn']?.toString(),
-      checkOut: json['checkOut']?.toString(),
-      isLate: json['isLate'] as bool?,
-      isEarly: json['isEarly'] as bool?,
-      status: json['status'] as String?,
+      employeeId: id,
+      employeeName: name,
+      checkIn: checkInRaw?.toString(),
+      checkOut: checkOutRaw?.toString(),
+      isLate: _boolValue(json['isLate'] ?? json['is_late'] ?? json['late']),
+      isEarly: _boolValue(json['isEarly'] ?? json['is_early'] ?? json['early']),
+      status: (json['status'] ?? json['attendance_status'])?.toString(),
+      markedAt: markedAtRaw?.toString(),
     );
+  }
+
+  static bool? _boolValue(dynamic value) {
+    if (value is bool) return value;
+    if (value is num) return value != 0;
+    if (value is String) {
+      final lowered = value.trim().toLowerCase();
+      if (lowered == 'true' || lowered == '1' || lowered == 'yes') return true;
+      if (lowered == 'false' || lowered == '0' || lowered == 'no') return false;
+    }
+    return null;
   }
 
   Map<String, dynamic> toJson() => {
@@ -152,6 +173,7 @@ class KioskReportRow {
         'isLate': isLate,
         'isEarly': isEarly,
         'status': status,
+        'markedAt': markedAt,
       };
 }
 
@@ -165,11 +187,13 @@ class KioskDailyReport {
 
   factory KioskDailyReport.fromJson(Map<String, dynamic> json) {
     final raw = json['data'] as Map<String, dynamic>? ?? json;
-    final list = (raw['rows'] ?? raw['data'] ?? []) as List;
+    final rowsValue = raw['rows'] ?? raw['data'] ?? [];
+    final list = rowsValue is List ? rowsValue : const <dynamic>[];
     return KioskDailyReport(
-      date: raw['date'] as String?,
-      presentCount:
-          raw['presentCount'] as int? ?? raw['present_count'] as int?,
+      date: (raw['date'] ?? raw['attendanceDate'])?.toString(),
+      presentCount: (raw['presentCount'] ?? raw['present_count']) is int
+          ? (raw['presentCount'] ?? raw['present_count']) as int
+          : int.tryParse('${raw['presentCount'] ?? raw['present_count']}'),
       rows: list
           .map((e) => KioskReportRow.fromJson(e as Map<String, dynamic>))
           .toList(),

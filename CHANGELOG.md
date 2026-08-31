@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5] - 2026-08-31
+
+### Fixed
+- Kiosk attendance report parsing now accepts both camelCase and snake_case server payloads, so staff names and attendance timestamps are no longer dropped when the backend returns `employee_name`, `check_in`, `check_out`, or `marked_at`.
+- The daily attendance list now clearly shows each staff member's full name and exact date/time record, making it obvious who marked attendance and when.
+- Added regression coverage to protect the attendance report against future payload mismatches.
+
 ## [1.1.4] - 2026-08-30
 
 ### Fixed

@@ -234,9 +234,17 @@ class _ReportRowCard extends StatelessWidget {
     return DateFormat('hh:mm a').format(dt);
   }
 
+  String _fmtDateTime(String? iso) {
+    if (iso == null || iso.isEmpty) return '—';
+    final dt = DateTime.tryParse(iso);
+    if (dt == null) return iso;
+    return DateFormat('dd MMM yyyy, hh:mm a').format(dt);
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = KioskTheme.of(context);
+    final primaryDate = row.markedAt ?? row.checkIn ?? row.checkOut ?? '';
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       elevation: 0,
@@ -277,7 +285,15 @@ class _ReportRowCard extends StatelessWidget {
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Date & Time: ${_fmtDateTime(primaryDate)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: c.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
                   Row(
                     children: [
                       _TimePill(

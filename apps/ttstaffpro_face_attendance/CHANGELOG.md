@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.9] - 2026-08-31
+
+### Fixed
+- Fixed kiosk daily attendance parsing for server payloads that use snake_case field names such as `employee_name`, `check_in`, `check_out`, and `marked_at`.
+- Attendance rows now display the staff name plus exact date & time for every record so operators can see who marked attendance and when.
+- Added a regression test to keep the kiosk report resilient to backend key naming mismatches.
+
 ## [1.0.8] - 2026-08-31
 
 ### Fixed
