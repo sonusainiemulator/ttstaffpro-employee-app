@@ -183,6 +183,7 @@ class KioskColors {
   static const Color successLight = Color(0xFF5FE39A);
   static const Color warning = Color(0xFFFB923C);
   static const Color error = Color(0xFFF87171);
+  static const Color info = Color(0xFF38BDF8);
 
   static const LinearGradient brandGradient = LinearGradient(
     begin: Alignment.topLeft,

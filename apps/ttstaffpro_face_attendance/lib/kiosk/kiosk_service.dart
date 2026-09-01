@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:open_core_hr/api/api_routes.dart';
 import 'package:open_core_hr/api/dio_api/repositories/face_attendance_repository.dart';
@@ -36,8 +38,21 @@ class KioskService {
   /// Enrolled staff signatures keyed by employeeId.
   final Map<int, FaceSignature> enrolledSignatures = {};
   final Map<int, String> employeeNames = {};
+  final Map<int, String> employeeCodes = {};
+  final ValueNotifier<int> todayScannedCount = ValueNotifier<int>(0);
+  final ValueNotifier<String?> lastScannedInfo = ValueNotifier<String?>(null);
   bool profilesLoaded = false;
   int _profileVersion = 0;
+
+  void recordLocalScan({
+    required String name,
+    String? code,
+    String? action,
+  }) {
+    todayScannedCount.value++;
+    final timeStr = DateFormat('hh:mm a').format(DateTime.now());
+    lastScannedInfo.value = '$name • $timeStr';
+  }
 
   KioskService({required this.settings, required this.offlineStore});
 
@@ -261,10 +276,31 @@ class KioskService {
         employeeNames[employeeId] = profile.employeeName ?? 'Employee $employeeId';
       }
 
+      await cacheEmployeeCodes();
+
       _profileVersion = newVersion;
       profilesLoaded = true;
     } catch (_) {
       // Keep whatever we already have; profile refresh is best-effort.
+    }
+  }
+
+  /// Caches employee/student codes for rich result card display.
+  Future<void> cacheEmployeeCodes() async {
+    try {
+      final emps = await getEmployees();
+      for (final e in emps) {
+        if (e.employeeId != null) {
+          if (e.name != null && e.name!.trim().isNotEmpty) {
+            employeeNames[e.employeeId!] = e.name!.trim();
+          }
+          if (e.code != null && e.code!.trim().isNotEmpty) {
+            employeeCodes[e.employeeId!] = e.code!.trim();
+          }
+        }
+      }
+    } catch (_) {
+      // Best effort
     }
   }
 

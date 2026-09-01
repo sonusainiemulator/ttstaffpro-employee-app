@@ -384,7 +384,106 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
+                    // Live attendance counter & last scan summary
+                    ValueListenableBuilder<int>(
+                      valueListenable: kioskService.todayScannedCount,
+                      builder: (context, count, _) {
+                        return ValueListenableBuilder<String?>(
+                          valueListenable: kioskService.lastScannedInfo,
+                          builder: (context, lastInfo, _) {
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 10,
+                              ),
+                              decoration: BoxDecoration(
+                                color: c.surface,
+                                borderRadius: BorderRadius.circular(18),
+                                border: Border.all(
+                                  color: c.border.withValues(alpha: 0.9),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.03),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: KioskColors.primaryLight
+                                          .withValues(alpha: 0.12),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Icon(
+                                      Icons.how_to_reg_rounded,
+                                      color: KioskColors.primaryLight,
+                                      size: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Today Scanned: $count Marked',
+                                          style: TextStyle(
+                                            color: c.textPrimary,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Text(
+                                          lastInfo != null
+                                              ? 'Last: $lastInfo'
+                                              : 'Ready for check-in / out',
+                                          style: TextStyle(
+                                            color: c.textSecondary,
+                                            fontSize: 11,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: (count > 0
+                                              ? KioskColors.success
+                                              : KioskColors.info)
+                                          .withValues(alpha: 0.12),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      count > 0 ? 'Active' : 'Standby',
+                                      style: TextStyle(
+                                        color: count > 0
+                                            ? KioskColors.success
+                                            : KioskColors.info,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
                     Expanded(
                       child: ListView(
                         physics: const BouncingScrollPhysics(),

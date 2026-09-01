@@ -1,8 +1,15 @@
 # Changelog
 ## [1.0.22] - 2026-09-01
 
+### Added
+- **Audio & Haptic Feedback on Scan**: Instant system click sound and medium haptic confirmation on verified face match, with warning haptic alerts on invalid / multiple / unrecognized faces.
+- **Camera Flashlight / Torch Toggle**: Dedicated torch button in the scanner top bar allowing operators and students to scan easily in dark corridors, entry gates, or low-light evening shifts.
+- **Employee Code / Student Roll No Display**: Success verification card now displays the person's Employee ID / Student Roll No for unequivocal visual confirmation.
+- **Fast-Line 3-Second Re-arm**: Reduced result hold time from 20s to 3s with a live countdown and an immediate "Tap to skip" trigger, enabling high throughput (15–20 scans/min) during shift and morning school rushes.
+- **Kiosk Home Live Attendance Summary**: Added a live real-time status card on the dashboard showing today's total scanned count and the last scanned employee/student.
+
 ### Fixed
-- **App Lock always failed with "Could not verify your identity."** The kiosk's Android `MainActivity` extended `FlutterActivity`, but `local_auth`'s native fingerprint/pattern/PIN prompt (`BiometricPrompt`) requires a `FragmentActivity` host — every unlock attempt errored out before the system prompt could even show. Changed `MainActivity` to extend `FlutterFragmentActivity`, so the phone's native lock prompt now shows and authenticates correctly.
+- **App Lock BiometricPrompt Host**: Changed `MainActivity` to extend `FlutterFragmentActivity`, resolving biometric/pattern lock prompt initialization failures on Android.
 
 ## [1.0.21] - 2026-09-01
 

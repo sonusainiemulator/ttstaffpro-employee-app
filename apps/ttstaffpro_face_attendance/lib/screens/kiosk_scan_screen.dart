@@ -45,26 +45,27 @@ class _KioskScanScreenState extends State<KioskScanScreen>
 
   String _status = 'Starting camera...';
   String? _lastEmployeeName;
+  String? _lastEmployeeCode;
   String? _lastAction;
   bool _lastSuccess = false;
   int _scanCount = 0;
+  bool _isTorchOn = false;
 
   /// Tracks the last successful scan so the same person standing in front of
   /// the camera is not immediately scanned again (which would flip their
   /// check-in into a check-out while they are still reading the result).
   int? _lastScannedEmployeeId;
   DateTime? _lastScanAt;
-  static const Duration _rescanCooldown = Duration(seconds: 20);
+  static const Duration _rescanCooldown = Duration(seconds: 5);
 
   /// Throttles "unknown face" uploads so a stranger standing in front of the
   /// kiosk does not spam the server with an event every scan frame.
   DateTime? _lastUnknownAt;
-  static const Duration _unknownCooldown = Duration(seconds: 10);
+  static const Duration _unknownCooldown = Duration(seconds: 4);
 
   /// How long the success/result card stays on screen before the scanner
-  /// re-arms. 20 seconds gives the person time to step away and prevents an
-  /// immediate second capture of the same face.
-  static const Duration _resultHoldDuration = Duration(seconds: 20);
+  /// re-arms. 3 seconds keeps the line moving fast in schools and offices.
+  static const Duration _resultHoldDuration = Duration(seconds: 3);
   Timer? _resultTimer;
   int _resultSecondsLeft = 0;
 
@@ -135,6 +136,34 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     }
   }
 
+  Future<void> _toggleTorch() async {
+    if (_cameraController == null || !_isCameraInitialized) return;
+    try {
+      _isTorchOn = !_isTorchOn;
+      await _cameraController!.setFlashMode(
+        _isTorchOn ? FlashMode.torch : FlashMode.off,
+      );
+      if (mounted) setState(() {});
+    } catch (_) {
+      // Best effort on devices without front torch
+    }
+  }
+
+  void _dismissResultNow() {
+    _resultTimer?.cancel();
+    if (!mounted) return;
+    setState(() {
+      _resultHold = false;
+      _lastEmployeeName = null;
+      _lastEmployeeCode = null;
+      _lastAction = null;
+      _resultSecondsLeft = 0;
+      _status = kioskService.enrolledSignatures.isEmpty
+          ? 'Waiting for face...'
+          : 'Look at the camera to check in / out';
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Scan loop
   // ---------------------------------------------------------------------------
@@ -155,6 +184,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         return;
       }
       if (faces.length > 1) {
+        HapticFeedback.vibrate();
         if (mounted) {
           setState(() => _status = 'Only one person at a time, please.');
         }
@@ -164,6 +194,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
 
       final signature = _matcher.signatureOf(face);
       if (!signature.isLive) {
+        HapticFeedback.selectionClick();
         if (mounted) {
           setState(
             () => _status = 'Please open your eyes and look at the camera.',
@@ -172,6 +203,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         return;
       }
       if (!signature.isFrontal) {
+        HapticFeedback.selectionClick();
         if (mounted) {
           setState(
             () => _status = 'Look straight at the camera to check in / out.',
@@ -205,6 +237,11 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         }
         _lastScannedEmployeeId = match.employeeId;
         _lastScanAt = now;
+
+        // Instant audio & haptic confirmation
+        SystemSound.play(SystemSoundType.click);
+        HapticFeedback.mediumImpact();
+
         await _handleMatch(
           employeeId: match.employeeId,
           distance: match.distance,
@@ -242,6 +279,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   }) async {
     final name =
         kioskService.employeeNames[employeeId] ?? 'Employee $employeeId';
+    final code = kioskService.employeeCodes[employeeId];
     setState(() => _status = 'Verifying $name...');
 
     final result = await kioskService.uploadEvent(
@@ -254,15 +292,24 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     );
 
     if (!mounted) return;
+    final action = _actionLabel(result?.attendanceAction);
+    kioskService.recordLocalScan(name: name, code: code, action: action);
+
     if (result != null) {
       _showResult(
         success: true,
         name: name,
-        action: _actionLabel(result.attendanceAction),
+        code: code,
+        action: action,
       );
     } else {
       // Offline — queued for sync.
-      _showResult(success: true, name: name, action: 'saved offline');
+      _showResult(
+        success: true,
+        name: name,
+        code: code,
+        action: 'Saved Offline',
+      );
     }
   }
 
@@ -284,6 +331,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   }
 
   Future<void> _handleUnknown(String snapshotPath) async {
+    HapticFeedback.vibrate();
     setState(() => _status = 'Scanning...');
     final result = await kioskService.uploadEvent(
       eventUuid: const Uuid().v4(),
@@ -294,13 +342,13 @@ class _KioskScanScreenState extends State<KioskScanScreen>
 
     if (!mounted) return;
     if (result != null && result.attendanceId != null) {
+      SystemSound.play(SystemSoundType.click);
       _showResult(
         success: true,
         name: result.message ?? 'Attendance recorded',
         action: _actionLabel(result.attendanceAction),
       );
     } else if (result != null && (result.attendanceId == null)) {
-      // Server processed but no attendance record (e.g. face not registered).
       _showResult(
         success: false,
         name: 'Face not registered',
@@ -316,12 +364,12 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     }
   }
 
-  /// Shows a result overlay for [_resultHoldDuration] (20s) with a live
-  /// countdown, then automatically re-arms the scanner. This gives the person
-  /// time to step away so the same face is not immediately scanned again.
+  /// Shows a result overlay for [_resultHoldDuration] (3s) with a live
+  /// countdown, then automatically re-arms the scanner.
   void _showResult({
     required bool success,
     required String name,
+    String? code,
     required String action,
   }) {
     _resultTimer?.cancel();
@@ -329,6 +377,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
       _resultHold = true;
       _lastSuccess = success;
       _lastEmployeeName = name;
+      _lastEmployeeCode = code;
       _lastAction = action;
       _resultSecondsLeft = _resultHoldDuration.inSeconds;
     });
@@ -343,6 +392,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         setState(() {
           _resultHold = false;
           _lastEmployeeName = null;
+          _lastEmployeeCode = null;
           _lastAction = null;
           _resultSecondsLeft = 0;
           _status = kioskService.enrolledSignatures.isEmpty
@@ -751,6 +801,16 @@ class _KioskScanScreenState extends State<KioskScanScreen>
                 ],
               ),
             ),
+            IconButton(
+              tooltip: _isTorchOn ? 'Turn flashlight off' : 'Turn flashlight on',
+              onPressed: _toggleTorch,
+              icon: Icon(
+                _isTorchOn ? Icons.flash_on_rounded : Icons.flash_off_rounded,
+                color: _isTorchOn ? Colors.amber : c.textSecondary,
+              ),
+              visualDensity: VisualDensity.compact,
+            ),
+            const SizedBox(width: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
@@ -790,81 +850,118 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     final title = _lastSuccess ? 'Face Verified' : 'Face Not Verified';
     final subtitle = _lastSuccess ? 'Attendance Marked' : (_lastAction ?? '');
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [color, color.withValues(alpha: 0.85)],
+    return GestureDetector(
+      onTap: _dismissResultNow,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [color, color.withValues(alpha: 0.88)],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.35),
+              blurRadius: 20,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.35),
-            blurRadius: 20,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            _lastSuccess ? Icons.check_circle_rounded : Icons.error_rounded,
-            color: Colors.white,
-            size: 40,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            title,
-            style: const TextStyle(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              _lastSuccess ? Icons.check_circle_rounded : Icons.error_rounded,
               color: Colors.white,
-              fontSize: 21,
-              fontWeight: FontWeight.w700,
+              size: 38,
             ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            subtitle,
-            style: const TextStyle(color: Colors.white70, fontSize: 15),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            timeStr,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
+            const SizedBox(height: 6),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            _lastSuccess
-                ? 'Welcome ${_lastEmployeeName ?? ''}'
-                : (_lastEmployeeName ?? ''),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
+            const SizedBox(height: 2),
+            Text(
+              subtitle,
+              style: const TextStyle(color: Colors.white70, fontSize: 14),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Next scan in ${_resultSecondsLeft}s',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+            const SizedBox(height: 4),
+            Text(
+              timeStr,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            const SizedBox(height: 2),
+            Text(
+              _lastSuccess
+                  ? 'Welcome ${_lastEmployeeName ?? ''}'
+                  : (_lastEmployeeName ?? ''),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (_lastSuccess &&
+                _lastEmployeeCode != null &&
+                _lastEmployeeCode!.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  'ID / Roll No: $_lastEmployeeCode',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.4,
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.touch_app_rounded, size: 12, color: Colors.white70),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Next scan in ${_resultSecondsLeft}s • Tap to skip',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
