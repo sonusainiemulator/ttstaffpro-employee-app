@@ -1,4 +1,9 @@
 # Changelog
+## [1.0.20] - 2026-09-01
+
+### Changed
+- Redesigned the daily attendance report with a responsive date header, compact refresh action, visual attendance metrics, and clearer employee check-in/check-out cards that stay readable on narrow kiosk displays.
+
 ## [1.0.19] - 2026-09-01
 
 ### Added
