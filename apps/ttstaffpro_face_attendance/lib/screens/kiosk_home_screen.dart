@@ -144,39 +144,56 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Header card
+                    // Premium Header card
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 12,
+                        vertical: 14,
                       ),
                       decoration: BoxDecoration(
-                        color: c.surface.withValues(alpha: 0.9),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            c.surface,
+                            c.surfaceAlt.withValues(alpha: 0.95),
+                          ],
+                        ),
                         borderRadius: BorderRadius.circular(22),
-                        border: Border.all(color: c.border),
+                        border: Border.all(
+                          color: c.border.withValues(alpha: 0.8),
+                        ),
                         boxShadow: c.cardShadow,
                       ),
                       child: Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(8),
+                            width: 46,
+                            height: 46,
+                            padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: KioskColors.primary.withValues(
-                                alpha: 0.16,
-                              ),
+                              color: c.surface,
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
                                 color: KioskColors.primary.withValues(
-                                  alpha: 0.4,
+                                  alpha: 0.25,
                                 ),
+                                width: 1.5,
                               ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: KioskColors.primary.withValues(
+                                    alpha: 0.12,
+                                  ),
+                                  offset: const Offset(0, 4),
+                                  blurRadius: 10,
+                                ),
+                              ],
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: Image.asset(
                                 'assets/images/app_logo.png',
-                                width: 40,
-                                height: 40,
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -185,47 +202,93 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
                                   kioskSettings.companyName ?? 'TT Staff Pro',
                                   style: theme.textTheme.titleMedium?.copyWith(
                                     color: c.textPrimary,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: -0.2,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                Text(
-                                  'Face Attendance Kiosk',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: c.textSecondary,
-                                  ),
+                                const SizedBox(height: 3),
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: KioskColors.success,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: KioskColors.success
+                                                .withValues(alpha: 0.6),
+                                            blurRadius: 4,
+                                            spreadRadius: 1,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Flexible(
+                                      child: Text(
+                                        'Face Attendance Kiosk',
+                                        style: theme.textTheme.bodySmall
+                                            ?.copyWith(
+                                              color: c.textSecondary,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
+                          const SizedBox(width: 8),
                           // App lock: configure the phone's native unlock.
-                          IconButton(
-                            tooltip: 'App Lock',
-                            onPressed: () => Navigator.of(context).push(
+                          _HeaderActionButton(
+                            tooltip: kioskSettings.appLockEnabled
+                                ? 'App Lock (Enabled)'
+                                : 'App Lock (Disabled)',
+                            onTap: () => Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) =>
                                     const KioskAppLockSettingsScreen(),
                               ),
                             ),
-                            icon: Icon(
+                            backgroundColor: kioskSettings.appLockEnabled
+                                ? KioskColors.primary.withValues(alpha: 0.12)
+                                : null,
+                            borderColor: kioskSettings.appLockEnabled
+                                ? KioskColors.primary.withValues(alpha: 0.4)
+                                : null,
+                            child: Icon(
                               kioskSettings.appLockEnabled
-                                  ? Icons.lock
-                                  : Icons.lock_open,
-                              color: c.textSecondary,
+                                  ? Icons.lock_rounded
+                                  : Icons.lock_open_rounded,
+                              size: 18,
+                              color: kioskSettings.appLockEnabled
+                                  ? KioskColors.primary
+                                  : c.textSecondary,
                             ),
                           ),
+                          const SizedBox(width: 8),
                           // Theme selector: dark / light / system.
                           PopupMenuButton<ThemeMode>(
                             tooltip: 'Theme',
-                            icon: Icon(
-                              _themeIcon(kioskThemeMode.value),
-                              color: c.textSecondary,
+                            offset: const Offset(0, 46),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              side: BorderSide(color: c.border),
                             ),
+                            color: c.surface,
+                            padding: EdgeInsets.zero,
                             onSelected: _setThemeMode,
                             itemBuilder: (context) => const [
                               PopupMenuItem(
@@ -256,11 +319,38 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                                 ),
                               ),
                             ],
+                            child: Container(
+                              width: 38,
+                              height: 38,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: c.surfaceAlt.withValues(alpha: 0.9),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: c.border.withValues(alpha: 0.8),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Icon(
+                                _themeIcon(kioskThemeMode.value),
+                                size: 18,
+                                color: c.textSecondary,
+                              ),
+                            ),
                           ),
-                          IconButton(
+                          const SizedBox(width: 8),
+                          _HeaderActionButton(
                             tooltip: 'Logout',
-                            onPressed: _logout,
-                            icon: Icon(Icons.logout, color: c.textSecondary),
+                            onTap: _logout,
+                            backgroundColor:
+                                KioskColors.error.withValues(alpha: 0.08),
+                            borderColor:
+                                KioskColors.error.withValues(alpha: 0.25),
+                            child: Icon(
+                              Icons.logout_rounded,
+                              size: 18,
+                              color: KioskColors.error,
+                            ),
                           ),
                         ],
                       ),
@@ -521,3 +611,50 @@ class _ActionListItem extends StatelessWidget {
     );
   }
 }
+
+class _HeaderActionButton extends StatelessWidget {
+  final Widget child;
+  final String tooltip;
+  final VoidCallback onTap;
+  final Color? backgroundColor;
+  final Color? borderColor;
+
+  const _HeaderActionButton({
+    required this.child,
+    required this.tooltip,
+    required this.onTap,
+    this.backgroundColor,
+    this.borderColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = KioskTheme.of(context);
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            width: 38,
+            height: 38,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: backgroundColor ?? c.surfaceAlt.withValues(alpha: 0.9),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: borderColor ?? c.border.withValues(alpha: 0.8),
+                width: 1,
+              ),
+            ),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}
+

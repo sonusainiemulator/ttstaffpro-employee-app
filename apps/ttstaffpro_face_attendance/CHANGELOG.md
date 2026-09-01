@@ -2,7 +2,8 @@
 ## [1.0.21] - 2026-09-01
 
 ### Changed
-- Redesigned the kiosk home action cards from narrow multi-column cards into a modern vertical list view with prominent gradient icon badges, clear typography, and navigation indicators.
+- **Executive App Header Redesign**: Redesigned the top header with a sleek glass-surface gradient card, refined brand logo badge with glowing border, live terminal online status indicator, and styled micro-card action buttons for App Lock, Theme Selector, and Logout.
+- **Home Actions List View**: Converted action cards into a modern vertical list view with prominent gradient icon badges, clear typography, and navigation indicators.
 
 ## [1.0.20] - 2026-09-01
 
