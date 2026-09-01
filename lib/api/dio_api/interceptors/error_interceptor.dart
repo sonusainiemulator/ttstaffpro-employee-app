@@ -34,6 +34,11 @@ class ErrorInterceptor extends Interceptor {
       case DioExceptionType.unknown:
         errorMessage = 'Something went wrong. Please try again.';
         break;
+      // Not `unknown` — keep a default so a future dio upgrade adding new
+      // DioExceptionType values (e.g. transformTimeout) can't break the build.
+      default:
+        errorMessage = 'Something went wrong. Please try again.';
+        break;
     }
 
     err = err.copyWith(message: errorMessage);
