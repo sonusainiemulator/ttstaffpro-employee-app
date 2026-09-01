@@ -1,4 +1,9 @@
 # Changelog
+## [1.0.22] - 2026-09-01
+
+### Fixed
+- **App Lock always failed with "Could not verify your identity."** The kiosk's Android `MainActivity` extended `FlutterActivity`, but `local_auth`'s native fingerprint/pattern/PIN prompt (`BiometricPrompt`) requires a `FragmentActivity` host — every unlock attempt errored out before the system prompt could even show. Changed `MainActivity` to extend `FlutterFragmentActivity`, so the phone's native lock prompt now shows and authenticates correctly.
+
 ## [1.0.21] - 2026-09-01
 
 ### Changed
