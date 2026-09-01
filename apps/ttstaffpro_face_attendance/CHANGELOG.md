@@ -1,4 +1,10 @@
 # Changelog
+## [1.0.26] - 2026-09-01
+
+### Changed
+- Face re-registration is blocked while approval is pending or active.
+- Approved face profiles can be removed before registering again.
+
 ## [1.0.25] - 2026-09-01
 
 ### Fixed
