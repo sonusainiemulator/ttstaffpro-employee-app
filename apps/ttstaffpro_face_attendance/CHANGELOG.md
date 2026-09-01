@@ -1,5 +1,5 @@
 # Changelog
-## [1.0.22] - 2026-09-01
+## [1.0.23] - 2026-09-01
 
 ### Added
 - **Audio & Haptic Feedback on Scan**: Instant system click sound and medium haptic confirmation on verified face match, with warning haptic alerts on invalid / multiple / unrecognized faces.
@@ -7,6 +7,8 @@
 - **Employee Code / Student Roll No Display**: Success verification card now displays the person's Employee ID / Student Roll No for unequivocal visual confirmation.
 - **Fast-Line 3-Second Re-arm**: Reduced result hold time from 20s to 3s with a live countdown and an immediate "Tap to skip" trigger, enabling high throughput (15–20 scans/min) during shift and morning school rushes.
 - **Kiosk Home Live Attendance Summary**: Added a live real-time status card on the dashboard showing today's total scanned count and the last scanned employee/student.
+
+## [1.0.22] - 2026-09-01
 
 ### Fixed
 - **App Lock BiometricPrompt Host**: Changed `MainActivity` to extend `FlutterFragmentActivity`, resolving biometric/pattern lock prompt initialization failures on Android.
