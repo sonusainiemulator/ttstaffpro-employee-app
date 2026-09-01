@@ -1,4 +1,9 @@
 # Changelog
+## [1.0.24] - 2026-09-01
+
+### Fixed
+- **Offset-less attendance timestamps rendered in the wrong hour depending on the device/CI host's own timezone.** `formatKioskTime`/`formatKioskDateTime` parsed offset-less ISO strings with `DateTime.parse` (which Dart treats as *local device time*) before converting to Asia/Kolkata — correct only when the device happened to already be set to IST. Fixed to reuse the literal date/time components directly as Kolkata wall-clock time when no offset is present, independent of the host's system timezone.
+
 ## [1.0.23] - 2026-09-01
 
 ### Added

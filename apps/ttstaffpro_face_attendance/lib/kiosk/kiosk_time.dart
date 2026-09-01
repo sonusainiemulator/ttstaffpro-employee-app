@@ -29,12 +29,35 @@ void ensureKioskTimezone() {
 
 /// Parses an ISO-8601 string and returns the wall-clock DateTime as seen in
 /// the company timezone (Asia/Kolkata). Null when unparseable.
+///
+/// Strings with an explicit offset (e.g. `+05:30`/`Z`) are converted from
+/// their real instant into Kolkata time. Offset-less strings are treated as
+/// ALREADY being Kolkata wall-clock time (the backend's convention) — they
+/// must NOT go through `DateTime.parse`'s "naive = local device time"
+/// behaviour, or the result depends on the device/CI host's own timezone.
+final RegExp _isoOffsetPattern = RegExp(r'(Z|[+-]\d{2}:?\d{2})$');
+
 DateTime? kioskDateTime(String? iso) {
   if (iso == null || iso.isEmpty) return null;
-  final instant = DateTime.tryParse(iso);
-  if (instant == null) return null;
+  final trimmed = iso.trim();
+  final parsed = DateTime.tryParse(trimmed);
+  if (parsed == null) return null;
   ensureKioskTimezone();
-  return tz.TZDateTime.from(instant, _kolkata!);
+  if (_isoOffsetPattern.hasMatch(trimmed)) {
+    return tz.TZDateTime.from(parsed, _kolkata!);
+  }
+  // No offset: reuse the literal y/m/d/h/m/s components as Kolkata time.
+  return tz.TZDateTime(
+    _kolkata!,
+    parsed.year,
+    parsed.month,
+    parsed.day,
+    parsed.hour,
+    parsed.minute,
+    parsed.second,
+    parsed.millisecond,
+    parsed.microsecond,
+  );
 }
 
 /// Formats an ISO-8601 attendance time as `hh:mm a` in Asia/Kolkata.
