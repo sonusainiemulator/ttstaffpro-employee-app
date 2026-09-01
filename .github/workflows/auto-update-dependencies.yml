@@ -70,7 +70,6 @@ jobs:
           OUT=$(flutter analyze 2>&1)
           echo "$OUT"
           if echo "$OUT" | grep -qE "error •"; then
-            echo "ANALYZE_HAS_ERRORS=true" >> "$GITHUB_ENV"
             exit 1
           fi
 
@@ -100,7 +99,7 @@ jobs:
         run: echo "day=$(date +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
 
       - name: Create/update auto-update PR
-        if: steps.changes.outputs.changed == 'true' && env.ANALYZE_HAS_ERRORS != 'true'
+        if: steps.changes.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -117,7 +116,7 @@ jobs:
             - If a dependency needs a version-constraint bump, review the diff before merging.
 
             **Review and merge** to apply. The next daily run keeps this PR current.
-          labels:
-            - dependencies
-            - automation
+          labels: |
+            dependencies
+            automation
           delete-branch: true
