@@ -5,9 +5,12 @@ import 'package:lottie/lottie.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:open_core_hr/api/dio_api/exceptions/api_exceptions.dart';
 import 'package:open_core_hr/screens/Permission/permissions_screen.dart';
+import 'package:passkeys/exceptions.dart';
 
 import '../../Utils/app_widgets.dart';
+import '../../service/passkey_service.dart';
 import '../../main.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_data_provider.dart';
@@ -35,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   final bool _isPasswordVisible = false;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _passkeyLoading = false;
 
   @override
   void initState() {
@@ -85,6 +89,38 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     await sharedHelper.refreshAppSettings();
     await moduleService.refreshModuleSettings();
     _loginStore.setupValidations();
+  }
+
+  /// Signs the user in with a passkey via the device biometric prompt
+  /// (fingerprint / face), then persists the returned session like a normal
+  /// login.
+  Future<void> _signInWithPasskey() async {
+    if (_passkeyLoading) return;
+    HapticFeedback.mediumImpact();
+    hideKeyboard(context);
+    setState(() => _passkeyLoading = true);
+    try {
+      final user = await PasskeyService().login();
+      if (!mounted) return;
+      final status = await _loginStore.savePasskeyUser(user);
+      if (!mounted) return;
+      sharedHelper.routeBasedOnStatus(context, status);
+    } catch (e) {
+      if (!mounted) return;
+      final message = switch (e) {
+        PasskeyAuthCancelledException() => 'Passkey sign-in was cancelled.',
+        NoCredentialsAvailableException() =>
+          'No passkey found. Please sign in with email/password and set up biometric login.',
+        DomainNotAssociatedException() =>
+          'This app is not linked to the passkey domain yet.',
+        _ => e is ApiException && e.message.trim().isNotEmpty
+            ? e.message
+            : 'Passkey sign-in failed. Please try again.',
+      };
+      toast(message);
+    } finally {
+      if (mounted) setState(() => _passkeyLoading = false);
+    }
   }
 
   void _showLanguageSelector() {
@@ -637,6 +673,32 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                                         }
                                                       },
                                                     ).animate().fadeIn(delay: 400.ms),
+
+                                              // Passkey / biometric sign-in
+                                              if (_passkeyLoading)
+                                                const Center(
+                                                  child: SizedBox(
+                                                    width: 26,
+                                                    height: 26,
+                                                    child: CircularProgressIndicator(strokeWidth: 2.5),
+                                                  ),
+                                                )
+                                              else
+                                                OutlinedButton.icon(
+                                                  onPressed: _signInWithPasskey,
+                                                  icon: const Icon(Icons.fingerprint, size: 20),
+                                                  label: const Text('Sign in with passkey'),
+                                                  style: OutlinedButton.styleFrom(
+                                                    minimumSize: const Size.fromHeight(52),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(16),
+                                                    ),
+                                                    side: BorderSide(
+                                                      color: AppDesignSystem.primaryColor.withOpacity(0.5),
+                                                    ),
+                                                    foregroundColor: AppDesignSystem.primaryColor,
+                                                  ),
+                                                ).animate().fadeIn(delay: 500.ms),
                                             ],
                                           ),
                                   ],

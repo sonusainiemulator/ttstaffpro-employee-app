@@ -223,6 +223,43 @@ abstract class LoginStoreBase with Store {
     }
   }
 
+  /// Persists a session for a user who signed in with a passkey (biometric).
+  /// Mirrors the session-persistence done by [login] so the app state is
+  /// identical whether the user signs in with a password or a passkey.
+  @action
+  Future<String> savePasskeyUser(UserModel user) async {
+    if (user.token.isEmptyOrNull) {
+      toast('Passkey login succeeded but no session token was returned.');
+      return "";
+    }
+
+    await setValue(isLoggedInPref, true);
+    await setValue(isDeviceVerifiedPref, false);
+    await setValue(userIdPref, user.id);
+    await setValue(firstNamePref, user.firstName);
+    await setValue(lastNamePref, user.lastName);
+    await setValue(genderPref, user.gender);
+    if (!user.avatar.isEmptyOrNull) {
+      await setValue(avatarPref, user.avatar ?? '');
+    }
+
+    await setValue(
+      locationActivityTrackingEnabledPref,
+      user.locationActivityTrackingEnabled,
+    );
+
+    await setValue(employeeCodePref, user.employeeCode);
+    await setValue(addressPref, user.address);
+    await setValue(phoneNumberPref, user.phoneNumber);
+    await setValue(alternateNumberPref, user.alternateNumber);
+    await setValue(statusPref, user.status);
+    await TokenStorage.write(user.token);
+    await setValue(emailPref, user.email);
+    await setValue(designationPref, user.designation);
+    await setValue(approverPref, user.isApprover);
+    return user.status.toString();
+  }
+
   Future createDemoUser() async {
     try {
       isDemoRegisterBtnLoading = true;

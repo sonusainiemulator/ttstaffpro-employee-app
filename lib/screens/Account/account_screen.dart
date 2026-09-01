@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:open_core_hr/api/dio_api/exceptions/api_exceptions.dart';
 import 'package:open_core_hr/screens/ChangePassword/change_password_screen.dart';
 import 'package:open_core_hr/screens/Settings/modules_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:passkeys/exceptions.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../main.dart';
+import '../../service/passkey_service.dart';
 import '../../utils/app_constants.dart';
 import '../../utils/app_widgets.dart';
 import '../DigitalId/digital_id_card_screen.dart';
@@ -39,6 +42,37 @@ class _AccountScreenState extends State<AccountScreen> {
   void init() async {
     sharedHelper.refreshUserData();
     setState(() {});
+  }
+
+  /// Registers a passkey on this device so the user can later sign in with
+  /// their fingerprint / face instead of a password.
+  Future<void> _setUpPasskey() async {
+    if (isLoading) return;
+    setState(() => isLoading = true);
+    try {
+      final ok = await PasskeyService().register(name: 'TT Staff Pro App');
+      if (!mounted) return;
+      toast(
+        ok
+            ? 'Biometric login enabled. You can now sign in with your fingerprint / face.'
+            : 'Failed to set up biometric login.',
+      );
+    } catch (e) {
+      if (!mounted) return;
+      final message = switch (e) {
+        PasskeyAuthCancelledException() => 'Biometric setup was cancelled.',
+        ExcludeCredentialsCanNotBeRegisteredException() =>
+          'This device already has a passkey set up for your account.',
+        DomainNotAssociatedException() =>
+          'This app is not linked to the passkey domain yet.',
+        _ => e is ApiException && e.message.trim().isNotEmpty
+            ? e.message
+            : 'Could not set up biometric login. Please try again.',
+      };
+      toast(message);
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
   }
 
   @override
@@ -177,6 +211,11 @@ class _AccountScreenState extends State<AccountScreen> {
                       title: language.lblChangePassword,
                       icon: Iconsax.lock,
                       onTap: () => const ChangePasswordScreen().launch(context),
+                    ),
+                    _buildSettingsItem(
+                      title: 'Set up biometric login (passkey)',
+                      icon: Icons.fingerprint,
+                      onTap: _setUpPasskey,
                     ),
 
                           40.height,

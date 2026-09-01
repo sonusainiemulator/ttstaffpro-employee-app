@@ -1,4 +1,11 @@
 # Changelog
+## [1.3.0] - 2026-09-01
+
+### Added
+- **Passkey login (biometric / fingerprint) support.** Employees can now sign in with the device's fingerprint or face instead of a password, and set up a passkey from Settings → "Set up biometric login (passkey)". Built on the existing backend `PasskeyHelloAuth` module (WebAuthn) with new sessionless mobile API endpoints (`passkey/login/options`, `passkey/login/verify`, `passkey/register/options`, `passkey/register/verify`) that issue the same JWT session as a normal login.
+- New `lib/service/passkey_service.dart` + `lib/api/dio_api/repositories/passkey_repository.dart` (uses the `passkeys` plugin, pinned to 2.17.4 for `package_info_plus` compatibility).
+- `LoginStore.savePasskeyUser()` persists a passkey-authenticated session identically to a password login.
+
 ## [1.2.3] - 2026-08-31
 
 ### Security

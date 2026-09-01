@@ -169,6 +169,14 @@ mixin _$LoginStore on LoginStoreBase, Store {
     });
   }
 
+  late final _$savePasskeyUserAsyncAction =
+      AsyncAction('LoginStoreBase.savePasskeyUser', context: context);
+
+  @override
+  Future<String> savePasskeyUser(UserModel user) {
+    return _$savePasskeyUserAsyncAction.run(() => super.savePasskeyUser(user));
+  }
+
   @override
   String toString() {
     return '''
