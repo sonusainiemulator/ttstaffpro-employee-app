@@ -7,6 +7,7 @@ import '../kiosk/kiosk_theme.dart';
 import '../kiosk/kiosk_version_footer.dart';
 import '../main.dart';
 import 'company_login_screen.dart';
+import 'kiosk_app_lock_settings_screen.dart';
 import 'kiosk_register_face_screen.dart';
 import 'kiosk_report_screen.dart';
 import 'kiosk_scan_screen.dart';
@@ -200,6 +201,22 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                                   ),
                                 ),
                               ],
+                            ),
+                          ),
+                          // App lock: configure the phone's native unlock.
+                          IconButton(
+                            tooltip: 'App Lock',
+                            onPressed: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    const KioskAppLockSettingsScreen(),
+                              ),
+                            ),
+                            icon: Icon(
+                              kioskSettings.appLockEnabled
+                                  ? Icons.lock
+                                  : Icons.lock_open,
+                              color: c.textSecondary,
                             ),
                           ),
                           // Theme selector: dark / light / system.

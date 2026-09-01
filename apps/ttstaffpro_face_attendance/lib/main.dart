@@ -12,6 +12,7 @@ import 'kiosk/kiosk_service.dart';
 import 'kiosk/kiosk_settings.dart';
 import 'kiosk/kiosk_theme.dart';
 import 'kiosk/offline_store.dart';
+import 'screens/app_lock_overlay.dart';
 import 'screens/splash_screen.dart';
 
 /// Global kiosk state shared across screens.
@@ -21,6 +22,10 @@ KioskService kioskService = KioskService(
   settings: kioskSettings,
   offlineStore: offlineStore,
 );
+
+/// When true, the full-screen app lock overlay covers the ENTIRE kiosk (every
+/// route) until the user authenticates with the phone's native lock.
+final ValueNotifier<bool> kioskLocked = ValueNotifier<bool>(false);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -114,8 +119,44 @@ class _ErrorApp extends StatelessWidget {
   }
 }
 
-class KioskApp extends StatelessWidget {
+class KioskApp extends StatefulWidget {
   const KioskApp({super.key});
+
+  @override
+  State<KioskApp> createState() => _KioskAppState();
+}
+
+class _KioskAppState extends State<KioskApp> with WidgetsBindingObserver {
+  AppLifecycleState _lastState = AppLifecycleState.resumed;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Re-lock whenever the kiosk returns from the background — the classic
+    // app-lock behaviour, using the phone's native lock.
+    final wasBackgrounded =
+        _lastState == AppLifecycleState.paused ||
+        _lastState == AppLifecycleState.inactive ||
+        _lastState == AppLifecycleState.hidden;
+    _lastState = state;
+    if (state == AppLifecycleState.resumed &&
+        wasBackgrounded &&
+        kioskSettings.appLockEnabled &&
+        !kioskLocked.value) {
+      kioskLocked.value = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +171,32 @@ class KioskApp extends StatelessWidget {
           theme: KioskTheme.themeFor(Brightness.light),
           darkTheme: KioskTheme.themeFor(Brightness.dark),
           themeMode: mode,
+          // The lock overlay sits ABOVE the navigator, so it covers every
+          // route (home, scan, register, report, …) while locked.
+          builder: (context, child) => _LockOverlayHost(child: child),
           home: const SplashScreen(),
+        );
+      },
+    );
+  }
+}
+
+/// Hosts the app-lock overlay on top of the navigator.
+class _LockOverlayHost extends StatelessWidget {
+  final Widget? child;
+  const _LockOverlayHost({this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: kioskLocked,
+      builder: (context, locked, _) {
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            ?child,
+            if (locked) const AppLockOverlay(),
+          ],
         );
       },
     );

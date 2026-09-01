@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// How the kiosk asks the user to unlock, using the phone's OWN native lock
+/// (fingerprint / face / pattern / PIN) that is already configured on the
+/// device — nothing is stored inside the kiosk.
+enum AppLockMethod {
+  /// Restrict to biometrics only (fingerprint / Face ID).
+  biometric('Biometric (fingerprint / face)'),
+
+  /// Use whatever the phone has set up: pattern / PIN / biometric.
+  phoneLock('Phone lock (pattern / PIN / biometric)');
+
+  final String label;
+  const AppLockMethod(this.label);
+}
+
 /// Persisted settings for the kiosk tablet.
 ///
 /// Stores the matched company, the master session and the registered device
@@ -16,6 +30,8 @@ class KioskSettings {
   static const String _deviceToken = 'kiosk_device_token';
   static const String _lastHeartbeatAt = 'kiosk_last_heartbeat_at';
   static const String _themeMode = 'kiosk_theme_mode';
+  static const String _appLockEnabled = 'kiosk_app_lock_enabled';
+  static const String _appLockMethod = 'kiosk_app_lock_method';
 
   String? companyId;
   String? companyName;
@@ -30,6 +46,13 @@ class KioskSettings {
 
   /// User-selected appearance: dark / light / system (persisted).
   ThemeMode themeMode = ThemeMode.system;
+
+  /// When true, opening / returning to the kiosk asks for the phone's native
+  /// unlock (fingerprint / face / pattern / PIN) before showing the app.
+  bool appLockEnabled = false;
+
+  /// Which native unlock the kiosk should request (persisted).
+  AppLockMethod appLockMethod = AppLockMethod.phoneLock;
 
   /// True when a company + master session has been established.
   bool get isCompanyLoggedIn => (companyId?.isNotEmpty ?? false) && (masterToken?.isNotEmpty ?? false);
@@ -52,6 +75,11 @@ class KioskSettings {
       (m) => m.name == prefs.getString(_themeMode),
       orElse: () => ThemeMode.system,
     );
+    appLockEnabled = prefs.getBool(_appLockEnabled) ?? false;
+    appLockMethod = AppLockMethod.values.firstWhere(
+      (m) => m.name == prefs.getString(_appLockMethod),
+      orElse: () => AppLockMethod.phoneLock,
+    );
   }
 
   /// Persists the user's chosen appearance (dark / light / system).
@@ -59,6 +87,18 @@ class KioskSettings {
     themeMode = mode;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_themeMode, mode.name);
+  }
+
+  /// Persists the app-lock preference (enabled flag + unlock method).
+  Future<void> setAppLock({
+    required bool enabled,
+    required AppLockMethod method,
+  }) async {
+    appLockEnabled = enabled;
+    appLockMethod = method;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_appLockEnabled, enabled);
+    await prefs.setString(_appLockMethod, method.name);
   }
 
   Future<void> saveCompany({
@@ -128,5 +168,7 @@ class KioskSettings {
     deviceUuid = null;
     deviceToken = null;
     lastHeartbeatAt = null;
+    appLockEnabled = false;
+    appLockMethod = AppLockMethod.phoneLock;
   }
 }

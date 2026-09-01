@@ -1,4 +1,11 @@
 # Changelog
+## [1.0.19] - 2026-09-01
+
+### Added
+- **App Lock** — protect the kiosk with the phone's own native lock (fingerprint, face, pattern or PIN) instead of a separate in-app password. Enable it from the new lock icon on the home screen, choose "Phone lock" (any lock the device already has) or "Biometric only" (fingerprint / face), and test the unlock right from settings.
+- The lock screen appears on cold start (when enabled) and automatically re-locks the kiosk whenever it returns from the background, so a put-down tablet can't be picked up and used without unlocking.
+- Nothing is stored inside the app — the existing device lock (already set up in the phone's own Settings) is the only credential used.
+
 ## [1.0.18] - 2026-09-01
 
 ### Changed

@@ -42,6 +42,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void _route() {
     if (_navigated || !mounted) return;
     _navigated = true;
+    // If the user enabled the app lock, cover the whole app with the phone's
+    // native unlock (fingerprint / face / pattern / PIN) before continuing.
+    if (kioskSettings.appLockEnabled) {
+      kioskLocked.value = true;
+    }
     if (kioskSettings.isCompanyLoggedIn) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const KioskHomeScreen()),

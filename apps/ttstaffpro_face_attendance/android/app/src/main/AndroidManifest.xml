@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Kiosk: camera for face scanning -->
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- App lock: required by local_auth to use the phone's native
+         fingerprint / face unlock. -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <!-- Network: required for all API calls. NOTE: without INTERNET the release
          APK cannot reach the server ("Could not reach the server" on login) —
          debug/profile builds get it injected by Flutter automatically, release does not. -->
