@@ -20,6 +20,12 @@ bool? _kioskBoolValue(dynamic value) {
   return null;
 }
 
+int? _kioskIntValue(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  return int.tryParse(value.toString());
+}
+
 /// A matched company returned by `POST face-attendance/kiosk/company-match`.
 class KioskCompany {
   final int? id;
@@ -110,6 +116,8 @@ class KioskEmployee {
   /// admin-profiles list so the picker can show “Face Registered”.
   final bool? faceRegistered;
   final String? profileStatus;
+  final int? faceProfileId;
+  final String? faceApprovalStatus;
 
   KioskEmployee({
     this.employeeId,
@@ -118,6 +126,8 @@ class KioskEmployee {
     this.code,
     this.faceRegistered,
     this.profileStatus,
+    this.faceProfileId,
+    this.faceApprovalStatus,
   });
 
   factory KioskEmployee.fromJson(Map<String, dynamic> json) {
@@ -143,12 +153,25 @@ class KioskEmployee {
               json['faceProfileStatus'] ??
               json['face_profile_status'])
           ?.toString(),
+      faceProfileId: _kioskIntValue(
+        json['faceProfileId'] ?? json['face_profile_id'],
+      ),
+      faceApprovalStatus: (json['faceApprovalStatus'] ??
+              json['face_approval_status'] ??
+              json['approvalStatus'] ??
+              json['approval_status'])
+          ?.toString(),
     );
   }
 
   /// Returns a copy with face-registration status filled in (used to enrich
   /// employees from the approved-profiles list without mutating the original).
-  KioskEmployee copyWith({bool? faceRegistered, String? profileStatus}) {
+  KioskEmployee copyWith({
+    bool? faceRegistered,
+    String? profileStatus,
+    int? faceProfileId,
+    String? faceApprovalStatus,
+  }) {
     return KioskEmployee(
       employeeId: employeeId,
       name: name,
@@ -156,6 +179,8 @@ class KioskEmployee {
       code: code,
       faceRegistered: faceRegistered ?? this.faceRegistered,
       profileStatus: profileStatus ?? this.profileStatus,
+      faceProfileId: faceProfileId ?? this.faceProfileId,
+      faceApprovalStatus: faceApprovalStatus ?? this.faceApprovalStatus,
     );
   }
 
@@ -166,6 +191,8 @@ class KioskEmployee {
         'code': code,
         'faceRegistered': faceRegistered,
         'profileStatus': profileStatus,
+        'faceProfileId': faceProfileId,
+        'faceApprovalStatus': faceApprovalStatus,
       };
 }
 

@@ -259,6 +259,15 @@ class FaceAttendanceRepository extends BaseRepository {
     );
   }
 
+  /// Request removal of the signed-in employee's face profile.
+  Future<bool> removeSelfProfile() async {
+    return await safeApiCall(
+      () => dioClient.delete(APIRoutes.selfProfile),
+      parser: (data) => true,
+      showError: true,
+    );
+  }
+
   // ==========================================
   // 4) Self Registration Access Management
   // ==========================================

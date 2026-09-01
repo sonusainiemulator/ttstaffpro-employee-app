@@ -1,4 +1,11 @@
 # Changelog
+## [1.3.1] - 2026-09-01
+
+### Changed
+- Face registration now prevents duplicate submissions while a profile is pending or approved.
+- Approved face profiles can be removed from the kiosk before a new registration is captured.
+- Employee self-registration shows approval status and submits a removal request for approved profiles.
+
 ## [1.3.0] - 2026-09-01
 
 ### Added

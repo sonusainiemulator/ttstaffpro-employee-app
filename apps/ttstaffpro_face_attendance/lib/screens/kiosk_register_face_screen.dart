@@ -125,6 +125,29 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
     // instead of letting the operator hit a confusing server error later.
     // A profile can also come from the employee's own phone self-registration,
     // not just a prior kiosk registration, so say that explicitly.
+    if (employee.profileStatus == 'pending' ||
+        (employee.faceRegistered != true &&
+            employee.faceApprovalStatus == 'pending')) {
+      if (!mounted) return;
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Approval pending'),
+          content: const Text(
+            'This face registration is waiting for admin approval. '
+            'A new registration cannot be submitted yet.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     if (employee.faceRegistered == true) {
       final name =
           (employee.name ?? '').isNotEmpty ? employee.name! : 'this employee';
@@ -135,22 +158,46 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
           content: Text(
             '$name already has a registered face (from a previous kiosk '
             'registration or their own phone app).\n\n'
-            'Tap Re-register to capture fresh photos now — this instantly '
-            'replaces the old face and cannot fail as a duplicate.',
+            'Remove the approved face first. Registration will be available '
+            'again after the profile is removed.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(false),
               child: const Text('Cancel'),
             ),
-            FilledButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('Re-register'),
+            FilledButton.tonalIcon(
+              onPressed: employee.faceProfileId == null
+                  ? null
+                  : () => Navigator.of(ctx).pop(true),
+              icon: const Icon(Icons.delete_outline),
+              label: const Text('Remove face'),
             ),
           ],
         ),
       );
-      if (proceed != true || !mounted) return;
+      if (proceed != true || !mounted || employee.faceProfileId == null) return;
+      try {
+        final removed = await kioskService.removeFace(
+          profileId: employee.faceProfileId!,
+        );
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(removed
+                ? 'Face removed. You can register again now.'
+                : 'Could not remove face. Please retry.'),
+          ),
+        );
+        if (removed) await _loadEmployees();
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(_friendlyError(e, fallback: 'Could not remove face.'))),
+          );
+        }
+      }
+      return;
     }
 
     setState(() => _selected = employee);

@@ -141,22 +141,24 @@ class KioskService {
       // correctly reported as "Registered". Request a large page so a company
       // with more than the server's default page size (20) doesn't have its
       // later employees wrongly shown as "Unregistered" in the picker.
-      final profiles =
-          await _repo.getAdminProfiles(status: 'active', perPage: 500);
-      final registeredIds = profiles
-          .where((p) =>
-              p.employeeId != null &&
-              (p.approvalStatus == null || p.approvalStatus == 'approved'))
-          .map((p) => p.employeeId!)
-          .toSet();
+      final profiles = await _repo.getAdminProfiles(perPage: 500);
+      final profilesByEmployee = <int, FaceProfileSummary>{};
+      for (final profile in profiles) {
+        if (profile.employeeId != null && profile.status != 'inactive') {
+          profilesByEmployee[profile.employeeId!] = profile;
+        }
+      }
       return employees.map((emp) {
         if (emp.employeeId == null) return emp;
-        final hasFace =
-            emp.faceRegistered ?? registeredIds.contains(emp.employeeId);
-        if (hasFace == emp.faceRegistered) return emp;
+        final profile = profilesByEmployee[emp.employeeId];
+        final approved = profile?.approvalStatus == null ||
+            profile?.approvalStatus == 'approved';
+        final hasFace = profile != null && approved && profile.status == 'active';
         return emp.copyWith(
           faceRegistered: hasFace,
-          profileStatus: hasFace ? (emp.profileStatus ?? 'approved') : null,
+          profileStatus: profile?.status,
+          faceProfileId: profile?.id,
+          faceApprovalStatus: profile?.approvalStatus,
         );
       }).toList();
     } catch (_) {
@@ -177,6 +179,11 @@ class KioskService {
       captureTypes: captureTypes,
       notes: notes,
     );
+  }
+
+  /// Deactivate an employee's current face profile from the admin kiosk.
+  Future<bool> removeFace({required int profileId}) {
+    return _repo.resetProfile(profileId);
   }
 
   // ---------------------------------------------------------------------------

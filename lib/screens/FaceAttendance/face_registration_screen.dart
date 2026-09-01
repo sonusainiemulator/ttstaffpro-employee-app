@@ -68,6 +68,32 @@ class _FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
     }
   }
 
+  Future<void> _removeFace() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Remove face registration?'),
+        content: const Text(
+          'Your face will stop working for attendance. Registration again will '
+          'only be available after the admin approves the removal.',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Remove')),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    try {
+      await _repo.removeSelfProfile();
+      if (!mounted) return;
+      toast('Face removal request submitted');
+      await _load();
+    } catch (_) {
+      if (mounted) toast('Could not remove face registration');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,6 +137,19 @@ class _FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
                     children: [
                       _buildStatusCard(),
                       const SizedBox(height: 20),
+                      if (_status?.profileStatus == 'active' &&
+                          _status?.approvalStatus == 'approved') ...[
+                        SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: OutlinedButton.icon(
+                            onPressed: _removeFace,
+                            icon: const Icon(Icons.delete_outline),
+                            label: const Text('Remove face registration'),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                      ],
                       _buildAddFaceButton(),
                       const SizedBox(height: 20),
                       _buildInfoCard(),
@@ -186,7 +225,9 @@ class _FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
   }
 
   Widget _buildAddFaceButton() {
-    final canRegister = _eligibility?.canRegister ?? false;
+    final hasActiveProfile = _status?.profileStatus == 'active' ||
+        _status?.profileStatus == 'pending';
+    final canRegister = (_eligibility?.canRegister ?? false) && !hasActiveProfile;
     return SizedBox(
       width: double.infinity,
       height: 56,
