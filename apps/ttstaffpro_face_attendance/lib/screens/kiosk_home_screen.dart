@@ -296,56 +296,52 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                     ),
                     const SizedBox(height: 20),
                     Expanded(
-                      child: Row(
+                      child: ListView(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(vertical: 4),
                         children: [
-                          Expanded(
-                            child: _ActionCard(
-                              icon: Icons.face_retouching_natural,
-                              title: 'Start Scan',
-                              subtitle: 'Check-in / Check-out',
-                              gradient: const [
-                                Color(0xFF7C5CFF),
-                                Color(0xFF4A6CFF),
-                              ],
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => const KioskScanScreen(),
-                                ),
+                          _ActionListItem(
+                            icon: Icons.face_retouching_natural,
+                            title: 'Start Scan',
+                            subtitle: 'Check-in / Check-out',
+                            gradient: const [
+                              Color(0xFF7C5CFF),
+                              Color(0xFF4A6CFF),
+                            ],
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const KioskScanScreen(),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _ActionCard(
-                              icon: Icons.person_add_alt_1,
-                              title: 'Register Face',
-                              subtitle: 'Add staff face',
-                              gradient: const [
-                                Color(0xFF22D97A),
-                                Color(0xFF0EA5A8),
-                              ],
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      const KioskRegisterFaceScreen(),
-                                ),
+                          const SizedBox(height: 12),
+                          _ActionListItem(
+                            icon: Icons.person_add_alt_1_rounded,
+                            title: 'Register Face',
+                            subtitle: 'Add staff face',
+                            gradient: const [
+                              Color(0xFF22D97A),
+                              Color(0xFF0EA5A8),
+                            ],
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    const KioskRegisterFaceScreen(),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _ActionCard(
-                              icon: Icons.insert_chart_outlined,
-                              title: 'Daily Report',
-                              subtitle: 'Date-wise attendance',
-                              gradient: const [
-                                Color(0xFF22D3EE),
-                                Color(0xFF0EA5E9),
-                              ],
-                              onTap: () => Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => const KioskReportScreen(),
-                                ),
+                          const SizedBox(height: 12),
+                          _ActionListItem(
+                            icon: Icons.insert_chart_outlined,
+                            title: 'Daily Report',
+                            subtitle: 'Date-wise attendance',
+                            gradient: const [
+                              Color(0xFF22D3EE),
+                              Color(0xFF0EA5E9),
+                            ],
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const KioskReportScreen(),
                               ),
                             ),
                           ),
@@ -413,14 +409,14 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
   }
 }
 
-class _ActionCard extends StatelessWidget {
+class _ActionListItem extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
   final List<Color> gradient;
   final VoidCallback onTap;
 
-  const _ActionCard({
+  const _ActionListItem({
     required this.icon,
     required this.title,
     required this.subtitle,
@@ -432,78 +428,90 @@ class _ActionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final c = KioskTheme.of(context);
+
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(20),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20),
+        splashColor: gradient.first.withValues(alpha: 0.12),
+        highlightColor: gradient.first.withValues(alpha: 0.06),
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [c.surfaceAlt, c.surface],
             ),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(color: c.border),
             boxShadow: c.cardShadow,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Row(
             children: [
+              // Icon Badge with vibrant gradient & subtle glow
               Container(
-                width: 64,
-                height: 64,
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: gradient,
                   ),
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: gradient.first.withValues(alpha: 0.4),
+                      color: gradient.first.withValues(alpha: 0.35),
                       offset: const Offset(0, 4),
                       blurRadius: 12,
                     ),
                   ],
                 ),
-                child: Icon(icon, size: 30, color: Colors.white),
+                child: Icon(icon, size: 26, color: Colors.white),
               ),
-              const SizedBox(height: 14),
-              // Scale to fit so titles stay on one line (no mid-word wrap)
-              // even on narrow action cards.
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    title,
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: c.textPrimary,
-                      fontWeight: FontWeight.w700,
+              const SizedBox(width: 16),
+              // Title & Subtitle
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: c.textPrimary,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: c.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 4),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    subtitle,
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: c.textSecondary,
-                    ),
+              const SizedBox(width: 12),
+              // Trailing arrow icon indicator
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: c.surface.withValues(alpha: 0.8),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: c.border.withValues(alpha: 0.8),
                   ),
+                ),
+                child: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 13,
+                  color: c.textSecondary,
                 ),
               ),
             ],

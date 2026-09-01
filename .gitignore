@@ -3,7 +3,7 @@
 *.log
 *.pyc
 *.swp
-.DS_Store
+**/.DS_Store
 .atom/
 .build/
 .buildlog/
@@ -57,5 +57,7 @@ app.*.map.json
 # SSH connection helper (local, references hosts/credentials)
 /ssh-config.ttstaffpro
 
-# Standalone sub-apps live in their own GitHub repos
-/apps/
+# Standalone sub-apps are tracked in this repo
+!/apps/
+!/apps/**
+
