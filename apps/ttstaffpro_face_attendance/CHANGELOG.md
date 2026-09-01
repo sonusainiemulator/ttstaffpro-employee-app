@@ -1,4 +1,11 @@
 # Changelog
+## [1.0.25] - 2026-09-01
+
+### Fixed
+- **Registering a face could show "Duplicate face — already registered" even when the real failure was unrelated** (network hiccup, validation error, etc.). The error message was chosen from whether the employee was ALREADY flagged as registered before the attempt, not from the actual server response — so any failure on a re-registration attempt was mislabeled as a duplicate. Now the operator always sees the real reason for the failure (the server's own message on a genuine duplicate, or the actual error otherwise).
+- The "Face already registered" confirmation now clarifies the face may have come from the employee's own phone self-registration too, and that tapping Re-register safely replaces it.
+- The employee picker's Registered/Unregistered badges could be wrong for companies with more than 20 registered employees (the admin-profiles lookup only checked the server's first page). Now requests a large enough page so every employee's status is accurate.
+
 ## [1.0.24] - 2026-09-01
 
 ### Fixed

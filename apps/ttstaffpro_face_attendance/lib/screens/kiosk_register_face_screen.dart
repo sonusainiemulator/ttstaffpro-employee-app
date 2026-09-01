@@ -123,6 +123,8 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
   Future<void> _selectEmployee(KioskEmployee employee) async {
     // If this employee already has a registered face, surface it clearly
     // instead of letting the operator hit a confusing server error later.
+    // A profile can also come from the employee's own phone self-registration,
+    // not just a prior kiosk registration, so say that explicitly.
     if (employee.faceRegistered == true) {
       final name =
           (employee.name ?? '').isNotEmpty ? employee.name! : 'this employee';
@@ -131,9 +133,10 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
         builder: (ctx) => AlertDialog(
           title: const Text('Face already registered'),
           content: Text(
-            '$name already has a registered face.\n\n'
-            'Re-registering will replace the existing face. Do you want to '
-            'continue?',
+            '$name already has a registered face (from a previous kiosk '
+            'registration or their own phone app).\n\n'
+            'Tap Re-register to capture fresh photos now — this instantly '
+            'replaces the old face and cannot fail as a duplicate.',
           ),
           actions: [
             TextButton(
@@ -272,14 +275,12 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       if (!mounted) return;
       setState(() {
         _uploading = false;
-        // If the employee already has a registered face, tell the operator it
-        // is a duplicate instead of a generic server error.
-        _status = _selected?.faceRegistered == true
-            ? 'Duplicate face — this employee is already registered.'
-            : _friendlyError(
-                e,
-                fallback: 'Registration failed. Please retry.',
-              );
+        // Surface the server's own message (e.g. the real "Face already
+        // registered" text on a genuine duplicate) instead of guessing from
+        // the employee's PRE-attempt status — that guess used to show
+        // "Duplicate face" even when the real failure was unrelated (network,
+        // validation, etc.), which was confusing on every retry.
+        _status = _friendlyError(e, fallback: 'Registration failed. Please retry.');
       });
     }
   }

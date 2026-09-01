@@ -138,8 +138,11 @@ class KioskService {
       // The server's admin-profiles endpoint filters on the profile `status`
       // column (`active`/`pending`/`inactive`), not on approval — query active
       // profiles and keep only the approved ones so a freshly enrolled face is
-      // correctly reported as "Registered".
-      final profiles = await _repo.getAdminProfiles(status: 'active');
+      // correctly reported as "Registered". Request a large page so a company
+      // with more than the server's default page size (20) doesn't have its
+      // later employees wrongly shown as "Unregistered" in the picker.
+      final profiles =
+          await _repo.getAdminProfiles(status: 'active', perPage: 500);
       final registeredIds = profiles
           .where((p) =>
               p.employeeId != null &&
