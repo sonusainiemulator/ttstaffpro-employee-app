@@ -3,7 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-import '../Utils/app_constants.dart';
+import '../utils/app_constants.dart';
 import '../main.dart';
 import 'Login/LoginScreen.dart';
 import 'navigation_screen.dart';

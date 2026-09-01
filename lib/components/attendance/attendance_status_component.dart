@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-import '../../Utils/app_widgets.dart';
+import '../../utils/app_widgets.dart';
 import '../../main.dart';
 
 class AttendanceStatusComponent extends StatelessWidget {

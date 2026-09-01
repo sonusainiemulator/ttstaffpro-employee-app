@@ -4,7 +4,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:open_core_hr/models/Loan/loan_request_model.dart';
 import 'package:open_core_hr/utils/string_extensions.dart';
 
-import '../../../Utils/app_constants.dart';
+import '../../../utils/app_constants.dart';
 import '../../../main.dart';
 
 class LoanRequestItemWidget extends StatelessWidget {

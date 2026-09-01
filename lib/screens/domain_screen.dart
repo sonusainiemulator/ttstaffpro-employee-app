@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-import '../Utils/app_widgets.dart';
+import '../utils/app_widgets.dart';
 import '../main.dart';
 import '../models/DomainModel.dart';
 import 'SettingUp/setting_up_screen.dart';

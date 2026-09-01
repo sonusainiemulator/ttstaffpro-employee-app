@@ -8,7 +8,7 @@ import '../../main.dart';
 import '../../models/Loan/loan_detail_model.dart';
 import '../../models/Loan/loan_history.dart';
 import '../../models/Loan/loan_repayment.dart';
-import '../../Utils/app_constants.dart';
+import '../../utils/app_constants.dart';
 import 'loan_request_screen.dart';
 
 class LoanDetailScreen extends StatefulWidget {

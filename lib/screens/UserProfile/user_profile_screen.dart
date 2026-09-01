@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../Utils/app_widgets.dart';
+import '../../utils/app_widgets.dart';
 import '../../main.dart';
 import '../../models/user.dart';
 

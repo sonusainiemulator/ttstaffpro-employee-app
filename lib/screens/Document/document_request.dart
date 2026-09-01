@@ -3,7 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:open_core_hr/Utils/app_widgets.dart';
+import 'package:open_core_hr/utils/app_widgets.dart';
 import 'package:open_core_hr/screens/Document/create_document_request_screen.dart';
 import 'package:shimmer/shimmer.dart';
 

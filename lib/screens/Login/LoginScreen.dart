@@ -9,7 +9,7 @@ import 'package:open_core_hr/api/dio_api/exceptions/api_exceptions.dart';
 import 'package:open_core_hr/screens/Permission/permissions_screen.dart';
 import 'package:passkeys/exceptions.dart';
 
-import '../../Utils/app_widgets.dart';
+import '../../utils/app_widgets.dart';
 import '../../service/passkey_service.dart';
 import '../../main.dart';
 import '../../utils/app_constants.dart';

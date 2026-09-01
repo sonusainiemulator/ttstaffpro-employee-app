@@ -3,7 +3,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:open_core_hr/models/Settings/module_settings_model.dart';
 
-import '../../Utils/app_widgets.dart';
+import '../../utils/app_widgets.dart';
 import '../../main.dart';
 
 class ModulesScreen extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:nb_utils/nb_utils.dart';
 import 'package:open_core_hr/main.dart';
 
-import '../Utils/app_constants.dart';
+import '../utils/app_constants.dart';
 import '../models/Settings/module_settings_model.dart';
 
 class ModuleService {

@@ -8,7 +8,7 @@ import 'package:open_core_hr/main.dart';
 import 'package:open_core_hr/api/network_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../Utils/app_constants.dart';
+import '../../../utils/app_constants.dart';
 import '../../../utils/design_system.dart';
 
 class DemoModeBanner extends StatefulWidget {

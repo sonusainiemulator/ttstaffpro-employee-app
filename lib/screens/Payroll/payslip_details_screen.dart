@@ -4,7 +4,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../Utils/app_constants.dart';
+import '../../utils/app_constants.dart';
 import '../../main.dart'; // For payrollStore and appStore
 import '../../models/payslip_model.dart';
 

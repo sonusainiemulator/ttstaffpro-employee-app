@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:open_core_hr/Utils/app_constants.dart';
-import 'package:open_core_hr/Utils/app_widgets.dart';
+import 'package:open_core_hr/utils/app_constants.dart';
+import 'package:open_core_hr/utils/app_widgets.dart';
 import 'package:open_core_hr/screens/Account/account_screen.dart';
 
 import '../../../main.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:open_core_hr/Utils/app_colors.dart';
-import 'package:open_core_hr/Utils/app_widgets.dart';
+import 'package:open_core_hr/utils/app_colors.dart';
+import 'package:open_core_hr/utils/app_widgets.dart';
 import 'package:open_core_hr/screens/navigation_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 

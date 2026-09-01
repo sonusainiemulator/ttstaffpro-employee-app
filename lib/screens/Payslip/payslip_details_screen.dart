@@ -5,7 +5,7 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:open_core_hr/models/payslip_model.dart';
 import 'package:open_core_hr/screens/Payslip/payslip_store.dart';
 
-import '../../Utils/app_constants.dart';
+import '../../utils/app_constants.dart';
 import '../../main.dart';
 
 class PayslipDetailsScreen extends StatefulWidget {

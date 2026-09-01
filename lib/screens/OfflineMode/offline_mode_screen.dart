@@ -1,9 +1,9 @@
-import 'package:open_core_hr/Utils/app_widgets.dart';
+import 'package:open_core_hr/utils/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nb_utils/nb_utils.dart';
 
-import '../../Utils/app_constants.dart';
+import '../../utils/app_constants.dart';
 import '../../main.dart';
 import '../Login/LoginScreen.dart';
 import '../navigation_screen.dart';

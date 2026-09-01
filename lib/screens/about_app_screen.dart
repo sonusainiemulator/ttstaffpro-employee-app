@@ -1,4 +1,4 @@
-import 'package:open_core_hr/Utils/app_widgets.dart';
+import 'package:open_core_hr/utils/app_widgets.dart';
 import 'package:flutter/material.dart';
 
 class AboutAppScreen extends StatefulWidget {

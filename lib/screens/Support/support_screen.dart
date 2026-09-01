@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:open_core_hr/Utils/app_constants.dart';
+import 'package:open_core_hr/utils/app_constants.dart';
 import 'package:open_core_hr/components/support/support_component.dart';
 import 'package:open_core_hr/main.dart';
 

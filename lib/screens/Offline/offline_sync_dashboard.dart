@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:open_core_hr/Utils/app_widgets.dart';
+import 'package:open_core_hr/utils/app_widgets.dart';
 import 'package:open_core_hr/main.dart';
 
 class OfflineSyncDashboard extends StatefulWidget {

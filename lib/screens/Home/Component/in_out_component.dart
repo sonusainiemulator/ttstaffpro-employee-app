@@ -11,8 +11,8 @@ import 'package:open_core_hr/screens/FaceAttendance/face_attendance_screen.dart'
 import 'package:open_core_hr/screens/Scanner/qr_scanner_screen.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
-import '../../../Utils/app_constants.dart';
-import '../../../Utils/app_widgets.dart';
+import '../../../utils/app_constants.dart';
+import '../../../utils/app_widgets.dart';
 import '../../../store/global_attendance_store.dart';
 import '../../../utils/design_system.dart';
 import 'package:flutter_animate/flutter_animate.dart';

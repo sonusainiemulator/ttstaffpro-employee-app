@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../Utils/app_constants.dart';
+import '../../utils/app_constants.dart';
 import '../../utils/design_system.dart';
 import '../../main.dart';
 import '../Login/LoginScreen.dart';
