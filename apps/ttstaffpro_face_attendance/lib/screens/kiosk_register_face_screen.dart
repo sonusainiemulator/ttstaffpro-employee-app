@@ -313,8 +313,10 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
         setState(() {
           _uploading = false;
           _status =
-              'This face is already registered to ${existingOwner.employeeName}. '
-              'Select that employee to manage the existing face.';
+              'This face is already registered to '
+              '${existingOwner.employeeName} (Employee #${existingOwner.employeeId}). '
+              'One employee can have only one face registration. '
+              'Press back and select that employee to remove or manage the face.';
         });
         return;
       }
