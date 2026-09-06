@@ -101,8 +101,15 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
     if (e is NetworkException || e is TimeoutException) {
       return 'Could not reach the server. Check connectivity and retry.';
     }
+    if (e is ValidationException) {
+      final messages = e.getAllErrors();
+      if (messages.isNotEmpty) return messages.join(' ');
+      if (e.message.trim().isNotEmpty) return e.message;
+    }
     if (e is ServerException) {
-      return 'Server error. Please try again.';
+      return e.message == 'Server error'
+          ? 'Server error. Please try again.'
+          : e.message;
     }
     if (e is ApiException && e.message.trim().isNotEmpty) {
       return e.message;
@@ -294,6 +301,24 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       _status = 'Registering face...';
     });
     try {
+      // The front capture is the identity reference. Refresh the enrolled
+      // gallery and identify it before uploading, so a face belonging to one
+      // employee is not silently assigned to the employee selected here.
+      final existingOwner = await kioskService.findExistingFaceOwner(
+        _capturedPaths.first,
+        excludingEmployeeId: _selected!.employeeId!,
+      );
+      if (existingOwner != null) {
+        if (!mounted) return;
+        setState(() {
+          _uploading = false;
+          _status =
+              'This face is already registered to ${existingOwner.employeeName}. '
+              'Select that employee to manage the existing face.';
+        });
+        return;
+      }
+
       final ok = await kioskService.enrollFace(
         employeeId: _selected!.employeeId!,
         imagePaths: List.of(_capturedPaths),
@@ -310,6 +335,7 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       });
 
       if (ok) {
+        await kioskService.loadProfilePackage(force: true);
         // Return to the employee picker and reload so the just-registered
         // employee immediately shows "Registered" instead of staying stale.
         Future.delayed(const Duration(milliseconds: 1200), () {

@@ -1,4 +1,11 @@
 # Changelog
+## [1.0.27] - 2026-09-06
+
+### Fixed
+- Face registration now refreshes the enrolled gallery and identifies the existing employee before uploading. Selecting another employee with an already-registered face now clearly reports the face owner, while a genuinely new face continues normally.
+- Employee registration status now prefers the current active profile over older pending or legacy profiles instead of depending on API response order.
+- Duplicate validation responses now show the server's actual message.
+
 ## [1.0.26] - 2026-09-01
 
 ### Changed

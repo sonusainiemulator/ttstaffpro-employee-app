@@ -144,8 +144,15 @@ class KioskService {
       final profiles = await _repo.getAdminProfiles(perPage: 500);
       final profilesByEmployee = <int, FaceProfileSummary>{};
       for (final profile in profiles) {
-        if (profile.employeeId != null && profile.status != 'inactive') {
-          profilesByEmployee[profile.employeeId!] = profile;
+        final employeeId = profile.employeeId;
+        if (employeeId == null || profile.status == 'inactive') continue;
+
+        // A user can have an old pending/active profile at the same time.
+        // Do not let API ordering make the picker show the wrong state.
+        final current = profilesByEmployee[employeeId];
+        if (current == null ||
+            _profilePriority(profile) > _profilePriority(current)) {
+          profilesByEmployee[employeeId] = profile;
         }
       }
       return employees.map((emp) {
@@ -164,6 +171,47 @@ class KioskService {
     } catch (_) {
       return employees;
     }
+  }
+
+  int _profilePriority(FaceProfileSummary profile) {
+    if (profile.status == 'active' &&
+        (profile.approvalStatus == null ||
+            profile.approvalStatus == 'approved')) {
+      return 3;
+    }
+    if (profile.status == 'pending' || profile.approvalStatus == 'pending') {
+      return 2;
+    }
+    return 1;
+  }
+
+  /// Finds the employee who already owns a newly captured face.
+  ///
+  /// The backend remains the final authority, but identifying the owner here
+  /// lets the operator fix a wrong employee selection instead of seeing an
+  /// anonymous duplicate error.
+  Future<({int employeeId, String employeeName})?> findExistingFaceOwner(
+    String imagePath, {
+    required int excludingEmployeeId,
+  }) async {
+    await loadProfilePackage(force: true);
+    if (enrolledSignatures.isEmpty) return null;
+
+    final face = await matcher.detectInFile(imagePath);
+    if (face == null || !matcher.hasUsableLandmarks(face)) return null;
+    final signature = matcher.signatureOf(face);
+    final match = matcher.identify(
+      signature,
+      enrolledSignatures,
+      requireLive: false,
+    );
+    if (match == null || match.employeeId == excludingEmployeeId) return null;
+
+    return (
+      employeeId: match.employeeId,
+      employeeName: employeeNames[match.employeeId] ??
+          'Employee ${match.employeeId}',
+    );
   }
 
   /// Register a face for an employee directly from the kiosk.
