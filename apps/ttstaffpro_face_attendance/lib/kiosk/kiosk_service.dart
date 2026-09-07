@@ -145,7 +145,14 @@ class KioskService {
       final profilesByEmployee = <int, FaceProfileSummary>{};
       for (final profile in profiles) {
         final employeeId = profile.employeeId;
-        if (employeeId == null || profile.status == 'inactive') continue;
+        if (employeeId == null) continue;
+        final status = (profile.status ?? '').toLowerCase().trim();
+        if (status == 'inactive' ||
+            status == 'reset' ||
+            status == 'removed' ||
+            status == 'deleted') {
+          continue;
+        }
 
         // A user can have an old pending/active profile at the same time.
         // Do not let API ordering make the picker show the wrong state.
@@ -158,9 +165,13 @@ class KioskService {
       return employees.map((emp) {
         if (emp.employeeId == null) return emp;
         final profile = profilesByEmployee[emp.employeeId];
-        final approved = profile?.approvalStatus == null ||
-            profile?.approvalStatus == 'approved';
-        final hasFace = profile != null && approved && profile.status == 'active';
+        final profileStatus = (profile?.status ?? '').toLowerCase().trim();
+        final approvalStatus =
+            (profile?.approvalStatus ?? '').toLowerCase().trim();
+        final approved =
+            approvalStatus.isEmpty || approvalStatus == 'approved';
+        final hasFace =
+            profile != null && approved && profileStatus == 'active';
         return emp.copyWith(
           faceRegistered: hasFace,
           profileStatus: profile?.status,
@@ -174,44 +185,15 @@ class KioskService {
   }
 
   int _profilePriority(FaceProfileSummary profile) {
-    if (profile.status == 'active' &&
-        (profile.approvalStatus == null ||
-            profile.approvalStatus == 'approved')) {
+    final status = (profile.status ?? '').toLowerCase().trim();
+    final approval = (profile.approvalStatus ?? '').toLowerCase().trim();
+    if (status == 'active' && (approval.isEmpty || approval == 'approved')) {
       return 3;
     }
-    if (profile.status == 'pending' || profile.approvalStatus == 'pending') {
+    if (status == 'pending' || approval == 'pending') {
       return 2;
     }
     return 1;
-  }
-
-  /// Finds the employee who already owns a newly captured face.
-  ///
-  /// The backend remains the final authority, but identifying the owner here
-  /// lets the operator fix a wrong employee selection instead of seeing an
-  /// anonymous duplicate error.
-  Future<({int employeeId, String employeeName})?> findExistingFaceOwner(
-    String imagePath, {
-    required int excludingEmployeeId,
-  }) async {
-    await loadProfilePackage(force: true);
-    if (enrolledSignatures.isEmpty) return null;
-
-    final face = await matcher.detectInFile(imagePath);
-    if (face == null || !matcher.hasUsableLandmarks(face)) return null;
-    final signature = matcher.signatureOf(face);
-    final match = matcher.identify(
-      signature,
-      enrolledSignatures,
-      requireLive: false,
-    );
-    if (match == null || match.employeeId == excludingEmployeeId) return null;
-
-    return (
-      employeeId: match.employeeId,
-      employeeName: employeeNames[match.employeeId] ??
-          'Employee ${match.employeeId}',
-    );
   }
 
   /// Register a face for an employee directly from the kiosk.
@@ -229,9 +211,61 @@ class KioskService {
     );
   }
 
+  /// Immediately creates and enrolls a local face signature from a freshly
+  /// captured front image so the newly registered employee can scan for
+  /// attendance right away without waiting for backend package propagation.
+  Future<bool> registerLocalFaceSignature({
+    required int employeeId,
+    required String name,
+    required String imagePath,
+    String? code,
+  }) async {
+    try {
+      final face = await matcher.detectInFile(imagePath);
+      if (face == null || !matcher.hasUsableLandmarks(face)) return false;
+      final signature = matcher.signatureOf(face);
+      if (!signature.isFrontal) return false;
+
+      enrolledSignatures[employeeId] = signature;
+      employeeNames[employeeId] =
+          name.trim().isNotEmpty ? name.trim() : 'Employee $employeeId';
+      if (code != null && code.trim().isNotEmpty) {
+        employeeCodes[employeeId] = code.trim();
+      }
+
+      // Also cache to documents directory so kiosk restart preserves it
+      final dir = await getApplicationDocumentsDirectory();
+      final targetFile = File('${dir.path}/profile_$employeeId.jpg');
+      await File(imagePath).copy(targetFile.path);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Deactivate an employee's current face profile from the admin kiosk.
-  Future<bool> removeFace({required int profileId}) {
-    return _repo.resetProfile(profileId);
+  /// Purges in-memory signatures and cached files, then force refreshes.
+  Future<bool> removeFace({
+    required int profileId,
+    int? employeeId,
+  }) async {
+    final ok = await _repo.resetProfile(profileId);
+    if (ok) {
+      if (employeeId != null) {
+        enrolledSignatures.remove(employeeId);
+        employeeNames.remove(employeeId);
+        employeeCodes.remove(employeeId);
+        try {
+          final dir = await getApplicationDocumentsDirectory();
+          final file = File('${dir.path}/profile_$employeeId.jpg');
+          if (await file.exists()) {
+            await file.delete();
+          }
+        } catch (_) {}
+      }
+      await loadProfilePackage(force: true);
+    }
+    return ok;
   }
 
   // ---------------------------------------------------------------------------
@@ -390,7 +424,21 @@ class KioskService {
   Future<String?> _downloadSafe(
       String url, Directory dir, String fileName) async {
     try {
-      return await downloadToDocuments(url, fileName);
+      final headers = <String, String>{};
+      final token = getStringAsync('token');
+      if (token.isNotEmpty) headers['Authorization'] = 'Bearer $token';
+      final tenantId = getStringAsync('tenant_id');
+      if (tenantId.isNotEmpty) headers['X-Tenant-ID'] = tenantId;
+      final deviceToken = settings.deviceToken ?? getStringAsync('face_device_token');
+      if (deviceToken.isNotEmpty) headers['X-Device-Token'] = deviceToken;
+      final deviceUuid = settings.deviceUuid ?? getStringAsync('face_device_uuid');
+      if (deviceUuid.isNotEmpty) headers['X-Device-UUID'] = deviceUuid;
+
+      return await downloadToDocuments(
+        url,
+        fileName,
+        headers: headers.isNotEmpty ? headers : null,
+      );
     } catch (_) {
       return null;
     }

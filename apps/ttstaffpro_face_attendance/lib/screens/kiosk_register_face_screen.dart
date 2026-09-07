@@ -187,6 +187,7 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       try {
         final removed = await kioskService.removeFace(
           profileId: employee.faceProfileId!,
+          employeeId: employee.employeeId,
         );
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -301,26 +302,6 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       _status = 'Registering face...';
     });
     try {
-      // The front capture is the identity reference. Refresh the enrolled
-      // gallery and identify it before uploading, so a face belonging to one
-      // employee is not silently assigned to the employee selected here.
-      final existingOwner = await kioskService.findExistingFaceOwner(
-        _capturedPaths.first,
-        excludingEmployeeId: _selected!.employeeId!,
-      );
-      if (existingOwner != null) {
-        if (!mounted) return;
-        setState(() {
-          _uploading = false;
-          _status =
-              'This face is already registered to '
-              '${existingOwner.employeeName} (Employee #${existingOwner.employeeId}). '
-              'One employee can have only one face registration. '
-              'Press back and select that employee to remove or manage the face.';
-        });
-        return;
-      }
-
       final ok = await kioskService.enrollFace(
         employeeId: _selected!.employeeId!,
         imagePaths: List.of(_capturedPaths),
@@ -337,6 +318,16 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
       });
 
       if (ok) {
+        // Immediately register the freshly captured face signature locally so
+        // on-device attendance matching works right away.
+        if (_capturedPaths.isNotEmpty) {
+          await kioskService.registerLocalFaceSignature(
+            employeeId: _selected!.employeeId!,
+            name: _selected!.name ?? '',
+            imagePath: _capturedPaths.first,
+            code: _selected!.code,
+          );
+        }
         await kioskService.loadProfilePackage(force: true);
         // Return to the employee picker and reload so the just-registered
         // employee immediately shows "Registered" instead of staying stale.

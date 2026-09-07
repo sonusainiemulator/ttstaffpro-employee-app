@@ -244,15 +244,22 @@ class FaceMatcher {
 
 /// Downloads a file from [url] into the app documents directory and returns
 /// its local path. Used to fetch the enrolled profile snapshots for matching.
-Future<String> downloadToDocuments(String url, String fileName) async {
+Future<String?> downloadToDocuments(
+  String url,
+  String fileName, {
+  Map<String, String>? headers,
+}) async {
   final uri = Uri.parse(url);
   final client = http.Client();
   try {
-    final res = await client.get(uri);
+    final res = await client.get(uri, headers: headers);
+    if (res.statusCode != 200 || res.bodyBytes.isEmpty) return null;
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/$fileName');
     await file.writeAsBytes(res.bodyBytes);
     return file.path;
+  } catch (_) {
+    return null;
   } finally {
     client.close();
   }

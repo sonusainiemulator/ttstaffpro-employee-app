@@ -1,5 +1,9 @@
 # Changelog
-## [1.3.1] - 2026-09-01
+## [1.3.2] - 2026-09-07
+
+### Fixed
+- Fixed face registration status after removal: removed/reset profiles now correctly show "Not registered", enabling the "Add your face" button so employees can re-register.
+- Added administrator face profile reset/remove action in the admin registrations screen (Done tab), allowing admins to reset an employee's face so they can register again.
 
 ### Changed
 - Face registration now prevents duplicate submissions while a profile is pending or approved.

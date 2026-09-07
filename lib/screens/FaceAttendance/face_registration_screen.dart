@@ -137,8 +137,9 @@ class _FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
                     children: [
                       _buildStatusCard(),
                       const SizedBox(height: 20),
-                      if (_status?.profileStatus == 'active' &&
-                          _status?.approvalStatus == 'approved') ...[
+                      if ((_status?.profileStatus ?? '').toLowerCase().trim() == 'active' &&
+                          ((_status?.approvalStatus ?? '').toLowerCase().trim() == 'approved' ||
+                              (_status?.approvalStatus ?? '').isEmpty)) ...[
                         SizedBox(
                           width: double.infinity,
                           height: 52,
@@ -160,24 +161,42 @@ class _FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
   }
 
   Widget _buildStatusCard() {
-    final status = _status?.profileStatus;
-    final isRegistered = status != null && status != 'not_registered';
-    final isApproved = _status?.approvalStatus == 'approved';
+    final status = (_status?.profileStatus ?? '').toLowerCase().trim();
+    final approvalStatus = (_status?.approvalStatus ?? '').toLowerCase().trim();
+
+    final isInactiveOrRemoved = status == 'inactive' ||
+        status == 'reset' ||
+        status == 'removed' ||
+        status == 'deleted' ||
+        status == 'not_registered' ||
+        status.isEmpty;
+    final isRejected = !isInactiveOrRemoved && approvalStatus == 'rejected';
+    final isApproved = !isInactiveOrRemoved &&
+        status == 'active' &&
+        (approvalStatus == 'approved' || approvalStatus.isEmpty);
+    final isPending = !isInactiveOrRemoved && !isApproved && !isRejected;
 
     final Color color;
     final String label;
-    if (!isRegistered) {
+    final String subtitle;
+    if (isInactiveOrRemoved) {
       color = const Color(0xFFE65100);
       label = 'Not registered';
+      subtitle = 'No active face profile linked. Tap below to register your face.';
     } else if (isApproved) {
       color = const Color(0xFF2E7D32);
       label = 'Approved';
-    } else if (_status?.approvalStatus == 'rejected') {
+      subtitle = _status?.lastRegisteredAt != null
+          ? 'Registered on ${_status!.lastRegisteredAt}'
+          : 'Face profile active and approved.';
+    } else if (isRejected) {
       color = const Color(0xFFB3261E);
       label = 'Rejected';
+      subtitle = 'Registration was rejected. You can submit a new registration.';
     } else {
       color = const Color(0xFFF9A825);
       label = 'Pending approval';
+      subtitle = 'Face registration submitted. Waiting for admin approval.';
     }
 
     return Card(
@@ -210,9 +229,7 @@ class _FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _status?.lastRegisteredAt != null
-                        ? 'Registered on ${_status!.lastRegisteredAt}'
-                        : 'No face profile linked to your login yet.',
+                    subtitle,
                     style: TextStyle(color: Colors.grey[600], fontSize: 13),
                   ),
                 ],
@@ -225,8 +242,11 @@ class _FaceRegistrationScreenState extends State<FaceRegistrationScreen> {
   }
 
   Widget _buildAddFaceButton() {
-    final hasActiveProfile = _status?.profileStatus == 'active' ||
-        _status?.profileStatus == 'pending';
+    final status = (_status?.profileStatus ?? '').toLowerCase().trim();
+    final approvalStatus = (_status?.approvalStatus ?? '').toLowerCase().trim();
+    final hasActiveProfile = (status == 'active' && (approvalStatus == 'approved' || approvalStatus.isEmpty)) ||
+        status == 'pending' ||
+        approvalStatus == 'pending';
     final canRegister = (_eligibility?.canRegister ?? false) && !hasActiveProfile;
     return SizedBox(
       width: double.infinity,

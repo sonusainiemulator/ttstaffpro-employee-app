@@ -100,6 +100,23 @@ class _FaceRegistrationAdminScreenState
     }
   }
 
+  Future<void> _reset(FaceProfileSummary profile) async {
+    final confirmed = await _confirm(
+      title: 'Remove face registration?',
+      message:
+          'Remove face registration for ${profile.employeeName ?? profile.employeeId}? '
+          'Their face profile will be reset and they will be able to register again.',
+    );
+    if (confirmed != true) return;
+    try {
+      await _repo.resetProfile(profile.id!);
+      toast('Face registration removed');
+      _loadAll();
+    } catch (e) {
+      toast('Could not remove face registration');
+    }
+  }
+
   Future<bool?> _confirm({required String title, required String message}) {
     return showDialog<bool>(
       context: context,
@@ -234,6 +251,9 @@ class _FaceRegistrationAdminScreenState
             isPending: status == 'pending',
             onApprove: status == 'pending' ? () => _approve(profile) : null,
             onReject: status == 'pending' ? () => _reject(profile) : null,
+            onReset: (status == 'approved' && profile.id != null)
+                ? () => _reset(profile)
+                : null,
           );
         },
       ),
@@ -246,12 +266,14 @@ class _ProfileCard extends StatelessWidget {
   final bool isPending;
   final VoidCallback? onApprove;
   final VoidCallback? onReject;
+  final VoidCallback? onReset;
 
   const _ProfileCard({
     required this.profile,
     required this.isPending,
     this.onApprove,
     this.onReject,
+    this.onReset,
   });
 
   @override
@@ -312,21 +334,30 @@ class _ProfileCard extends StatelessWidget {
                 onPressed: onReject,
                 icon: const Icon(Icons.cancel, color: Color(0xFFB3261E)),
               ),
-            ] else
+            ] else ...[
+              if (onReset != null)
+                IconButton(
+                  tooltip: 'Remove face registration',
+                  onPressed: onReset,
+                  icon: const Icon(Icons.delete_outline,
+                      color: Color(0xFFB3261E)),
+                ),
               Chip(
-                label: Text(profile.approvalStatus ?? ''),
+                label: Text(profile.approvalStatus ?? (profile.status ?? '')),
                 labelStyle: TextStyle(
                   fontSize: 12,
-                  color: profile.approvalStatus == 'approved'
+                  color: profile.approvalStatus == 'approved' ||
+                          profile.status == 'active'
                       ? const Color(0xFF2E7D32)
                       : const Color(0xFFB3261E),
                 ),
-                backgroundColor:
-                    (profile.approvalStatus == 'approved'
-                            ? const Color(0xFF2E7D32)
-                            : const Color(0xFFB3261E))
-                        .withValues(alpha: 0.1),
+                backgroundColor: (profile.approvalStatus == 'approved' ||
+                            profile.status == 'active'
+                        ? const Color(0xFF2E7D32)
+                        : const Color(0xFFB3261E))
+                    .withValues(alpha: 0.1),
               ),
+            ],
           ],
         ),
       ),

@@ -1,5 +1,12 @@
 # Changelog
-## [1.0.27] - 2026-09-06
+## [1.0.28] - 2026-09-07
+
+### Fixed
+- Eliminated false-positive duplicate face detection during registration: unregistered employees are no longer erroneously blocked as duplicates.
+- Newly registered faces are immediately enrolled locally and synced so scanning for attendance works right away.
+- When an employee's face is removed, in-memory signatures and cached images are purged immediately, and the employee shows as unregistered so they can register again.
+- Kiosk scan screen now always refreshes profiles on startup/entry and provides clearer feedback on unverified face scans.
+- Profile snapshot downloads now include authentication headers and verify HTTP status 200.
 
 ### Fixed
 - Face registration now refreshes the enrolled gallery and identifies the existing employee before uploading. Selecting another employee with an already-registered face now clearly reports the face owner, while a genuinely new face continues normally.

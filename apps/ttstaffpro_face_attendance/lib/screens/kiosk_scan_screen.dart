@@ -94,9 +94,8 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     }
     await _initializeCamera();
     if (!mounted) return;
-    if (kioskService.enrolledSignatures.isEmpty) {
-      await kioskService.loadProfilePackage();
-    }
+    // Always refresh profile package so newly enrolled/approved faces are matched right away
+    await kioskService.loadProfilePackage();
     if (!mounted) return;
     setState(() {
       _status = kioskService.enrolledSignatures.isEmpty
@@ -351,8 +350,8 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     } else if (result != null && (result.attendanceId == null)) {
       _showResult(
         success: false,
-        name: 'Face not registered',
-        action: 'Please register your face first',
+        name: result.message ?? 'Face not recognized',
+        action: 'Please look directly at camera or register face',
       );
     } else {
       // Offline.
