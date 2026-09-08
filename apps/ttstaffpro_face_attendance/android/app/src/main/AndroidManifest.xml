@@ -14,7 +14,7 @@
     <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
 
     <application
-        android:label="TT Staff Pro"
+        android:label="TTStaff Face"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

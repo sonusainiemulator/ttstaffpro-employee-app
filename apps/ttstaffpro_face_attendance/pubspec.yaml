@@ -94,6 +94,7 @@ flutter:
   # TTStaffPro branding (logo shared with the employee app).
   assets:
     - assets/images/app_logo.png
+    - assets/images/app_icon_1024.png
 
   # Bundled Poppins (same as the employee app) so the kiosk never fetches
   # fonts at runtime — avoids a splash hang on restricted networks.
