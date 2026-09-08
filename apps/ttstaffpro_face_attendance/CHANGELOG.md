@@ -1,4 +1,11 @@
 # Changelog
+## [1.0.29] - 2026-09-08
+
+### Changed
+- Standardized Android package ID (`applicationId` and `namespace`) and iOS bundle identifier (`PRODUCT_BUNDLE_IDENTIFIER`) to `com.ttstaffpro.faceattendance` for TestFlight, App Store, and Google Play Store compliance.
+- Migrated Android `MainActivity.kt` to package namespace `com.ttstaffpro.faceattendance`.
+- Synchronized Linux GTK application ID and macOS Runner configurations to `com.ttstaffpro.faceattendance`.
+
 ## [1.0.28] - 2026-09-07
 
 ### Fixed

@@ -1,4 +1,4 @@
-package com.ttstaffpro.ttstaffpro_face_attendance
+package com.ttstaffpro.faceattendance
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
