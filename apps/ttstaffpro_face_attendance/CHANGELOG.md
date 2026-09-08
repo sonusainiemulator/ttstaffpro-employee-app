@@ -5,6 +5,7 @@
 - Standardized Android package ID (`applicationId` and `namespace`) and iOS bundle identifier (`PRODUCT_BUNDLE_IDENTIFIER`) to `com.ttstaffpro.faceattendance` for TestFlight, App Store, and Google Play Store compliance.
 - Migrated Android `MainActivity.kt` to package namespace `com.ttstaffpro.faceattendance`.
 - Synchronized Linux GTK application ID and macOS Runner configurations to `com.ttstaffpro.faceattendance`.
+- Added required iOS privacy usage descriptions (`NSCameraUsageDescription`, `NSMicrophoneUsageDescription`, `NSPhotoLibraryUsageDescription`) and `ITSAppUsesNonExemptEncryption` compliance to `Info.plist` for TestFlight approval. Bumped build number to 31.
 
 ## [1.0.28] - 2026-09-07
 
