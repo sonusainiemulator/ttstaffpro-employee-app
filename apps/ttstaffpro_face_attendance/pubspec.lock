@@ -1323,7 +1323,7 @@ packages:
       path: "../.."
       relative: true
     source: path
-    version: "1.3.1+20260901"
+    version: "1.3.2+20260907"
   open_filex:
     dependency: transitive
     description:
