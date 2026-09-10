@@ -302,12 +302,11 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         action: action,
       );
     } else {
-      // Offline — queued for sync.
       _showResult(
-        success: true,
+        success: false,
         name: name,
         code: code,
-        action: 'Saved Offline',
+        action: 'Attendance failed — check network connection',
       );
     }
   }
@@ -354,11 +353,10 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         action: 'Please look directly at camera or register face',
       );
     } else {
-      // Offline.
       _showResult(
-        success: true,
-        name: 'Event saved',
-        action: 'will sync when online',
+        success: false,
+        name: 'Attendance failed',
+        action: 'Could not connect to server',
       );
     }
   }

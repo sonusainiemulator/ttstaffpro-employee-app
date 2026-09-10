@@ -1,4 +1,11 @@
 # Changelog
+## [1.0.30] - 2026-09-10
+
+### Removed
+- Completely removed the offline event queue and background sync mechanism: face recognition attendance events are now uploaded in real time directly to the backend.
+- Removed the "Offline queue" / "All attendance events synced" banner card and pending count from the Kiosk home screen.
+- Removed `OfflineStore`, `PendingFaceEvent`, and local Hive persistence for pending events.
+
 ## [1.0.29] - 2026-09-08
 
 ### Changed

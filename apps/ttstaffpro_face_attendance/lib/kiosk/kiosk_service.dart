@@ -18,11 +18,10 @@ import 'package:uuid/uuid.dart';
 
 import 'face_matcher.dart';
 import 'kiosk_settings.dart';
-import 'offline_store.dart';
 
 /// Orchestrates the kiosk backend interactions:
 /// device registration, profile-package loading (for on-device matching),
-/// event upload, offline sync and heartbeat.
+/// event upload and heartbeat.
 class KioskService {
   // Created lazily: instantiating the repository eagerly at app startup would
   // touch SharedPreferences/Dio before the Flutter binding is ready and can
@@ -32,7 +31,6 @@ class KioskService {
       _repoInstance ??= FaceAttendanceRepository();
 
   final KioskSettings settings;
-  final OfflineStore offlineStore;
   final FaceMatcher matcher = FaceMatcher();
 
   /// Enrolled staff signatures keyed by employeeId.
@@ -54,7 +52,7 @@ class KioskService {
     lastScannedInfo.value = '$name • $timeStr';
   }
 
-  KioskService({required this.settings, required this.offlineStore});
+  KioskService({required this.settings});
 
   // ---------------------------------------------------------------------------
   // Login (company match + master login)
@@ -448,8 +446,7 @@ class KioskService {
   // Event upload (check-in / check-out)
   // ---------------------------------------------------------------------------
 
-  /// Uploads a recognition event. Falls back to the offline queue when the
-  /// network is unavailable or the server rejects the request.
+  /// Uploads a recognition event directly to the server.
   Future<RecognitionUploadResult?> uploadEvent({
     required String eventUuid,
     required String eventType,
@@ -483,54 +480,8 @@ class KioskService {
       );
       return result;
     } catch (_) {
-      // Offline — queue for later sync.
-      await offlineStore.enqueue(PendingFaceEvent(
-        eventUuid: eventUuid,
-        eventType: eventType,
-        employeeId: employeeId,
-        recognitionStatus: status,
-        confidenceScore: score,
-        occurredAt: occurredAt,
-        snapshotPath: snapshotPath,
-      ));
       return null;
     }
-  }
-
-  /// Flushes the offline queue to the server.
-  ///
-  /// Each queued event is replayed through the single-event endpoint with
-  /// `eventType=attendance` so the server resolves check-in/check-out exactly
-  /// like it does for live scans. (The `device/sync-batch` endpoint only
-  /// accepts explicit `checkin`/`checkout` values — it rejects `attendance` —
-  /// and the queue stores the unresolved `attendance` type, so batching the
-  /// raw queue would always fail validation.)
-  Future<int> syncPendingEvents() async {
-    final pending = offlineStore.allPending();
-    if (pending.isEmpty) return 0;
-
-    var synced = 0;
-    for (final e in pending) {
-      try {
-        await _repo.uploadRecognitionEvent(
-          eventUuid: e.eventUuid,
-          eventType: e.eventType, // 'attendance' -> server resolves checkin/checkout
-          employeeId: e.employeeId,
-          recognitionStatus: e.recognitionStatus,
-          confidenceScore: e.confidenceScore,
-          livenessStatus: 'pass',
-          spoofStatus: 'none',
-          matchThreshold: 34,
-          occurredAt: e.occurredAt,
-          snapshotPath: e.snapshotPath,
-        );
-        await offlineStore.remove(e.eventUuid);
-        synced++;
-      } catch (_) {
-        // Leave it queued; retry on the next sync pass.
-      }
-    }
-    return synced;
   }
 
   // ---------------------------------------------------------------------------

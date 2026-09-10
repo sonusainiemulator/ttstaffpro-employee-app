@@ -23,7 +23,6 @@ class KioskHomeScreen extends StatefulWidget {
 class _KioskHomeScreenState extends State<KioskHomeScreen> {
   late Timer _clockTimer;
   Timer? _heartbeatTimer;
-  int _pendingCount = 0;
   bool _warmupStarted = false;
 
   /// How often the kiosk reports device health to the backend (the admin
@@ -39,7 +38,6 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
     // Previously nothing ever scheduled sendHeartbeat(), so registered kiosks
     // always appeared offline/stale on the admin device-health screen.
     _startHeartbeat();
-    _pendingCount = offlineStore.pendingCount;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || _warmupStarted) return;
       _warmupStarted = true;
@@ -59,15 +57,8 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
   Future<void> _warmUp() async {
     try {
       await kioskService.loadProfilePackage();
-      final synced = await kioskService.syncPendingEvents();
-      if (!mounted) return;
-      if (synced > 0 || offlineStore.pendingCount != _pendingCount) {
-        setState(() => _pendingCount = offlineStore.pendingCount);
-      }
     } catch (_) {
-      // Keep the kiosk usable even when background sync/profile refresh fails.
-      if (!mounted) return;
-      setState(() => _pendingCount = offlineStore.pendingCount);
+      // Keep the kiosk usable even when background profile refresh fails.
     }
   }
 
@@ -537,55 +528,7 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    // Sync status
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: c.surface.withValues(alpha: 0.9),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: c.border),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            _pendingCount > 0
-                                ? Icons.cloud_upload_outlined
-                                : Icons.cloud_done_outlined,
-                            size: 18,
-                            color: _pendingCount > 0
-                                ? KioskColors.warning
-                                : KioskColors.success,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                _pendingCount > 0
-                                    ? '$_pendingCount event(s) pending sync'
-                                    : 'All attendance events synced',
-                                maxLines: 1,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: c.textSecondary,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Text(
-                            'Offline queue',
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: c.textMuted,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 12),
                     const KioskVersionFooter(),
                   ],
                 ),

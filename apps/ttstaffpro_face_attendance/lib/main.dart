@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:open_core_hr/api/api_routes.dart';
 import 'package:open_core_hr/utils/token_storage.dart';
@@ -11,16 +10,13 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import 'kiosk/kiosk_service.dart';
 import 'kiosk/kiosk_settings.dart';
 import 'kiosk/kiosk_theme.dart';
-import 'kiosk/offline_store.dart';
 import 'screens/app_lock_overlay.dart';
 import 'screens/splash_screen.dart';
 
 /// Global kiosk state shared across screens.
 KioskSettings kioskSettings = KioskSettings();
-OfflineStore offlineStore = OfflineStore();
 KioskService kioskService = KioskService(
   settings: kioskSettings,
-  offlineStore: offlineStore,
 );
 
 /// When true, the full-screen app lock overlay covers the ENTIRE kiosk (every
@@ -78,8 +74,6 @@ Future<void> _initializeApp() async {
     ]);
 
     // Local persistence.
-    await Hive.initFlutter();
-    await offlineStore.init();
     await kioskSettings.load();
     // Start with the user's persisted appearance choice (dark / light / system).
     kioskThemeMode.value = kioskSettings.themeMode;
