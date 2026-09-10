@@ -1,5 +1,8 @@
 # Changelog
-## [1.0.31] - 2026-09-10
+## [1.0.31] - 2026-09-11
+
+### Changed
+- Configured automated App Store Connect export & upload options and bumped build to `35` for TestFlight release.
 
 ### Fixed
 - Fixed face removal approval and re-registration lifecycle: when an employee's face removal is approved or reset by an admin, their status in the Kiosk properly resets to "Unregistered" and the "Register Face" option is restored immediately without being blocked by stale pending/approved states.
