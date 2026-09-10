@@ -184,6 +184,26 @@ class KioskEmployee {
     );
   }
 
+  /// Explicitly replaces face-registration status fields without falling back
+  /// to existing values. Essential when face is removed or reset.
+  KioskEmployee copyWithFaceStatus({
+    required bool faceRegistered,
+    String? profileStatus,
+    int? faceProfileId,
+    String? faceApprovalStatus,
+  }) {
+    return KioskEmployee(
+      employeeId: employeeId,
+      name: name,
+      email: email,
+      code: code,
+      faceRegistered: faceRegistered,
+      profileStatus: profileStatus,
+      faceProfileId: faceProfileId,
+      faceApprovalStatus: faceApprovalStatus,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
         'employeeId': employeeId,
         'name': name,

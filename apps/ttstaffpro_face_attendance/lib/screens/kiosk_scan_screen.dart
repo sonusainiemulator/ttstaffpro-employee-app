@@ -39,6 +39,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
 
   final FaceMatcher _matcher = kioskService.matcher;
   Timer? _scanTimer;
+  Timer? _profileRefreshTimer;
 
   /// Drives the pulsing face-guide + scanning line.
   late final AnimationController _pulseAnim;
@@ -106,6 +107,17 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     _scanTimer = Timer.periodic(
       const Duration(milliseconds: 1800),
       (_) => _scan(),
+    );
+    // Periodically check for approved or reset face profiles in the background
+    // so always-on kiosk recognizes changes without requiring a manual restart.
+    _profileRefreshTimer?.cancel();
+    _profileRefreshTimer = Timer.periodic(
+      const Duration(minutes: 1),
+      (_) async {
+        try {
+          await kioskService.loadProfilePackage();
+        } catch (_) {}
+      },
     );
   }
 
@@ -413,6 +425,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   @override
   void dispose() {
     _scanTimer?.cancel();
+    _profileRefreshTimer?.cancel();
     _resultTimer?.cancel();
     _pulseAnim.dispose();
     _cameraController?.dispose();

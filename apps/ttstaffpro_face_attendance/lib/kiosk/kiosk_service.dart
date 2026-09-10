@@ -42,6 +42,15 @@ class KioskService {
   bool profilesLoaded = false;
   int _profileVersion = 0;
 
+  /// Tracks employees whose face registration was removed/reset so old faces
+  /// are not mistakenly restored or matched.
+  final Set<int> _removedEmployeeIds = {};
+
+  /// Tracks employees registered locally in this session so they remain active
+  /// in memory and matched immediately even if the server profile package is
+  /// still propagating.
+  final Set<int> _locallyEnrolledEmployeeIds = {};
+
   void recordLocalScan({
     required String name,
     String? code,
@@ -133,22 +142,25 @@ class KioskService {
   Future<List<KioskEmployee>> getEmployeesWithFaceStatus() async {
     final employees = await getEmployees();
     try {
-      // The server's admin-profiles endpoint filters on the profile `status`
-      // column (`active`/`pending`/`inactive`), not on approval — query active
-      // profiles and keep only the approved ones so a freshly enrolled face is
-      // correctly reported as "Registered". Request a large page so a company
-      // with more than the server's default page size (20) doesn't have its
-      // later employees wrongly shown as "Unregistered" in the picker.
-      final profiles = await _repo.getAdminProfiles(perPage: 500);
+      // Query both active and pending profiles so we have accurate status
+      // across all staff.
+      final results = await Future.wait([
+        _repo.getAdminProfiles(perPage: 500, status: 'active'),
+        _repo.getAdminProfiles(perPage: 500, status: 'pending'),
+      ]);
+      final profiles = [...results[0], ...results[1]];
       final profilesByEmployee = <int, FaceProfileSummary>{};
       for (final profile in profiles) {
         final employeeId = profile.employeeId;
         if (employeeId == null) continue;
         final status = (profile.status ?? '').toLowerCase().trim();
+        final approval = (profile.approvalStatus ?? '').toLowerCase().trim();
         if (status == 'inactive' ||
             status == 'reset' ||
             status == 'removed' ||
-            status == 'deleted') {
+            status == 'deleted' ||
+            status == 'not_registered' ||
+            approval == 'rejected') {
           continue;
         }
 
@@ -161,21 +173,66 @@ class KioskService {
         }
       }
       return employees.map((emp) {
-        if (emp.employeeId == null) return emp;
-        final profile = profilesByEmployee[emp.employeeId];
+        final empId = emp.employeeId;
+        if (empId == null) return emp;
+
+        // If explicitly removed locally in this session and not re-enrolled:
+        if (_removedEmployeeIds.contains(empId) &&
+            !_locallyEnrolledEmployeeIds.contains(empId)) {
+          return emp.copyWithFaceStatus(
+            faceRegistered: false,
+            profileStatus: 'not_registered',
+            faceProfileId: null,
+            faceApprovalStatus: null,
+          );
+        }
+
+        // If enrolled locally in this session:
+        if (_locallyEnrolledEmployeeIds.contains(empId)) {
+          return emp.copyWithFaceStatus(
+            faceRegistered: true,
+            profileStatus: 'active',
+            faceProfileId: emp.faceProfileId,
+            faceApprovalStatus: 'approved',
+          );
+        }
+
+        final profile = profilesByEmployee[empId];
         final profileStatus = (profile?.status ?? '').toLowerCase().trim();
         final approvalStatus =
             (profile?.approvalStatus ?? '').toLowerCase().trim();
         final approved =
             approvalStatus.isEmpty || approvalStatus == 'approved';
-        final hasFace =
+        final isApprovedActive =
             profile != null && approved && profileStatus == 'active';
-        return emp.copyWith(
-          faceRegistered: hasFace,
-          profileStatus: profile?.status,
-          faceProfileId: profile?.id,
-          faceApprovalStatus: profile?.approvalStatus,
-        );
+        final isPending = profile != null &&
+            !isApprovedActive &&
+            (profileStatus == 'pending' || approvalStatus == 'pending');
+
+        if (isApprovedActive) {
+          return emp.copyWithFaceStatus(
+            faceRegistered: true,
+            profileStatus: 'active',
+            faceProfileId: profile.id,
+            faceApprovalStatus: 'approved',
+          );
+        } else if (isPending) {
+          return emp.copyWithFaceStatus(
+            faceRegistered: false,
+            profileStatus: 'pending',
+            faceProfileId: profile.id,
+            faceApprovalStatus: 'pending',
+          );
+        } else {
+          // No active or pending profile: employee is unregistered and can
+          // register face again. Explicitly clear all status fields.
+          return emp.copyWithFaceStatus(
+            faceRegistered: false,
+            profileStatus: 'not_registered',
+            faceProfileId: null,
+            faceApprovalStatus: null,
+          );
+        }
       }).toList();
     } catch (_) {
       return employees;
@@ -224,6 +281,9 @@ class KioskService {
       final signature = matcher.signatureOf(face);
       if (!signature.isFrontal) return false;
 
+      _removedEmployeeIds.remove(employeeId);
+      _locallyEnrolledEmployeeIds.add(employeeId);
+
       enrolledSignatures[employeeId] = signature;
       employeeNames[employeeId] =
           name.trim().isNotEmpty ? name.trim() : 'Employee $employeeId';
@@ -250,6 +310,8 @@ class KioskService {
     final ok = await _repo.resetProfile(profileId);
     if (ok) {
       if (employeeId != null) {
+        _locallyEnrolledEmployeeIds.remove(employeeId);
+        _removedEmployeeIds.add(employeeId);
         enrolledSignatures.remove(employeeId);
         employeeNames.remove(employeeId);
         employeeCodes.remove(employeeId);
@@ -336,8 +398,8 @@ class KioskService {
       }
 
       final profiles = await _repo.downloadProfilePackage();
-      enrolledSignatures.clear();
-      employeeNames.clear();
+      final newSignatures = <int, FaceSignature>{};
+      final newNames = <int, String>{};
 
       final dir = await getApplicationDocumentsDirectory();
       final matcher = this.matcher;
@@ -345,6 +407,9 @@ class KioskService {
       for (final profile in profiles) {
         final employeeId = profile.employeeId;
         if (employeeId == null) continue;
+        // If employee was explicitly removed, do not resurrect their profile
+        if (_removedEmployeeIds.contains(employeeId)) continue;
+
         final image = _frontImage(profile);
         final imageUrl = image == null ? null : _resolveImageUrl(image);
         if (imageUrl == null) continue;
@@ -362,9 +427,57 @@ class KioskService {
         final signature = matcher.signatureOf(face);
         if (!signature.isFrontal) continue;
 
-        enrolledSignatures[employeeId] = signature;
-        employeeNames[employeeId] = profile.employeeName ?? 'Employee $employeeId';
+        newSignatures[employeeId] = signature;
+        newNames[employeeId] = profile.employeeName ?? 'Employee $employeeId';
       }
+
+      // Preserve any locally enrolled employee signatures that aren't yet in
+      // the backend package download so newly registered staff scan right away.
+      for (final empId in enrolledSignatures.keys) {
+        if (!_removedEmployeeIds.contains(empId) &&
+            !newSignatures.containsKey(empId)) {
+          newSignatures[empId] = enrolledSignatures[empId]!;
+          if (employeeNames.containsKey(empId)) {
+            newNames[empId] = employeeNames[empId]!;
+          }
+        }
+      }
+
+      // Also restore any cached profile files on disk that haven't been removed
+      // and aren't in newSignatures yet (e.g. after app restart).
+      try {
+        final files = dir.listSync();
+        for (final entity in files) {
+          if (entity is File && entity.path.contains('profile_')) {
+            final fileName = entity.uri.pathSegments.last;
+            final match = RegExp(r'profile_(\d+)\.jpg').firstMatch(fileName);
+            if (match != null) {
+              final empId = int.tryParse(match.group(1)!);
+              if (empId != null &&
+                  !_removedEmployeeIds.contains(empId) &&
+                  !newSignatures.containsKey(empId)) {
+                final face = await matcher.detectInFile(entity.path);
+                if (face != null && matcher.hasUsableLandmarks(face)) {
+                  final sig = matcher.signatureOf(face);
+                  if (sig.isFrontal) {
+                    newSignatures[empId] = sig;
+                    if (!newNames.containsKey(empId)) {
+                      newNames[empId] =
+                          employeeNames[empId] ?? 'Employee $empId';
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (_) {}
+
+      // Atomically replace the signatures map
+      enrolledSignatures.clear();
+      enrolledSignatures.addAll(newSignatures);
+      employeeNames.clear();
+      employeeNames.addAll(newNames);
 
       await cacheEmployeeCodes();
 

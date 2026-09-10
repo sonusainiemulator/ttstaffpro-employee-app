@@ -1,4 +1,11 @@
 # Changelog
+## [1.0.31] - 2026-09-10
+
+### Fixed
+- Fixed face removal approval and re-registration lifecycle: when an employee's face removal is approved or reset by an admin, their status in the Kiosk properly resets to "Unregistered" and the "Register Face" option is restored immediately without being blocked by stale pending/approved states.
+- Fixed face scan detection for newly registered and re-registered faces: local face signatures are now preserved during profile package refreshes and cached to disk, preventing them from being wiped while the server package propagates.
+- Added background periodic profile package checks (every 60s) to the always-on Kiosk scan screen so admin approvals and removals sync automatically without restarting the app.
+
 ## [1.0.30] - 2026-09-10
 
 ### Removed

@@ -128,13 +128,19 @@ class _KioskRegisterFaceScreenState extends State<KioskRegisterFaceScreen> {
   }
 
   Future<void> _selectEmployee(KioskEmployee employee) async {
-    // If this employee already has a registered face, surface it clearly
-    // instead of letting the operator hit a confusing server error later.
-    // A profile can also come from the employee's own phone self-registration,
-    // not just a prior kiosk registration, so say that explicitly.
-    if (employee.profileStatus == 'pending' ||
-        (employee.faceRegistered != true &&
-            employee.faceApprovalStatus == 'pending')) {
+    final profileStatus = (employee.profileStatus ?? '').toLowerCase().trim();
+    final approvalStatus =
+        (employee.faceApprovalStatus ?? '').toLowerCase().trim();
+    final isPendingApproval = (profileStatus == 'pending' ||
+            approvalStatus == 'pending') &&
+        profileStatus != 'reset' &&
+        profileStatus != 'removed' &&
+        profileStatus != 'inactive' &&
+        profileStatus != 'deleted' &&
+        profileStatus != 'not_registered' &&
+        approvalStatus != 'rejected';
+
+    if (employee.faceRegistered != true && isPendingApproval) {
       if (!mounted) return;
       await showDialog<void>(
         context: context,
