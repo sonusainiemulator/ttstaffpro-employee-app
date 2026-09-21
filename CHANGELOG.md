@@ -4,6 +4,7 @@
 ### Fixed (App Store Rejection Resolution)
 - **Guideline 2.5.4 – Removed background location mode**: Removed `location` from `UIBackgroundModes` in `ios/Runner/Info.plist`. The app only requests location at the moment of user-initiated check-in, check-out, and visit marking — it does NOT continuously track location in the background. The `fetch` and `remote-notification` background modes are retained for push notifications and data sync.
 - **Guideline 1.5 – Updated NSLocation usage descriptions**: Clarified all three NSLocation permission strings to clearly state the purpose: recording attendance coordinates, calculating distance travelled during field visits, and verifying presence at client/worksite locations — not employee tracking.
+- **TestFlight Upload (v1.3.3+20260921)**: Built iOS release archive (357.8MB) and exported App Store IPA (60MB). Uploaded to Apple App Store Connect TestFlight (Delivery UUID: 2dd23e6e-15cd-4821-b9bb-9a6a2b1054ac). Transferred 62766177 bytes in 29.766 seconds.
 
 ## [1.3.2] - 2026-09-07
 
