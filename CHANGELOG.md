@@ -1,4 +1,10 @@
 # Changelog
+## [1.3.4] - 2026-09-23
+
+### Fixed (App Store Guideline 2.5.4 Resolution)
+- **Removed "Always" Location Keys from Info.plist**: Removed `NSLocationAlwaysUsageDescription` and `NSLocationAlwaysAndWhenInUseUsageDescription` from `ios/Runner/Info.plist`. The app strictly uses foreground-only location (`NSLocationWhenInUseUsageDescription`) for user-initiated check-in, check-out, and visit marking.
+- **Updated `NSLocationWhenInUseUsageDescription`**: Clarified that location is accessed exclusively while actively using the app, ensuring full compliance with App Store Review Guideline 2.5.4.
+
 ## [1.3.3] - 2026-09-21 17:15:00 IST
 
 ### Fixed (App Store Rejection Resolution)
