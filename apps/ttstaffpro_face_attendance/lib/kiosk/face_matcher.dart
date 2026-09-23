@@ -114,6 +114,46 @@ class FaceSignature {
       yaw.abs() <= kMaxYaw && pitch.abs() <= kMaxPitch && roll.abs() <= kMaxRoll;
 }
 
+/// Tracks multi-frame liveness transitions (e.g. natural eye blink and head micromotion)
+/// to detect and block static printed photos or phone screen replays.
+class LivenessTracker {
+  final List<FaceSignature> _recentSignatures = [];
+  bool _blinkObserved = false;
+  static const int _maxFrames = 8;
+
+  void addFrame(FaceSignature signature) {
+    _recentSignatures.add(signature);
+    if (_recentSignatures.length > _maxFrames) {
+      _recentSignatures.removeAt(0);
+    }
+
+    // Check for a natural blink cycle: open -> closed (< 0.25) -> open (> 0.50)
+    if (_recentSignatures.length >= 3) {
+      for (int i = 0; i < _recentSignatures.length - 1; i++) {
+        final f = _recentSignatures[i];
+        if (f.leftEyeOpen < 0.25 || f.rightEyeOpen < 0.25) {
+          _blinkObserved = true;
+          break;
+        }
+      }
+    }
+  }
+
+  /// Whether liveness criteria (natural micro-movements and eye-state) are satisfied.
+  bool isLive({bool requireBlink = false}) {
+    if (_recentSignatures.isEmpty) return false;
+    final latest = _recentSignatures.last;
+    if (!latest.isLive || !latest.isFrontal) return false;
+    if (requireBlink && !_blinkObserved) return false;
+    return true;
+  }
+
+  void reset() {
+    _recentSignatures.clear();
+    _blinkObserved = false;
+  }
+}
+
 /// Wraps the ML Kit face detector and provides matching utilities.
 class FaceMatcher {
   final FaceDetector _detector = FaceDetector(

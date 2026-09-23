@@ -32,6 +32,8 @@ class KioskSettings {
   static const String _themeMode = 'kiosk_theme_mode';
   static const String _appLockEnabled = 'kiosk_app_lock_enabled';
   static const String _appLockMethod = 'kiosk_app_lock_method';
+  static const String _voiceLanguage = 'kiosk_voice_language';
+  static const String _livenessEnabled = 'kiosk_liveness_enabled';
 
   String? companyId;
   String? companyName;
@@ -53,6 +55,12 @@ class KioskSettings {
 
   /// Which native unlock the kiosk should request (persisted).
   AppLockMethod appLockMethod = AppLockMethod.phoneLock;
+
+  /// Voice feedback language: hindi / english / mute (persisted).
+  String voiceLanguage = 'hindi';
+
+  /// Anti-spoofing liveness check enabled flag (persisted).
+  bool livenessEnabled = true;
 
   /// True when a company + master session has been established.
   bool get isCompanyLoggedIn => (companyId?.isNotEmpty ?? false) && (masterToken?.isNotEmpty ?? false);
@@ -80,6 +88,22 @@ class KioskSettings {
       (m) => m.name == prefs.getString(_appLockMethod),
       orElse: () => AppLockMethod.phoneLock,
     );
+    voiceLanguage = prefs.getString(_voiceLanguage) ?? 'hindi';
+    livenessEnabled = prefs.getBool(_livenessEnabled) ?? true;
+  }
+
+  /// Persists the voice language preference (hindi / english / mute).
+  Future<void> setVoiceLanguage(String lang) async {
+    voiceLanguage = lang;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_voiceLanguage, lang);
+  }
+
+  /// Persists the liveness verification enabled flag.
+  Future<void> setLivenessEnabled(bool enabled) async {
+    livenessEnabled = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_livenessEnabled, enabled);
   }
 
   /// Persists the user's chosen appearance (dark / light / system).

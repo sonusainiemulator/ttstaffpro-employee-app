@@ -597,6 +597,36 @@ class KioskService {
     }
   }
 
+  /// Synchronizes a queued offline punch record with the backend.
+  Future<bool> syncOfflinePunch({
+    required int employeeId,
+    required DateTime capturedAt,
+    required double confidence,
+    required double distance,
+    String? snapshotPath,
+    String action = 'auto',
+  }) async {
+    final eventUuid = const Uuid().v4();
+    final score = (confidence * 100).clamp(0, 100).toDouble();
+    try {
+      final result = await _repo.uploadRecognitionEvent(
+        eventUuid: eventUuid,
+        eventType: action,
+        employeeId: employeeId,
+        recognitionStatus: 'matched',
+        confidenceScore: score,
+        livenessStatus: 'pass',
+        spoofStatus: 'none',
+        matchThreshold: 34,
+        occurredAt: capturedAt.toIso8601String(),
+        snapshotPath: snapshotPath,
+      );
+      return result.attendanceId != null || (result.message != null && !result.message!.toLowerCase().contains('failed'));
+    } catch (_) {
+      return false;
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Heartbeat
   // ---------------------------------------------------------------------------

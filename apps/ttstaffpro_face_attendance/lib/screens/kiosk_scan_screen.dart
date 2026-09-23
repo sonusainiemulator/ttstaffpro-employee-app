@@ -11,7 +11,9 @@ import 'package:uuid/uuid.dart';
 
 import '../kiosk/face_matcher.dart';
 import '../kiosk/kiosk_theme.dart';
+import '../kiosk/kiosk_tts_service.dart';
 import '../kiosk/kiosk_version_footer.dart';
+import '../kiosk/offline_queue_service.dart';
 import '../main.dart';
 
 /// Requirement 5 & 6: wall-mounted always-on face scan screen.
@@ -21,7 +23,7 @@ import '../main.dart';
 ///   the server responds with check-in / check-out.
 /// - Automatically re-arms after every scan so many staff can clock in one
 ///   after another without touching the tablet.
-/// - Offline events are queued locally and synced later.
+/// - Offline events are queued locally and synced automatically when connected.
 class KioskScanScreen extends StatefulWidget {
   const KioskScanScreen({super.key});
 
@@ -38,8 +40,11 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   bool _resultHold = false;
 
   final FaceMatcher _matcher = kioskService.matcher;
+  final LivenessTracker _livenessTracker = LivenessTracker();
   Timer? _scanTimer;
   Timer? _profileRefreshTimer;
+  Timer? _clockTimer;
+  DateTime _currentTime = DateTime.now();
 
   /// Drives the pulsing face-guide + scanning line.
   late final AnimationController _pulseAnim;
@@ -53,8 +58,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   bool _isTorchOn = false;
 
   /// Tracks the last successful scan so the same person standing in front of
-  /// the camera is not immediately scanned again (which would flip their
-  /// check-in into a check-out while they are still reading the result).
+  /// the camera is not immediately scanned again.
   int? _lastScannedEmployeeId;
   DateTime? _lastScanAt;
   static const Duration _rescanCooldown = Duration(seconds: 5);
@@ -74,10 +78,16 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    // Keep the kiosk in the user's native portrait orientation. Do not rotate
-    // the preview for landscape mounting or sensor-driven view changes on the
-    // face-scan screen.
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // Allow both portrait and landscape orientation for wall and table mounting
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    _clockTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() => _currentTime = DateTime.now());
+    });
     _pulseAnim = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1600),
@@ -204,15 +214,18 @@ class _KioskScanScreenState extends State<KioskScanScreen>
       final face = faces.first;
 
       final signature = _matcher.signatureOf(face);
-      if (!signature.isLive) {
+      _livenessTracker.addFrame(signature);
+
+      if (kioskSettings.livenessEnabled && !_livenessTracker.isLive()) {
         HapticFeedback.selectionClick();
         if (mounted) {
           setState(
-            () => _status = 'Please open your eyes and look at the camera.',
+            () => _status = 'Please blink and look straight at the camera.',
           );
         }
         return;
       }
+
       if (!signature.isFrontal) {
         HapticFeedback.selectionClick();
         if (mounted) {
@@ -248,6 +261,7 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         }
         _lastScannedEmployeeId = match.employeeId;
         _lastScanAt = now;
+        _livenessTracker.reset();
 
         // Instant audio & haptic confirmation
         SystemSound.play(SystemSoundType.click);
@@ -303,10 +317,14 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     );
 
     if (!mounted) return;
-    final action = _actionLabel(result?.attendanceAction);
-    kioskService.recordLocalScan(name: name, code: code, action: action);
 
     if (result != null) {
+      final action = _actionLabel(result.attendanceAction);
+      kioskService.recordLocalScan(name: name, code: code, action: action);
+      unawaited(kioskTTSService.speakPunchSuccess(
+        employeeName: name,
+        action: result.attendanceAction ?? 'attendance',
+      ));
       _showResult(
         success: true,
         name: name,
@@ -314,11 +332,31 @@ class _KioskScanScreenState extends State<KioskScanScreen>
         action: action,
       );
     } else {
+      // Offline fallback: save to local queue and confirm punch immediately
+      await offlineQueueService.enqueue(
+        QueuedAttendanceEvent(
+          id: const Uuid().v4(),
+          employeeId: employeeId,
+          employeeName: name,
+          employeeCode: code ?? '',
+          capturedAt: DateTime.now(),
+          confidence: confidence,
+          distance: distance,
+          snapshotPath: snapshotPath,
+          action: 'attendance',
+        ),
+      );
+      kioskService.recordLocalScan(name: name, code: code, action: 'Offline Punch');
+      unawaited(kioskTTSService.speakPunchSuccess(
+        employeeName: name,
+        action: 'attendance',
+        isOffline: true,
+      ));
       _showResult(
-        success: false,
+        success: true,
         name: name,
         code: code,
-        action: 'Attendance failed — check network connection',
+        action: 'Offline Punch Recorded (Will auto-sync)',
       );
     }
   }
@@ -426,12 +464,18 @@ class _KioskScanScreenState extends State<KioskScanScreen>
   void dispose() {
     _scanTimer?.cancel();
     _profileRefreshTimer?.cancel();
+    _clockTimer?.cancel();
     _resultTimer?.cancel();
     _pulseAnim.dispose();
     _cameraController?.dispose();
     _matcher.close();
-    // Restore the kiosk to its locked portrait dashboard.
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    // Allow both orientations across kiosk
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     super.dispose();
   }
 
@@ -462,27 +506,119 @@ class _KioskScanScreenState extends State<KioskScanScreen>
     }
   }
 
+  Future<void> _showManualPunchDialog() async {
+    final codeCtrl = TextEditingController();
+    final c = KioskTheme.of(context);
+
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: c.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(Icons.pin, color: KioskColors.primaryLight),
+            const SizedBox(width: 8),
+            Text('Manual Code Punch', style: TextStyle(color: c.textPrimary, fontSize: 18)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Enter your Employee Code to mark attendance manually:',
+              style: TextStyle(color: c.textSecondary, fontSize: 13),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: codeCtrl,
+              autofocus: true,
+              style: TextStyle(color: c.textPrimary, fontWeight: FontWeight.bold, fontSize: 18),
+              decoration: InputDecoration(
+                hintText: 'e.g. EMP-101',
+                hintStyle: TextStyle(color: c.textSecondary.withValues(alpha: 0.5)),
+                filled: true,
+                fillColor: c.background,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final typedCode = codeCtrl.text.trim();
+              if (typedCode.isEmpty) return;
+              Navigator.of(ctx).pop();
+
+              // Find matching employee by code
+              int? empId;
+              String? empName;
+              for (final entry in kioskService.employeeCodes.entries) {
+                if (entry.value.toLowerCase() == typedCode.toLowerCase()) {
+                  empId = entry.key;
+                  empName = kioskService.employeeNames[empId];
+                  break;
+                }
+              }
+
+              if (empId != null && empName != null) {
+                await _handleMatch(
+                  employeeId: empId,
+                  distance: 0.0,
+                  confidence: 1.0,
+                  snapshotPath: '',
+                );
+              } else {
+                _showResult(
+                  success: false,
+                  name: 'Code not recognized',
+                  code: typedCode,
+                  action: 'Please verify code or contact HR',
+                );
+              }
+            },
+            child: const Text('Punch In / Out'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Scaffold(
       backgroundColor: KioskTheme.of(context).background,
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Themed branded background (no full-bleed camera).
+          // Themed branded background
           _buildBackground(),
           SafeArea(
             child: Column(
               children: [
                 _buildTopBar(),
                 const SizedBox(height: 12),
-                // Framed "device screen" that holds the camera preview, the
-                // face guide and the live hint / result card — matching the
-                // wall-mounted tablet look of the product poster.
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: _buildDeviceScreen(),
+                    child: isLandscape
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(flex: 6, child: _buildDeviceScreen()),
+                              const SizedBox(width: 16),
+                              Expanded(flex: 4, child: _buildTabletSidePanel()),
+                            ],
+                          )
+                        : _buildDeviceScreen(),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -491,6 +627,239 @@ class _KioskScanScreenState extends State<KioskScanScreen>
                   child: KioskVersionFooter(),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Tablet-exclusive right side dashboard for table-mounted landscape kiosks.
+  Widget _buildTabletSidePanel() {
+    final c = KioskTheme.of(context);
+    final timeFormatted = DateFormat('hh:mm:ss a').format(_currentTime);
+    final dateFormatted = DateFormat('EEEE, dd MMMM yyyy').format(_currentTime);
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: c.border, width: 2),
+        boxShadow: c.cardShadow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Company header
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  'assets/images/app_logo.png',
+                  width: 36,
+                  height: 36,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      kioskSettings.companyName ?? 'TT STAFF PRO',
+                      style: TextStyle(
+                        color: c.textPrimary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      'Attendance Kiosk Terminal',
+                      style: TextStyle(color: c.textSecondary, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const Divider(height: 28),
+
+          // Digital Clock Card
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  KioskColors.primary.withValues(alpha: 0.15),
+                  KioskColors.primaryLight.withValues(alpha: 0.10),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: KioskColors.primaryLight.withValues(alpha: 0.25)),
+            ),
+            child: Column(
+              children: [
+                Text(
+                  timeFormatted,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                    color: KioskColors.primaryLight,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  dateFormatted,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: c.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Live Stats Row
+          Row(
+            children: [
+              Expanded(
+                child: ValueListenableBuilder<int>(
+                  valueListenable: kioskService.todayScannedCount,
+                  builder: (context, count, _) => Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: c.background,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: c.border),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          '$count',
+                          style: TextStyle(
+                            color: KioskColors.success,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          'Punches Today',
+                          style: TextStyle(color: c.textSecondary, fontSize: 11),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: c.background,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: c.border),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        '${kioskService.enrolledSignatures.length}',
+                        style: TextStyle(
+                          color: KioskColors.primaryLight,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Enrolled Faces',
+                        style: TextStyle(color: c.textSecondary, fontSize: 11),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const Spacer(),
+
+          // Offline Queue Banner
+          ListenableBuilder(
+            listenable: offlineQueueService,
+            builder: (context, _) {
+              if (!offlineQueueService.hasPending) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: KioskColors.success.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: KioskColors.success.withValues(alpha: 0.3)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.cloud_done, size: 16, color: KioskColors.success),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Cloud Sync Active (Online)',
+                        style: TextStyle(color: KioskColors.success, fontSize: 12, fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return Container(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.amber.withValues(alpha: 0.4)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.cloud_queue, size: 16, color: Colors.amber[800]),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '${offlineQueueService.pendingCount} offline punches queued',
+                        style: TextStyle(color: Colors.amber[900], fontSize: 12, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    if (offlineQueueService.isSyncing)
+                      const SizedBox(
+                        width: 14,
+                        height: 14,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
+
+          // Fallback Code button
+          OutlinedButton.icon(
+            onPressed: _showManualPunchDialog,
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              side: BorderSide(color: c.border),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            ),
+            icon: Icon(Icons.dialpad, size: 18, color: c.textPrimary),
+            label: Text(
+              'Manual Code Punch',
+              style: TextStyle(color: c.textPrimary, fontSize: 13, fontWeight: FontWeight.w600),
             ),
           ),
         ],
@@ -819,6 +1188,44 @@ class _KioskScanScreenState extends State<KioskScanScreen>
                 color: _isTorchOn ? Colors.amber : c.textSecondary,
               ),
               visualDensity: VisualDensity.compact,
+            ),
+            IconButton(
+              tooltip: 'Manual Code Punch',
+              onPressed: _showManualPunchDialog,
+              icon: Icon(Icons.dialpad, color: c.textSecondary, size: 20),
+              visualDensity: VisualDensity.compact,
+            ),
+            const SizedBox(width: 4),
+            ListenableBuilder(
+              listenable: offlineQueueService,
+              builder: (context, _) {
+                if (offlineQueueService.hasPending) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.amber.withValues(alpha: 0.4)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.cloud_off, size: 13, color: Colors.amber[800]),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${offlineQueueService.pendingCount}',
+                          style: TextStyle(
+                            color: Colors.amber[900],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
             const SizedBox(width: 4),
             Container(

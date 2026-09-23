@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../kiosk/kiosk_theme.dart';
+import '../kiosk/kiosk_tts_service.dart';
 import '../kiosk/kiosk_version_footer.dart';
+import '../kiosk/offline_queue_service.dart';
 import '../main.dart';
 import 'company_login_screen.dart';
 import 'kiosk_app_lock_settings_screen.dart';
@@ -270,6 +272,102 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                             ),
                           ),
                           const SizedBox(width: 8),
+                          // Voice & Audio Greetings settings
+                          PopupMenuButton<String>(
+                            tooltip: 'Voice Greeting (${kioskSettings.voiceLanguage})',
+                            offset: const Offset(0, 46),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              side: BorderSide(color: c.border),
+                            ),
+                            color: c.surface,
+                            padding: EdgeInsets.zero,
+                            onSelected: (val) async {
+                              if (val == 'toggle_liveness') {
+                                final next = !kioskSettings.livenessEnabled;
+                                await kioskSettings.setLivenessEnabled(next);
+                                setState(() {});
+                                return;
+                              }
+                              await kioskSettings.setVoiceLanguage(val);
+                              final lang = val == 'english'
+                                  ? KioskVoiceLanguage.english
+                                  : (val == 'mute'
+                                      ? KioskVoiceLanguage.mute
+                                      : KioskVoiceLanguage.hindi);
+                              kioskTTSService.setLanguage(lang);
+                              setState(() {});
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                value: 'hindi',
+                                child: ListTile(
+                                  leading: const Icon(Icons.record_voice_over),
+                                  title: const Text('Voice: Hindi (नमस्ते)'),
+                                  trailing: kioskSettings.voiceLanguage == 'hindi' ? const Icon(Icons.check, size: 18, color: KioskColors.primary) : null,
+                                  contentPadding: EdgeInsets.zero,
+                                  dense: true,
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'english',
+                                child: ListTile(
+                                  leading: const Icon(Icons.record_voice_over_outlined),
+                                  title: const Text('Voice: English'),
+                                  trailing: kioskSettings.voiceLanguage == 'english' ? const Icon(Icons.check, size: 18, color: KioskColors.primary) : null,
+                                  contentPadding: EdgeInsets.zero,
+                                  dense: true,
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'mute',
+                                child: ListTile(
+                                  leading: const Icon(Icons.volume_off),
+                                  title: const Text('Voice: Muted'),
+                                  trailing: kioskSettings.voiceLanguage == 'mute' ? const Icon(Icons.check, size: 18, color: KioskColors.primary) : null,
+                                  contentPadding: EdgeInsets.zero,
+                                  dense: true,
+                                ),
+                              ),
+                              const PopupMenuDivider(),
+                              PopupMenuItem(
+                                value: 'toggle_liveness',
+                                child: ListTile(
+                                  leading: Icon(kioskSettings.livenessEnabled ? Icons.remove_red_eye : Icons.visibility_off),
+                                  title: const Text('Anti-Spoofing Liveness'),
+                                  trailing: Switch(
+                                    value: kioskSettings.livenessEnabled,
+                                    onChanged: (v) async {
+                                      Navigator.of(context).pop();
+                                      await kioskSettings.setLivenessEnabled(v);
+                                      setState(() {});
+                                    },
+                                  ),
+                                  contentPadding: EdgeInsets.zero,
+                                  dense: true,
+                                ),
+                              ),
+                            ],
+                            child: Container(
+                              width: 38,
+                              height: 38,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: c.surfaceAlt.withValues(alpha: 0.9),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: c.border.withValues(alpha: 0.8),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Icon(
+                                kioskSettings.voiceLanguage == 'mute' ? Icons.volume_off_outlined : Icons.volume_up_outlined,
+                                size: 18,
+                                color: c.textSecondary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
                           // Theme selector: dark / light / system.
                           PopupMenuButton<ThemeMode>(
                             tooltip: 'Theme',
@@ -471,6 +569,61 @@ class _KioskHomeScreenState extends State<KioskHomeScreen> {
                               ),
                             );
                           },
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    // Live offline queue sync indicator
+                    ListenableBuilder(
+                      listenable: offlineQueueService,
+                      builder: (context, _) {
+                        if (!offlineQueueService.hasPending) {
+                          return const SizedBox.shrink();
+                        }
+                        return InkWell(
+                          onTap: () => offlineQueueService.syncPendingEvents(),
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: Colors.amber.withValues(alpha: 0.35)),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.cloud_off_rounded, color: Colors.amber[800], size: 20),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${offlineQueueService.pendingCount} Offline Punches Pending',
+                                        style: TextStyle(
+                                          color: Colors.amber[900],
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      Text(
+                                        offlineQueueService.isSyncing ? 'Syncing with server...' : 'Tap to sync now',
+                                        style: TextStyle(color: c.textSecondary, fontSize: 11),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (offlineQueueService.isSyncing)
+                                  const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  )
+                                else
+                                  Icon(Icons.sync_rounded, color: Colors.amber[800], size: 18),
+                              ],
+                            ),
+                          ),
                         );
                       },
                     ),

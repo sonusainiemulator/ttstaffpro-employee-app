@@ -10,6 +10,8 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 import 'kiosk/kiosk_service.dart';
 import 'kiosk/kiosk_settings.dart';
 import 'kiosk/kiosk_theme.dart';
+import 'kiosk/kiosk_tts_service.dart';
+import 'kiosk/offline_queue_service.dart';
 import 'screens/app_lock_overlay.dart';
 import 'screens/splash_screen.dart';
 
@@ -69,8 +71,12 @@ Future<void> _initializeApp() async {
     // Kiosk mode: keep the screen awake and hide system chrome (immersive).
     await WakelockPlus.enable();
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    // Allow both portrait and landscape for tablet stands & wall mounts
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
     ]);
 
     // Local persistence.
@@ -78,6 +84,15 @@ Future<void> _initializeApp() async {
     // Start with the user's persisted appearance choice (dark / light / system).
     kioskThemeMode.value = kioskSettings.themeMode;
     await kioskService.loadAppVersion();
+
+    // Initialize offline attendance queue & TTS voice feedback
+    await offlineQueueService.init();
+    final lang = kioskSettings.voiceLanguage == 'english'
+        ? KioskVoiceLanguage.english
+        : (kioskSettings.voiceLanguage == 'mute'
+            ? KioskVoiceLanguage.mute
+            : KioskVoiceLanguage.hindi);
+    await kioskTTSService.init(language: lang);
 
     runApp(const KioskApp());
   } catch (e, st) {

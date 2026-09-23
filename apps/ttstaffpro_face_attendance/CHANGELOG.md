@@ -1,4 +1,13 @@
 # Changelog
+## [1.0.32] - 2026-09-23
+
+### Added
+- **Text-To-Speech (TTS) Multi-Language Voice Feedback**: Added automated personalized voice greetings in **Hindi** (*"नमस्ते [Name] जी, आपकी उपस्थिति दर्ज कर ली गई है"*) and **English** upon punch confirmation, with configurable language and mute options.
+- **Tablet & Landscape Split Dashboard Mode**: Full support for 10"–12" table-mounted tablets in landscape orientation with side-by-side live digital clock, today's punch counter, live shift stats, and instant biometric camera feed.
+- **Encrypted Offline Attendance Queue & Auto-Sync**: Zero-dropped attendance punches; punches made while offline or during network dropouts are stored securely in local queue and auto-synced upon reconnection.
+- **Multi-Frame Liveness & Anti-Spoofing Verification**: Enhanced anti-spoofing engine with blink transition detection and head pose stability tracking to prevent photo/screen proxy attendance.
+- **Manual Employee Code / PIN Punch Fallback**: Added on-screen keypad fallback dialog to clock in/out via Employee Code when camera is occluded.
+
 ## [1.0.31] - 2026-09-11
 
 ### Changed
