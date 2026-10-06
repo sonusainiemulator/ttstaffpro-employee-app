@@ -38,6 +38,8 @@
 	<string>We need access to your media library to attach audio files as proof of expense or leave requests.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>We need your camera permission to share the update and also to mark a visit a the place you were visiting.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>TT Staff Pro accesses your location only while you are actively using the app, to record attendance check-in/check-out coordinates and verify presence at client or worksite locations. Location is read only at the moment you tap check-in, check-out, or mark a visit, and is never collected in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>TT Staff Pro uses your location only while using the app to record attendance check-in/check-out coordinates and verify presence at client or worksite locations. Location is accessed only when you actively perform these actions within the app.</string>
 	<key>NSMicrophoneUsageDescription</key>

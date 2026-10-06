@@ -1,4 +1,11 @@
 # Changelog
+## [1.3.5] - 2026-10-06
+
+### Fixed (App Store Connect ITMS-90683 Resolution)
+- **Restored `NSLocationAlwaysAndWhenInUseUsageDescription`** in `ios/Runner/Info.plist`. Build `1.3.4+20260923` was accepted but flagged with App Store Connect warning **90683**, because the app binary statically references `CLLocationManager.requestAlwaysAuthorization`. That selector is compiled into the linked location pods (`geolocator_apple`, `permission_handler_apple`, `location`) regardless of whether the app calls it, so Apple requires the purpose string to be present in `Info.plist`.
+- **Runtime behavior is unchanged — still foreground-only.** `NSLocationWhenInUseUsageDescription` remains in place, so the `location` plugin requests only *while-in-use* authorization; the *always* prompt is never shown and location is never collected in the background. `UIBackgroundModes` still excludes `location`, so Guideline 2.5.4 compliance from 1.3.3/1.3.4 is preserved.
+- **Version bumped** to `1.3.5+20261006` so a fresh build can be uploaded (build number `20260923` is already used on App Store Connect).
+
 ## [1.3.4] - 2026-09-23
 
 ### Fixed (App Store Guideline 2.5.4 Resolution)
