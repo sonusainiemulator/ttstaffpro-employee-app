@@ -1,4 +1,13 @@
 # Changelog
+## [1.3.6] - 2026-10-16
+
+### Changed (App Store Production Release)
+- **Version bumped** to `1.3.6+20261016` for the App Store (production) release track.
+- Built an iOS App Store archive and exported the App Store IPA (`build/ios/ipa/open_core_hr.ipa`, 63.7MB).
+- **App Store Connect upload (v1.3.6+20261016)**: Uploaded the App Store IPA to App Store Connect (Delivery UUID: `b7bf5d76-8502-46d1-9fcb-abc3ecdc08aa`). Transferred 62766186 bytes in 7.757 seconds.
+- **Submitted to App Store review**: App Store version `1.3.6` created from the withdrawn `1.3.5` record (all localized metadata and screenshots preserved), build `20261016` attached, export compliance answered (`usesNonExemptEncryption = false`), and submitted for review (review submission `2f6d93a3-440e-4870-8d14-54b0a4e4bee8`, state `WAITING_FOR_REVIEW`). Release type is **AFTER_APPROVAL**, so v1.3.6 goes live publicly as soon as Apple approves it.
+- No functional/runtime changes — this release carries forward the App Store Guideline 2.5.4 compliance and ITMS-90683 purpose-string fixes from `1.3.5` so a fresh build is available for App Store review.
+
 ## [1.3.5] - 2026-10-06
 
 ### Fixed (App Store Connect ITMS-90683 Resolution)
