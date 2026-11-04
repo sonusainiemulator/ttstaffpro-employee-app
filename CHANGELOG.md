@@ -9,6 +9,8 @@
 
 ### Changed
 - Version bumped to `1.3.7+20261104` for resubmission to App Store review.
+- **App Store Connect upload (v1.3.7+20261104)**: Archived and exported the App Store IPA, then uploaded it to App Store Connect (Delivery UUID: `c6c979fe-7f83-4120-a9da-0b5170f5acda`).
+- **Resubmitted for App Review**: the rejected App Store version record changed from `1.3.6` to `1.3.7`, build `20261104` was attached, and review submission `2f6d93a3-440e-4870-8d14-54b0a4e4bee8` moved to `WAITING_FOR_REVIEW`. Release type remains **AFTER_APPROVAL**.
 
 ## [1.3.6] - 2026-10-16
 
