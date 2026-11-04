@@ -64,11 +64,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   Future<void> checkAllPermissions() async {
     // Check if we've already shown the permission screen
-    var hasShownPermissionScreen = getBoolAsync('hasShownPermissionScreen', defaultValue: false);
+    var hasShownPermissionScreen = getBoolAsync(
+      'hasShownPermissionScreen',
+      defaultValue: false,
+    );
 
     if (!hasShownPermissionScreen) {
       // First time - check if notification permission is granted
-      var isNotificationGranted = await Permission.notification.status.isGranted;
+      var isNotificationGranted =
+          await Permission.notification.status.isGranted;
 
       if (!isNotificationGranted) {
         // Permission not granted - show permission screen
@@ -80,7 +84,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -131,30 +134,30 @@ class _NavigationScreenState extends State<NavigationScreen> {
         appBar: null,
         body: tab[_currentIndex],
         bottomNavigationBar: Observer(
-          builder: (_) => Container(
-            decoration: BoxDecoration(
-              color: appStore.isDarkModeOn
-                  ? const Color(0xFF1F2937)
-                  : Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.08),
-                  blurRadius: 12,
-                  offset: const Offset(0, -2),
-                ),
-              ],
-            ),
-            child: SafeArea(
-              child: Container(
-                height: 60,
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: _buildNavItems(),
+          builder: (_) {
+            final theme = Theme.of(context);
+            return Container(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                border: Border(top: BorderSide(color: theme.dividerColor)),
+              ),
+              child: SafeArea(
+                child: SizedBox(
+                  height: 64,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: _buildNavItems(),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -165,40 +168,48 @@ class _NavigationScreenState extends State<NavigationScreen> {
     int currentIndex = 0;
 
     // Home - Always included
-    items.add(_modernNavItem(
-      icon: Iconsax.home_1,
-      activeIcon: Iconsax.home5,
-      label: language.lblHome,
-      index: currentIndex++,
-    ));
+    items.add(
+      _modernNavItem(
+        icon: Iconsax.home_1,
+        activeIcon: Iconsax.home5,
+        label: language.lblHome,
+        index: currentIndex++,
+      ),
+    );
 
     // Leave - Included feature (not paid addon)
     if (moduleService.isLeaveModuleEnabled()) {
-      items.add(_modernNavItem(
-        icon: Iconsax.calendar,
-        activeIcon: Iconsax.calendar5,
-        label: language.lblLeaves,
-        index: currentIndex++,
-      ));
+      items.add(
+        _modernNavItem(
+          icon: Iconsax.calendar,
+          activeIcon: Iconsax.calendar5,
+          label: language.lblLeaves,
+          index: currentIndex++,
+        ),
+      );
     }
 
     // Expense - Included feature (not paid addon)
     if (moduleService.isExpenseModuleEnabled()) {
-      items.add(_modernNavItem(
-        icon: Iconsax.money_send,
-        activeIcon: Iconsax.money_send5,
-        label: language.lblExpense,
-        index: currentIndex++,
-      ));
+      items.add(
+        _modernNavItem(
+          icon: Iconsax.money_send,
+          activeIcon: Iconsax.money_send5,
+          label: language.lblExpense,
+          index: currentIndex++,
+        ),
+      );
     }
 
     // Account - Always included
-    items.add(_modernNavItem(
-      icon: Iconsax.user,
-      activeIcon: Iconsax.user_octagon,
-      label: language.lblAccount,
-      index: currentIndex++,
-    ));
+    items.add(
+      _modernNavItem(
+        icon: Iconsax.user,
+        activeIcon: Iconsax.user_octagon,
+        label: language.lblAccount,
+        index: currentIndex++,
+      ),
+    );
 
     return items;
   }
@@ -210,6 +221,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
     required int index,
   }) {
     final isSelected = _currentIndex == index;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Expanded(
       child: InkWell(
@@ -217,12 +230,12 @@ class _NavigationScreenState extends State<NavigationScreen> {
         borderRadius: BorderRadius.circular(12),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 4),
           decoration: BoxDecoration(
             color: isSelected
-                ? const Color(0xFF696CFF).withOpacity(0.1)
+                ? colors.primary.withValues(alpha: 0.1)
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -230,25 +243,19 @@ class _NavigationScreenState extends State<NavigationScreen> {
             children: [
               Icon(
                 isSelected ? activeIcon : icon,
-                color: isSelected
-                    ? const Color(0xFF696CFF)
-                    : appStore.isDarkModeOn
-                        ? Colors.grey[500]
-                        : const Color(0xFF9CA3AF),
-                size: 22,
+                color: isSelected ? colors.primary : colors.onSurfaceVariant,
+                size: 21,
               ),
               const SizedBox(height: 2),
               Flexible(
                 child: Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 10,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontSize: 11,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                     color: isSelected
-                        ? const Color(0xFF696CFF)
-                        : appStore.isDarkModeOn
-                            ? Colors.grey[500]
-                            : const Color(0xFF9CA3AF),
+                        ? colors.primary
+                        : colors.onSurfaceVariant,
                     height: 1.2,
                   ),
                   maxLines: 1,
@@ -262,5 +269,4 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ),
     );
   }
-
 }

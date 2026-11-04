@@ -29,7 +29,6 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  late double width;
   bool isNotificationEnabled = true;
   bool isLoading = false;
 
@@ -65,9 +64,10 @@ class _AccountScreenState extends State<AccountScreen> {
           'This device already has a passkey set up for your account.',
         DomainNotAssociatedException() =>
           'This app is not linked to the passkey domain yet.',
-        _ => e is ApiException && e.message.trim().isNotEmpty
-            ? e.message
-            : 'Could not set up biometric login. Please try again.',
+        _ =>
+          e is ApiException && e.message.trim().isNotEmpty
+              ? e.message
+              : 'Could not set up biometric login. Please try again.',
       };
       toast(message);
     } finally {
@@ -77,28 +77,12 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    width = MediaQuery.of(context).size.width;
-
     return Observer(
       builder: (_) => Scaffold(
         body: isLoading
             ? Center(child: loadingWidgetMaker())
             : Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: appStore.isDarkModeOn
-                        ? [
-                            const Color(0xFF1F2937),
-                            const Color(0xFF111827),
-                          ]
-                        : [
-                            const Color(0xFF696CFF),
-                            const Color(0xFF5457E6),
-                          ],
-                  ),
-                ),
+                color: Theme.of(context).scaffoldBackgroundColor,
                 child: SafeArea(
                   child: Column(
                     children: [
@@ -113,9 +97,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             topRight: Radius.circular(30),
                           ),
                           child: Container(
-                            color: appStore.isDarkModeOn
-                                ? const Color(0xFF111827)
-                                : const Color(0xFFF3F4F6),
+                            color: Theme.of(context).scaffoldBackgroundColor,
                             child: SingleChildScrollView(
                               physics: const BouncingScrollPhysics(),
                               child: Padding(
@@ -123,195 +105,230 @@ class _AccountScreenState extends State<AccountScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                          20.height,
-                          _buildSectionHeader(language.lblGeneral),
-                          8.height,
+                                    20.height,
+                                    _buildSectionHeader(language.lblGeneral),
+                                    8.height,
 
-                    // General Settings
-                    _buildSettingsItem(
-                      title: language.lblChangeLanguage,
-                      icon: Iconsax.language_square,
-                      onTap: () => const LanguageScreen().launch(context),
-                    ),
-                    _buildSettingsItem(
-                      title: language.lblDarkMode,
-                      icon:
-                          appStore.isDarkModeOn ? Iconsax.sun_1 : Iconsax.moon,
-                      trailing: Switch(
-                        value: appStore.isDarkModeOn,
-                        onChanged: (s) => appStore.toggleDarkMode(value: s),
-                        activeTrackColor: appStore.appColorPrimary,
-                        activeThumbColor: white,
-                      ),
-                    ),
-                    _buildSettingsItem(
-                      title: language.lblNotification,
-                      icon: Iconsax.notification,
-                      trailing: Switch(
-                        value: isNotificationEnabled,
-                        onChanged: (value) async {
-                          var instance = FirebaseMessaging.instance;
-                          if (value) {
-                            instance.subscribeToTopic('announcement');
-                          } else {
-                            instance.unsubscribeFromTopic('announcement');
-                          }
-                          setState(() => isNotificationEnabled = value);
-                        },
-                        activeTrackColor: appStore.appColorPrimary,
-                        activeThumbColor: white,
-                      ),
-                    ),
-                    _buildSettingsItem(
-                      title: language.lblSupport,
-                      icon: Iconsax.support,
-                      onTap: () => const SupportScreen().launch(context),
-                    ),
-                    _buildSettingsItem(
-                      title: language.lblRateUs,
-                      icon: Iconsax.star,
-                      onTap: () async {
-                        PackageInfo.fromPlatform().then((value) async {
-                          String package = value.packageName;
-                          launchUrl(Uri.parse('$playStoreUrl$package'));
-                        });
-                      },
-                    ),
-                    _buildSettingsItem(
-                      title: language.lblShareApp,
-                      icon: Iconsax.share,
-                      onTap: () async {
-                        PackageInfo.fromPlatform().then((value) async {
-                          String package = value.packageName;
-                          await Share.share(
-                              'Download $mainAppName from Play Store\n\n\n$playStoreUrl$package');
-                        });
-                      },
-                    ),
-
-                          20.height,
-                          _buildSectionHeader(language.lblSettings),
-                          8.height,
-
-                          // Settings Items Integrated
-                    _buildSettingsItem(
-                      title: language.lblRefreshAppConfiguration,
-                      icon: Iconsax.refresh,
-                      onTap: () async {
-                        await sharedHelper.refreshAppSettings();
-                        toast(language.lblSettingsRefreshed);
-                      },
-                    ),
-                    _buildSettingsItem(
-                      title: language.lblModulesStatus,
-                      icon: Iconsax.setting_2,
-                      onTap: () => const ModulesScreen().launch(context),
-                    ),
-                    _buildSettingsItem(
-                      title: language.lblChangePassword,
-                      icon: Iconsax.lock,
-                      onTap: () => const ChangePasswordScreen().launch(context),
-                    ),
-                    _buildSettingsItem(
-                      title: 'Set up biometric login (passkey)',
-                      icon: Icons.fingerprint,
-                      onTap: _setUpPasskey,
-                    ),
-
-                          40.height,
-
-                          // Logout Button
-                          Container(
-                            width: double.infinity,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: appStore.isDarkModeOn
-                                  ? const Color(0xFF1F2937)
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.redAccent.withOpacity(0.3),
-                                width: 1.5,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.04),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () {
-                                  showConfirmDialog(
-                                    context,
-                                    language.lblDoYouWantToLogoutFromTheApp,
-                                    positiveText: language.lblYes,
-                                    negativeText: language.lblNo,
-                                    onAccept: () {
-                                      if (!mounted) return;
-                                      sharedHelper.logout(context);
-                                    },
-                                  );
-                                },
-                                borderRadius: BorderRadius.circular(12),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Iconsax.logout,
-                                      color: Colors.redAccent,
-                                      size: 20,
+                                    // General Settings
+                                    _buildSettingsItem(
+                                      title: language.lblChangeLanguage,
+                                      icon: Iconsax.language_square,
+                                      onTap: () => const LanguageScreen()
+                                          .launch(context),
                                     ),
-                                    10.width,
-                                    Text(
-                                      language.lblLogout,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.redAccent,
+                                    _buildSettingsItem(
+                                      title: language.lblDarkMode,
+                                      icon: appStore.isDarkModeOn
+                                          ? Iconsax.sun_1
+                                          : Iconsax.moon,
+                                      trailing: Switch(
+                                        value: appStore.isDarkModeOn,
+                                        onChanged: (s) =>
+                                            appStore.toggleDarkMode(value: s),
+                                        activeTrackColor:
+                                            appStore.appColorPrimary,
+                                        activeThumbColor: white,
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          30.height,
-
-                          // App Version
-                          Center(
-                            child: Column(
-                              children: [
-                                Text(
-                                  getStringAsync(appVersionPref),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: appStore.isDarkModeOn
-                                        ? Colors.grey[500]
-                                        : const Color(0xFF6B7280),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                if (getStringAsync('organization').isNotEmpty) ...[
-                                  4.height,
-                                  Text(
-                                    '${language.lblOrganization}: ${getStringAsync('organization')}',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: appStore.isDarkModeOn
-                                          ? Colors.grey[600]
-                                          : const Color(0xFF9CA3AF),
-                                      fontWeight: FontWeight.w500,
+                                    _buildSettingsItem(
+                                      title: language.lblNotification,
+                                      icon: Iconsax.notification,
+                                      trailing: Switch(
+                                        value: isNotificationEnabled,
+                                        onChanged: (value) async {
+                                          var instance =
+                                              FirebaseMessaging.instance;
+                                          if (value) {
+                                            instance.subscribeToTopic(
+                                              'announcement',
+                                            );
+                                          } else {
+                                            instance.unsubscribeFromTopic(
+                                              'announcement',
+                                            );
+                                          }
+                                          setState(
+                                            () => isNotificationEnabled = value,
+                                          );
+                                        },
+                                        activeTrackColor:
+                                            appStore.appColorPrimary,
+                                        activeThumbColor: white,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
+                                    _buildSettingsItem(
+                                      title: language.lblSupport,
+                                      icon: Iconsax.support,
+                                      onTap: () =>
+                                          const SupportScreen().launch(context),
+                                    ),
+                                    _buildSettingsItem(
+                                      title: language.lblRateUs,
+                                      icon: Iconsax.star,
+                                      onTap: () async {
+                                        PackageInfo.fromPlatform().then((
+                                          value,
+                                        ) async {
+                                          String package = value.packageName;
+                                          launchUrl(
+                                            Uri.parse('$playStoreUrl$package'),
+                                          );
+                                        });
+                                      },
+                                    ),
+                                    _buildSettingsItem(
+                                      title: language.lblShareApp,
+                                      icon: Iconsax.share,
+                                      onTap: () async {
+                                        PackageInfo.fromPlatform().then((
+                                          value,
+                                        ) async {
+                                          String package = value.packageName;
+                                          await Share.share(
+                                            'Download $mainAppName from Play Store\n\n\n$playStoreUrl$package',
+                                          );
+                                        });
+                                      },
+                                    ),
+
+                                    20.height,
+                                    _buildSectionHeader(language.lblSettings),
+                                    8.height,
+
+                                    // Settings Items Integrated
+                                    _buildSettingsItem(
+                                      title:
+                                          language.lblRefreshAppConfiguration,
+                                      icon: Iconsax.refresh,
+                                      onTap: () async {
+                                        await sharedHelper.refreshAppSettings();
+                                        toast(language.lblSettingsRefreshed);
+                                      },
+                                    ),
+                                    _buildSettingsItem(
+                                      title: language.lblModulesStatus,
+                                      icon: Iconsax.setting_2,
+                                      onTap: () =>
+                                          const ModulesScreen().launch(context),
+                                    ),
+                                    _buildSettingsItem(
+                                      title: language.lblChangePassword,
+                                      icon: Iconsax.lock,
+                                      onTap: () => const ChangePasswordScreen()
+                                          .launch(context),
+                                    ),
+                                    _buildSettingsItem(
+                                      title: 'Set up biometric login (passkey)',
+                                      icon: Icons.fingerprint,
+                                      onTap: _setUpPasskey,
+                                    ),
+
+                                    40.height,
+
+                                    // Logout Button
+                                    Container(
+                                      width: double.infinity,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        color: appStore.isDarkModeOn
+                                            ? const Color(0xFF1F2937)
+                                            : Colors.white,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: Colors.redAccent.withOpacity(
+                                            0.3,
+                                          ),
+                                          width: 1.5,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              appStore.isDarkModeOn
+                                                  ? 0.3
+                                                  : 0.04,
+                                            ),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          onTap: () {
+                                            showConfirmDialog(
+                                              context,
+                                              language
+                                                  .lblDoYouWantToLogoutFromTheApp,
+                                              positiveText: language.lblYes,
+                                              negativeText: language.lblNo,
+                                              onAccept: () {
+                                                if (!mounted) return;
+                                                sharedHelper.logout(context);
+                                              },
+                                            );
+                                          },
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Iconsax.logout,
+                                                color: Colors.redAccent,
+                                                size: 20,
+                                              ),
+                                              10.width,
+                                              Text(
+                                                language.lblLogout,
+                                                style: const TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.redAccent,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    30.height,
+
+                                    // App Version
+                                    Center(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            getStringAsync(appVersionPref),
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: appStore.isDarkModeOn
+                                                  ? Colors.grey[500]
+                                                  : const Color(0xFF6B7280),
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          if (getStringAsync(
+                                            'organization',
+                                          ).isNotEmpty) ...[
+                                            4.height,
+                                            Text(
+                                              '${language.lblOrganization}: ${getStringAsync('organization')}',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: appStore.isDarkModeOn
+                                                    ? Colors.grey[600]
+                                                    : const Color(0xFF9CA3AF),
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ),
                                     30.height,
                                   ],
                                 ),
@@ -330,61 +347,46 @@ class _AccountScreenState extends State<AccountScreen> {
 
   // Merged Header with Profile Widget
   Widget _buildHeaderWithProfile() {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 30),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Title
           Text(
             language.lblAccount,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: colors.onSurface,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          20.height,
+          14.height,
 
           // Profile Card on gradient background
           Container(
             decoration: BoxDecoration(
-              color: appStore.isDarkModeOn
-                  ? const Color(0xFF1F2937)
-                  : Colors.white,
+              color: colors.surface,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.1),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+              border: Border.all(color: theme.dividerColor),
             ),
             padding: const EdgeInsets.all(18),
             child: Column(
               children: [
                 Row(
                   children: [
-                    // Profile Image with white border (no gradient)
+                    // Profile image
                     Hero(
                       tag: 'profile',
                       child: Container(
-                        padding: const EdgeInsets.all(3),
+                        padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
+                          border: Border.all(color: colors.primary, width: 2),
                         ),
-                        child: ClipOval(
-                          child: profileImageWidget(size: 20),
-                        ),
+                        child: ClipOval(child: profileImageWidget(size: 52)),
                       ),
                     ),
                     14.width,
@@ -396,12 +398,9 @@ class _AccountScreenState extends State<AccountScreen> {
                         children: [
                           Text(
                             sharedHelper.getFullName(),
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: appStore.isDarkModeOn
-                                  ? Colors.white
-                                  : const Color(0xFF111827),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: colors.onSurface,
                             ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -409,12 +408,8 @@ class _AccountScreenState extends State<AccountScreen> {
                           4.height,
                           Text(
                             getStringAsync(designationPref),
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: appStore.isDarkModeOn
-                                  ? Colors.grey[400]
-                                  : const Color(0xFF9CA3AF),
-                              fontWeight: FontWeight.w500,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: colors.onSurfaceVariant,
                             ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -426,16 +421,22 @@ class _AccountScreenState extends State<AccountScreen> {
                     // Edit Profile Button
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF696CFF).withOpacity(0.1),
+                        color: colors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: IconButton(
-                        icon: const Icon(Iconsax.edit,
-                            color: Color(0xFF696CFF), size: 20),
+                        icon: Icon(
+                          Iconsax.edit,
+                          color: colors.primary,
+                          size: 20,
+                        ),
                         tooltip: language.lblEditProfile,
                         onPressed: () async {
                           final updated = await const EditProfileScreen()
-                              .launch(context, pageRouteAnimation: PageRouteAnimation.Slide);
+                              .launch(
+                                context,
+                                pageRouteAnimation: PageRouteAnimation.Slide,
+                              );
                           if (updated == true) setState(() {});
                         },
                       ),
@@ -446,12 +447,15 @@ class _AccountScreenState extends State<AccountScreen> {
                       4.width,
                       Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF696CFF).withOpacity(0.1),
+                          color: colors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: IconButton(
-                          icon: const Icon(Iconsax.card,
-                              color: Color(0xFF696CFF), size: 22),
+                          icon: Icon(
+                            Iconsax.card,
+                            color: colors.primary,
+                            size: 22,
+                          ),
                           onPressed: () {
                             DigitalIDCardScreen().launch(context);
                           },
@@ -506,22 +510,18 @@ class _AccountScreenState extends State<AccountScreen> {
     required String label,
     required String value,
   }) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(
-              icon,
-              size: 14,
-              color: const Color(0xFF696CFF),
-            ),
+            Icon(icon, size: 14, color: theme.colorScheme.primary),
             6.width,
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 11,
-                color: Color(0xFF9CA3AF),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -546,16 +546,14 @@ class _AccountScreenState extends State<AccountScreen> {
 
   // Section Header Widget
   Widget _buildSectionHeader(String title) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 4),
       child: Text(
         title,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          color: appStore.isDarkModeOn
-              ? Colors.white
-              : const Color(0xFF111827),
+        style: theme.textTheme.titleSmall?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -568,15 +566,17 @@ class _AccountScreenState extends State<AccountScreen> {
     VoidCallback? onTap,
     Widget? trailing,
   }) {
+    final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: appStore.isDarkModeOn
-            ? const Color(0xFF1F2937)
-            : Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: theme.dividerColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.04),
+            color: Colors.black.withOpacity(
+              appStore.isDarkModeOn ? 0.12 : 0.025,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -595,12 +595,12 @@ class _AccountScreenState extends State<AccountScreen> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF696CFF).withOpacity(0.1),
+                    color: theme.colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     icon,
-                    color: const Color(0xFF696CFF),
+                    color: theme.colorScheme.onPrimaryContainer,
                     size: 20,
                   ),
                 ),
@@ -608,21 +608,16 @@ class _AccountScreenState extends State<AccountScreen> {
                 Expanded(
                   child: Text(
                     title,
-                    style: TextStyle(
-                      fontSize: 14,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.onSurface,
                       fontWeight: FontWeight.w600,
-                      color: appStore.isDarkModeOn
-                          ? Colors.white
-                          : const Color(0xFF111827),
                     ),
                   ),
                 ),
                 trailing ??
                     Icon(
                       Icons.chevron_right,
-                      color: appStore.isDarkModeOn
-                          ? Colors.grey[500]
-                          : const Color(0xFF9CA3AF),
+                      color: theme.colorScheme.onSurfaceVariant,
                       size: 20,
                     ),
               ],

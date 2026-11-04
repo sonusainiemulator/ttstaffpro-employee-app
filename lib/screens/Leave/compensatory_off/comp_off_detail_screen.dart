@@ -194,7 +194,7 @@ class _CompOffDetailScreenState extends State<CompOffDetailScreen> {
 
   Widget _buildInfoRow(IconData icon, String label, String value,
       {Color? iconColor, Color? valueColor}) {
-    final effectiveIconColor = iconColor ?? const Color(0xFF696CFF);
+    final effectiveIconColor = iconColor ?? const Color(0xFF2563EB);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -499,7 +499,7 @@ class _CompOffDetailScreenState extends State<CompOffDetailScreen> {
               gradient: LinearGradient(
                 colors: appStore.isDarkModeOn
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
               ),
             ),
             child: Padding(
@@ -657,7 +657,7 @@ class _CompOffDetailScreenState extends State<CompOffDetailScreen> {
                           Container(
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                                colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                               ),
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -906,13 +906,13 @@ class _CompOffDetailScreenState extends State<CompOffDetailScreen> {
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
                                           colors: [
-                                            const Color(0xFF696CFF).withOpacity(0.2),
-                                            const Color(0xFF696CFF).withOpacity(0.1),
+                                            const Color(0xFF2563EB).withOpacity(0.2),
+                                            const Color(0xFF2563EB).withOpacity(0.1),
                                           ],
                                         ),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      child: const Icon(Iconsax.document_text, color: Color(0xFF696CFF), size: 20),
+                                      child: const Icon(Iconsax.document_text, color: Color(0xFF2563EB), size: 20),
                                     ),
                                     const SizedBox(width: 12),
                                     Text(
@@ -930,13 +930,13 @@ class _CompOffDetailScreenState extends State<CompOffDetailScreen> {
                                   Iconsax.calendar_1,
                                   language.lblWorkedDate,
                                   _formatDate(compOff.workedDate),
-                                  iconColor: const Color(0xFF696CFF),
+                                  iconColor: const Color(0xFF2563EB),
                                 ),
                                 _buildInfoRow(
                                   Iconsax.clock,
                                   language.lblHoursWorked,
                                   '${compOff.hoursWorked} hours',
-                                  iconColor: const Color(0xFF696CFF),
+                                  iconColor: const Color(0xFF2563EB),
                                 ),
                                 _buildInfoRow(
                                   Iconsax.calendar,
@@ -951,7 +951,7 @@ class _CompOffDetailScreenState extends State<CompOffDetailScreen> {
                                   _formatDate(compOff.expiryDate),
                                   iconColor: isExpired
                                       ? const Color(0xFFEF4444)
-                                      : (isExpiringSoon ? const Color(0xFFFF9800) : const Color(0xFF696CFF)),
+                                      : (isExpiringSoon ? const Color(0xFFFF9800) : const Color(0xFF2563EB)),
                                   valueColor: isExpired
                                       ? const Color(0xFFEF4444)
                                       : (isExpiringSoon ? const Color(0xFFFF9800) : null),
@@ -961,7 +961,7 @@ class _CompOffDetailScreenState extends State<CompOffDetailScreen> {
                                     Iconsax.note,
                                     language.lblReason,
                                     compOff.reason!,
-                                    iconColor: const Color(0xFF696CFF),
+                                    iconColor: const Color(0xFF2563EB),
                                   ),
                                 if (compOff.isUsed && compOff.usedDate != null)
                                   _buildInfoRow(

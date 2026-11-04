@@ -28,7 +28,7 @@ class DigitalIDCardScreen extends StatelessWidget {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -131,8 +131,8 @@ class DigitalIDCardScreen extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              const Color(0xFF696CFF),
-              const Color(0xFF5457E6),
+              const Color(0xFF2563EB),
+              const Color(0xFF16324F),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -140,7 +140,7 @@ class DigitalIDCardScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF696CFF).withValues(alpha: 0.3),
+              color: const Color(0xFF2563EB).withValues(alpha: 0.3),
               blurRadius: 20,
               offset: const Offset(0, 10),
               spreadRadius: 2,
@@ -191,12 +191,12 @@ class DigitalIDCardScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: const Color(0xFF696CFF),
+                        color: const Color(0xFF2563EB),
                         width: 4,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF696CFF).withValues(alpha: 0.3),
+                          color: const Color(0xFF2563EB).withValues(alpha: 0.3),
                           blurRadius: 10,
                           spreadRadius: 2,
                         ),
@@ -204,7 +204,7 @@ class DigitalIDCardScreen extends StatelessWidget {
                     ),
                     child: CircleAvatar(
                       radius: 60,
-                      backgroundColor: const Color(0xFF696CFF).withValues(alpha: 0.1),
+                      backgroundColor: const Color(0xFF2563EB).withValues(alpha: 0.1),
                       backgroundImage: sharedHelper.hasProfileImage()
                           ? NetworkImage(profileImageUrl)
                           : null,
@@ -214,7 +214,7 @@ class DigitalIDCardScreen extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 40,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF696CFF),
+                                color: Color(0xFF2563EB),
                               ),
                             )
                           : null,
@@ -335,13 +335,13 @@ class DigitalIDCardScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFF696CFF).withValues(alpha: 0.1),
+              color: const Color(0xFF2563EB).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
               icon,
               size: 18,
-              color: const Color(0xFF696CFF),
+              color: const Color(0xFF2563EB),
             ),
           ),
           const SizedBox(width: 12),

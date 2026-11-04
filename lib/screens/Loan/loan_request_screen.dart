@@ -157,7 +157,7 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -209,7 +209,7 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
                           ? const Center(
                               child: CircularProgressIndicator(
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                  Color(0xFF696CFF),
+                                  Color(0xFF2563EB),
                                 ),
                               ),
                             )
@@ -294,7 +294,7 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
                       gradient: const LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                        colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -364,12 +364,12 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFF696CFF).withOpacity(0.1)
+              ? const Color(0xFF2563EB).withOpacity(0.1)
               : (appStore.isDarkModeOn ? const Color(0xFF111827) : const Color(0xFFF9FAFB)),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
-                ? const Color(0xFF696CFF)
+                ? const Color(0xFF2563EB)
                 : (appStore.isDarkModeOn ? Colors.grey[700]! : const Color(0xFFE5E7EB)),
             width: 1.5,
           ),
@@ -382,10 +382,10 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? const Color(0xFF696CFF) : Colors.grey[400]!,
+                  color: isSelected ? const Color(0xFF2563EB) : Colors.grey[400]!,
                   width: 2,
                 ),
-                color: isSelected ? const Color(0xFF696CFF) : Colors.transparent,
+                color: isSelected ? const Color(0xFF2563EB) : Colors.transparent,
               ),
               child: isSelected
                   ? const Icon(Icons.check, size: 14, color: Colors.white)
@@ -443,14 +443,14 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFF696CFF).withOpacity(0.1),
+        color: const Color(0xFF2563EB).withOpacity(0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
         text,
         style: const TextStyle(
           fontSize: 11,
-          color: Color(0xFF696CFF),
+          color: Color(0xFF2563EB),
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -497,7 +497,7 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
                         gradient: const LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
-                          colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                          colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                         ),
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -585,8 +585,8 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
                       child: OutlinedButton.icon(
                         onPressed: _calculateEmi,
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF696CFF),
-                          side: const BorderSide(color: Color(0xFF696CFF), width: 1.5),
+                          foregroundColor: const Color(0xFF2563EB),
+                          side: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -657,10 +657,10 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
       decoration: BoxDecoration(
         color: appStore.isDarkModeOn
             ? const Color(0xFF1F2937)
-            : const Color(0xFF696CFF).withOpacity(0.05),
+            : const Color(0xFF2563EB).withOpacity(0.05),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFF696CFF),
+          color: const Color(0xFF2563EB),
           width: 1.5,
         ),
       ),
@@ -676,7 +676,7 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                    colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -692,7 +692,7 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF696CFF),
+                  color: Color(0xFF2563EB),
                 ),
               ),
             ],
@@ -857,8 +857,8 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
             child: ElevatedButton(
               onPressed: _store.isLoading ? null : _submitForm,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
-                disabledBackgroundColor: const Color(0xFF696CFF).withValues(alpha: 0.5),
+                backgroundColor: const Color(0xFF2563EB),
+                disabledBackgroundColor: const Color(0xFF2563EB).withValues(alpha: 0.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                 ),
@@ -892,8 +892,8 @@ class _LoanRequestScreenState extends State<LoanRequestScreen> {
               child: OutlinedButton(
                 onPressed: _store.isLoading ? null : () => _submitForm(saveAsDraft: true),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF696CFF),
-                  side: const BorderSide(color: Color(0xFF696CFF), width: 1.5),
+                  foregroundColor: const Color(0xFF2563EB),
+                  side: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),

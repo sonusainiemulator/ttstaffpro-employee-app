@@ -223,7 +223,7 @@ class _AppealsListScreenState extends State<AppealsListScreen> {
                       _loadData();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF696CFF),
+                      backgroundColor: const Color(0xFF2563EB),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -257,14 +257,14 @@ class _AppealsListScreenState extends State<AppealsListScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: selected
-              ? const Color(0xFF696CFF)
+              ? const Color(0xFF2563EB)
               : (appStore.isDarkModeOn
                   ? const Color(0xFF111827)
                   : const Color(0xFFF3F4F6)),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: selected
-                ? const Color(0xFF696CFF)
+                ? const Color(0xFF2563EB)
                 : (appStore.isDarkModeOn
                     ? Colors.grey[700]!
                     : const Color(0xFFE5E7EB)),
@@ -577,7 +577,7 @@ class _AppealsListScreenState extends State<AppealsListScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -649,10 +649,10 @@ class _AppealsListScreenState extends State<AppealsListScreen> {
                               margin: const EdgeInsets.all(16),
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF696CFF).withOpacity(0.1),
+                                color: const Color(0xFF2563EB).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: const Color(0xFF696CFF).withOpacity(0.3),
+                                  color: const Color(0xFF2563EB).withOpacity(0.3),
                                   width: 1,
                                 ),
                               ),
@@ -661,7 +661,7 @@ class _AppealsListScreenState extends State<AppealsListScreen> {
                                   const Icon(
                                     Iconsax.filter,
                                     size: 16,
-                                    color: Color(0xFF696CFF),
+                                    color: Color(0xFF2563EB),
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
@@ -777,7 +777,7 @@ class _AppealsListScreenState extends State<AppealsListScreen> {
                   style: const TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF696CFF),
+                  backgroundColor: const Color(0xFF2563EB),
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -860,7 +860,7 @@ class _AppealsListScreenState extends State<AppealsListScreen> {
                     valueColor: AlwaysStoppedAnimation(
                       appStore.isDarkModeOn
                           ? Colors.white
-                          : const Color(0xFF696CFF),
+                          : const Color(0xFF2563EB),
                     ),
                   ),
                 ),

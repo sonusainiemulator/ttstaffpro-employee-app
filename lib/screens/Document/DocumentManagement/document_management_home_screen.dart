@@ -53,7 +53,7 @@ class _DocumentManagementHomeScreenState
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
               ),
             ),
             child: Padding(
@@ -447,7 +447,7 @@ class _DocumentManagementHomeScreenState
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF696CFF),
+                color: Color(0xFF2563EB),
               ),
             ),
             4.height,

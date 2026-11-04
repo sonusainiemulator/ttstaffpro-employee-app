@@ -43,7 +43,7 @@ class _PayslipScreenState extends State<PayslipScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -134,7 +134,7 @@ class _PayslipScreenState extends State<PayslipScreen> {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF696CFF),
+                          color: const Color(0xFF2563EB),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
@@ -172,7 +172,7 @@ class _PayslipScreenState extends State<PayslipScreen> {
                           vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF696CFF),
+                          color: const Color(0xFF2563EB),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
@@ -214,7 +214,7 @@ class _PayslipScreenState extends State<PayslipScreen> {
                       onRefresh: () async {
                         await init();
                       },
-                      color: const Color(0xFF696CFF),
+                      color: const Color(0xFF2563EB),
                       child: ListView.builder(
                         padding: const EdgeInsets.only(
                           left: 16,
@@ -273,8 +273,8 @@ class _PayslipScreenState extends State<PayslipScreen> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        const Color(0xFF696CFF).withOpacity(0.8),
-                        const Color(0xFF5457E6),
+                        const Color(0xFF2563EB).withOpacity(0.8),
+                        const Color(0xFF16324F),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -338,15 +338,15 @@ class _PayslipScreenState extends State<PayslipScreen> {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withOpacity(0.2),
-                  const Color(0xFF5457E6).withOpacity(0.1),
+                  const Color(0xFF2563EB).withOpacity(0.2),
+                  const Color(0xFF16324F).withOpacity(0.1),
                 ],
               ),
             ),
             child: Icon(
               Iconsax.document,
               size: 60,
-              color: const Color(0xFF696CFF).withOpacity(0.7),
+              color: const Color(0xFF2563EB).withOpacity(0.7),
             ),
           ),
           const SizedBox(height: 24),

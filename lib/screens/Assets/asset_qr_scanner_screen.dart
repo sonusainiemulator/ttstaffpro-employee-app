@@ -131,7 +131,7 @@ class _AssetQRScannerScreenState extends State<AssetQRScannerScreen> {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF696CFF),
+                color: Color(0xFF2563EB),
               ),
             ),
           ),
@@ -162,7 +162,7 @@ class _AssetQRScannerScreenState extends State<AssetQRScannerScreen> {
           Container(
             decoration: ShapeDecoration(
               shape: QRScannerOverlayShape(
-                borderColor: const Color(0xFF696CFF),
+                borderColor: const Color(0xFF2563EB),
                 borderRadius: 16,
                 borderLength: 30,
                 borderWidth: 8,
@@ -229,13 +229,13 @@ class _AssetQRScannerScreenState extends State<AssetQRScannerScreen> {
                         ? const CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(0xFF696CFF),
+                              Color(0xFF2563EB),
                             ),
                           )
                         : const Icon(
                             Icons.qr_code_scanner,
                             size: 48,
-                            color: Color(0xFF696CFF),
+                            color: Color(0xFF2563EB),
                           ),
                   ),
                   const SizedBox(height: 16),

@@ -153,7 +153,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF696CFF),
+              primary: Color(0xFF2563EB),
               onPrimary: Colors.white,
             ),
           ),
@@ -430,7 +430,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -650,7 +650,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
                 ),
                 prefixIcon: const Icon(
                   Iconsax.category,
-                  color: Color(0xFF696CFF),
+                  color: Color(0xFF2563EB),
                   size: 20,
                 ),
                 border: InputBorder.none,
@@ -873,7 +873,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
                       }
                     });
                   },
-                  activeThumbColor: const Color(0xFF696CFF),
+                  activeThumbColor: const Color(0xFF2563EB),
                 ),
               ],
             ),
@@ -1034,7 +1034,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
                   }
                 });
               },
-              activeThumbColor: const Color(0xFF696CFF),
+              activeThumbColor: const Color(0xFF2563EB),
             ),
           ],
         ),
@@ -1076,7 +1076,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
                   onChanged: (value) {
                     setState(() => _halfDayType = value);
                   },
-                  activeColor: const Color(0xFF696CFF),
+                  activeColor: const Color(0xFF2563EB),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
@@ -1088,7 +1088,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
                   onChanged: (value) {
                     setState(() => _halfDayType = value);
                   },
-                  activeColor: const Color(0xFF696CFF),
+                  activeColor: const Color(0xFF2563EB),
                   contentPadding: EdgeInsets.zero,
                 ),
               ),
@@ -1146,7 +1146,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
                     children: [
                       Icon(
                         Iconsax.calendar_1,
-                        color: enabled ? const Color(0xFF696CFF) : Colors.grey,
+                        color: enabled ? const Color(0xFF2563EB) : Colors.grey,
                         size: 20,
                       ),
                       const SizedBox(width: 12),
@@ -1181,20 +1181,20 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF696CFF).withOpacity(0.1),
+        color: const Color(0xFF2563EB).withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFF696CFF), width: 1.5),
+        border: Border.all(color: const Color(0xFF2563EB), width: 1.5),
       ),
       child: Row(
         children: [
-          const Icon(Iconsax.clock, color: Color(0xFF696CFF), size: 24),
+          const Icon(Iconsax.clock, color: Color(0xFF2563EB), size: 24),
           const SizedBox(width: 12),
           Text(
             '${language.lblTotal}: ${_calculateTotalDays()} ${_calculateTotalDays() > 1 ? language.lblDays : language.lblDay}',
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF696CFF),
+              color: Color(0xFF2563EB),
             ),
           ),
         ],
@@ -1231,7 +1231,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
               onChanged: (value) {
                 setState(() => _isAbroad = value);
               },
-              activeThumbColor: const Color(0xFF696CFF),
+              activeThumbColor: const Color(0xFF2563EB),
             ),
           ],
         ),
@@ -1337,7 +1337,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
                 children: [
                   const Icon(
                     Iconsax.document_upload,
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                     size: 24,
                   ),
                   const SizedBox(width: 12),
@@ -1368,7 +1368,7 @@ class _LeaveRequestFormScreenState extends State<LeaveRequestFormScreen> {
       child: ElevatedButton(
         onPressed: _isSubmitting ? null : _submitForm,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF696CFF),
+          backgroundColor: const Color(0xFF2563EB),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),

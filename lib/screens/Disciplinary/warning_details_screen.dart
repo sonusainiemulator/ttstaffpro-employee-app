@@ -313,13 +313,13 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  (iconColor ?? const Color(0xFF696CFF)).withOpacity(0.2),
-                  (iconColor ?? const Color(0xFF696CFF)).withOpacity(0.1),
+                  (iconColor ?? const Color(0xFF2563EB)).withOpacity(0.2),
+                  (iconColor ?? const Color(0xFF2563EB)).withOpacity(0.1),
                 ],
               ),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, size: 20, color: iconColor ?? const Color(0xFF696CFF)),
+            child: Icon(icon, size: 20, color: iconColor ?? const Color(0xFF2563EB)),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -387,7 +387,7 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
                   Icon(
                     icon,
                     size: 20,
-                    color: const Color(0xFF696CFF),
+                    color: const Color(0xFF2563EB),
                   ),
                   const SizedBox(width: 8),
                 ],
@@ -451,7 +451,7 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -570,7 +570,7 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
                   style: const TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF696CFF),
+                  backgroundColor: const Color(0xFF2563EB),
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -832,7 +832,7 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
                               children: [
                                 const Icon(
                                   Iconsax.document,
-                                  color: Color(0xFF696CFF),
+                                  color: Color(0xFF2563EB),
                                   size: 20,
                                 ),
                                 const SizedBox(width: 12),
@@ -851,7 +851,7 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
                                 const Icon(
                                   Iconsax.arrow_right_3,
                                   size: 16,
-                                  color: Color(0xFF696CFF),
+                                  color: Color(0xFF2563EB),
                                 ),
                               ],
                             ),
@@ -1008,7 +1008,7 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
                                       const Icon(
                                         Iconsax.document_text,
                                         size: 16,
-                                        color: Color(0xFF696CFF),
+                                        color: Color(0xFF2563EB),
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
@@ -1016,7 +1016,7 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
                                         style: const TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.w500,
-                                          color: Color(0xFF696CFF),
+                                          color: Color(0xFF2563EB),
                                         ),
                                       ),
                                     ],
@@ -1104,7 +1104,7 @@ class _WarningDetailsScreenState extends State<WarningDetailsScreen> {
                           ).then((_) => _loadData());
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF696CFF),
+                          backgroundColor: const Color(0xFF2563EB),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),

@@ -176,13 +176,13 @@ class _WidgetsComponentState extends State<WidgetsComponent> {
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF696CFF).withOpacity(0.1),
+                                color: const Color(0xFF2563EB).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Icon(
                                 item['icon'],
                                 size: 22,
-                                color: const Color(0xFF696CFF),
+                                color: const Color(0xFF2563EB),
                               ),
                             ),
                             8.height,

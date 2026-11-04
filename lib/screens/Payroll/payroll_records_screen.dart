@@ -135,7 +135,7 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
               _loadPayrollRecords();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF696CFF),
+              backgroundColor: const Color(0xFF2563EB),
               foregroundColor: Colors.white,
             ),
             child: Text(language.lblApply),
@@ -156,7 +156,7 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -209,7 +209,7 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                                     child: Padding(
                                       padding: EdgeInsets.all(16),
                                       child: CircularProgressIndicator(
-                                        color: Color(0xFF696CFF),
+                                        color: Color(0xFF2563EB),
                                       ),
                                     ),
                                   );
@@ -349,12 +349,12 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
                           width: 48,
                           height: 48,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF696CFF).withOpacity(0.1),
+                            color: const Color(0xFF2563EB).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(
                             Iconsax.wallet_money,
-                            color: Color(0xFF696CFF),
+                            color: Color(0xFF2563EB),
                             size: 24,
                           ),
                         ),
@@ -579,7 +579,7 @@ class _PayrollRecordsScreenState extends State<PayrollRecordsScreen> {
               icon: const Icon(Iconsax.refresh),
               label: Text(language.lblRetry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,

@@ -74,9 +74,10 @@ class _AttendanceTypeWidgetState extends State<AttendanceTypeWidget> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Iconsax.building,
+                Icon(
+                  Iconsax.building,
                   color: AppDesignSystem.primaryColor,
-                  size: 16
+                  size: 16,
                 ),
                 8.width,
                 Text(
@@ -109,7 +110,9 @@ class _AttendanceTypeWidgetState extends State<AttendanceTypeWidget> {
                     attendanceType,
                     style: boldTextStyle(
                       size: 18,
-                      color: appStore.isDarkModeOn ? white : AppDesignSystem.neutral900,
+                      color: appStore.isDarkModeOn
+                          ? white
+                          : AppDesignSystem.neutral900,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -119,7 +122,9 @@ class _AttendanceTypeWidgetState extends State<AttendanceTypeWidget> {
             AppButton(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               color: AppDesignSystem.primaryColor,
-              shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shapeBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               onTap: () {
                 HapticFeedback.lightImpact();
                 appStore.refreshAttendanceStatus();
@@ -127,8 +132,9 @@ class _AttendanceTypeWidgetState extends State<AttendanceTypeWidget> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Iconsax.refresh, color: white, size: 16).animate(onPlay: (c) => c.repeat())
-                    .rotate(duration: 3000.ms),
+                  const Icon(Iconsax.refresh, color: white, size: 16)
+                      .animate(onPlay: (c) => c.repeat())
+                      .rotate(duration: 3000.ms),
                   8.width,
                   Text(
                     language.lblRefresh,
@@ -187,17 +193,22 @@ class _AttendanceTypeWidgetState extends State<AttendanceTypeWidget> {
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppDesignSystem.primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                icon,
-                color: AppDesignSystem.primaryColor,
-                size: 20,
-              ),
-            ).animate(onPlay: (c) => c.repeat()).shimmer(duration: 2000.ms, color: AppDesignSystem.primaryColor.withOpacity(0.2)),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppDesignSystem.primaryColor.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: AppDesignSystem.primaryColor,
+                    size: 20,
+                  ),
+                )
+                .animate(onPlay: (c) => c.repeat())
+                .shimmer(
+                  duration: 2000.ms,
+                  color: AppDesignSystem.primaryColor.withOpacity(0.2),
+                ),
             12.width,
             Expanded(
               child: Text(

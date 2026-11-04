@@ -43,7 +43,7 @@ class _NoticeBoardState extends State<NoticeBoard> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -198,8 +198,8 @@ class _NoticeBoardState extends State<NoticeBoard> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      const Color(0xFF696CFF).withValues(alpha: 0.8),
-                      const Color(0xFF5457E6),
+                      const Color(0xFF2563EB).withValues(alpha: 0.8),
+                      const Color(0xFF16324F),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -282,8 +282,8 @@ class _NoticeBoardState extends State<NoticeBoard> {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withValues(alpha: 0.2),
-                  const Color(0xFF5457E6).withValues(alpha: 0.2),
+                  const Color(0xFF2563EB).withValues(alpha: 0.2),
+                  const Color(0xFF16324F).withValues(alpha: 0.2),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -292,7 +292,7 @@ class _NoticeBoardState extends State<NoticeBoard> {
             child: Icon(
               Iconsax.notification,
               size: 60,
-              color: const Color(0xFF696CFF).withValues(alpha: 0.7),
+              color: const Color(0xFF2563EB).withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: 24),
@@ -437,7 +437,7 @@ class _NoticeBoardState extends State<NoticeBoard> {
         gradient: LinearGradient(
           colors: isDark
               ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-              : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+              : [const Color(0xFF2563EB), const Color(0xFF16324F)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -537,8 +537,8 @@ class _NoticeBoardState extends State<NoticeBoard> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            const Color(0xFF696CFF).withValues(alpha: 0.8),
-                            const Color(0xFF5457E6),
+                            const Color(0xFF2563EB).withValues(alpha: 0.8),
+                            const Color(0xFF16324F),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,

@@ -107,7 +107,7 @@ class _DocumentRequestScreenState extends State<DocumentRequestScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(
-                          color: Color(0xFF696CFF),
+                          color: Color(0xFF2563EB),
                           width: 2,
                         ),
                       ),
@@ -155,7 +155,7 @@ class _DocumentRequestScreenState extends State<DocumentRequestScreen> {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: const BorderSide(
-                            color: Color(0xFF696CFF),
+                            color: Color(0xFF2563EB),
                             width: 2,
                           ),
                         ),
@@ -204,7 +204,7 @@ class _DocumentRequestScreenState extends State<DocumentRequestScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                              colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -324,8 +324,8 @@ class _DocumentRequestScreenState extends State<DocumentRequestScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withValues(alpha: 0.2),
-                  const Color(0xFF5457E6).withValues(alpha: 0.1),
+                  const Color(0xFF2563EB).withValues(alpha: 0.2),
+                  const Color(0xFF16324F).withValues(alpha: 0.1),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -335,7 +335,7 @@ class _DocumentRequestScreenState extends State<DocumentRequestScreen> {
             child: Icon(
               Iconsax.document,
               size: 60,
-              color: const Color(0xFF696CFF).withValues(alpha: 0.7),
+              color: const Color(0xFF2563EB).withValues(alpha: 0.7),
             ),
           ),
           24.height,
@@ -368,7 +368,7 @@ class _DocumentRequestScreenState extends State<DocumentRequestScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
               ),
             ),
             padding: EdgeInsets.only(
@@ -450,7 +450,7 @@ class _DocumentRequestScreenState extends State<DocumentRequestScreen> {
                                                 padding: const EdgeInsets.symmetric(
                                                     horizontal: 12, vertical: 8),
                                                 decoration: BoxDecoration(
-                                                  color: const Color(0xFF696CFF),
+                                                  color: const Color(0xFF2563EB),
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                 ),
@@ -487,7 +487,7 @@ class _DocumentRequestScreenState extends State<DocumentRequestScreen> {
                                                 padding: const EdgeInsets.symmetric(
                                                     horizontal: 12, vertical: 8),
                                                 decoration: BoxDecoration(
-                                                  color: const Color(0xFF696CFF),
+                                                  color: const Color(0xFF2563EB),
                                                   borderRadius:
                                                       BorderRadius.circular(20),
                                                 ),
@@ -583,7 +583,7 @@ class _DocumentRequestScreenState extends State<DocumentRequestScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xFF696CFF),
+        backgroundColor: const Color(0xFF2563EB),
         onPressed: () async {
           await const CreateDocumentRequestScreen().launch(context);
           _store.pagingController.refresh();

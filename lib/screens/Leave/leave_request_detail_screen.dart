@@ -290,13 +290,13 @@ class _LeaveRequestDetailScreenState extends State<LeaveRequestDetailScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  (iconColor ?? const Color(0xFF696CFF)).withOpacity(0.2),
-                  (iconColor ?? const Color(0xFF696CFF)).withOpacity(0.1),
+                  (iconColor ?? const Color(0xFF2563EB)).withOpacity(0.2),
+                  (iconColor ?? const Color(0xFF2563EB)).withOpacity(0.1),
                 ],
               ),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, size: 20, color: iconColor ?? const Color(0xFF696CFF)),
+            child: Icon(icon, size: 20, color: iconColor ?? const Color(0xFF2563EB)),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -424,12 +424,12 @@ class _LeaveRequestDetailScreenState extends State<LeaveRequestDetailScreen> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF696CFF).withOpacity(0.15),
+                    color: const Color(0xFF2563EB).withOpacity(0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
                     Iconsax.refresh_circle,
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                     size: 20,
                   ),
                 ),
@@ -661,7 +661,7 @@ class _LeaveRequestDetailScreenState extends State<LeaveRequestDetailScreen> {
                   end: Alignment.bottomRight,
                   colors: appStore.isDarkModeOn
                       ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                      : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                      : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 ),
               ),
               child: SafeArea(
@@ -728,7 +728,7 @@ class _LeaveRequestDetailScreenState extends State<LeaveRequestDetailScreen> {
                   end: Alignment.bottomRight,
                   colors: appStore.isDarkModeOn
                       ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                      : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                      : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 ),
               ),
               child: SafeArea(
@@ -826,7 +826,7 @@ class _LeaveRequestDetailScreenState extends State<LeaveRequestDetailScreen> {
                                       style: const TextStyle(color: Colors.white),
                                     ),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF696CFF),
+                                      backgroundColor: const Color(0xFF2563EB),
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 24, vertical: 12),
                                       shape: RoundedRectangleBorder(
@@ -856,7 +856,7 @@ class _LeaveRequestDetailScreenState extends State<LeaveRequestDetailScreen> {
                   end: Alignment.bottomRight,
                   colors: appStore.isDarkModeOn
                       ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                      : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                      : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 ),
               ),
               child: SafeArea(
@@ -877,7 +877,7 @@ class _LeaveRequestDetailScreenState extends State<LeaveRequestDetailScreen> {
                 end: Alignment.bottomRight,
                 colors: appStore.isDarkModeOn
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
               ),
             ),
             child: SafeArea(
@@ -932,7 +932,7 @@ class _LeaveRequestDetailScreenState extends State<LeaveRequestDetailScreen> {
                                 PopupMenuItem(
                                   child: Row(
                                     children: [
-                                      const Icon(Iconsax.edit, size: 20, color: Color(0xFF696CFF)),
+                                      const Icon(Iconsax.edit, size: 20, color: Color(0xFF2563EB)),
                                       const SizedBox(width: 12),
                                       Text(
                                         language.lblEdit,
@@ -1094,12 +1094,12 @@ class _LeaveRequestDetailScreenState extends State<LeaveRequestDetailScreen> {
                                           Container(
                                             padding: const EdgeInsets.all(8),
                                             decoration: BoxDecoration(
-                                              color: const Color(0xFF696CFF).withOpacity(0.15),
+                                              color: const Color(0xFF2563EB).withOpacity(0.15),
                                               borderRadius: BorderRadius.circular(10),
                                             ),
                                             child: const Icon(
                                               Iconsax.document_text,
-                                              color: Color(0xFF696CFF),
+                                              color: Color(0xFF2563EB),
                                               size: 20,
                                             ),
                                           ),

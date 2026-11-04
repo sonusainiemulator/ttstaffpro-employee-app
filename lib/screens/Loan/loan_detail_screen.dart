@@ -116,7 +116,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen>
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -215,7 +215,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen>
   Widget _buildLoadingState() {
     return const Center(
       child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF696CFF)),
+        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
       ),
     );
   }
@@ -256,7 +256,7 @@ class _LoanDetailScreenState extends State<LoanDetailScreen>
               icon: const Icon(Iconsax.refresh),
               label: Text(language.lblRetry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
               ),
             ),
@@ -280,9 +280,9 @@ class _LoanDetailScreenState extends State<LoanDetailScreen>
           color: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
           child: TabBar(
             controller: _tabController,
-            labelColor: const Color(0xFF696CFF),
+            labelColor: const Color(0xFF2563EB),
             unselectedLabelColor: isDark ? Colors.grey[400] : Colors.grey[600],
-            indicatorColor: const Color(0xFF696CFF),
+            indicatorColor: const Color(0xFF2563EB),
             indicatorWeight: 3,
             tabs: [
               Tab(text: language.lblDetails),
@@ -822,13 +822,13 @@ class _LoanDetailScreenState extends State<LoanDetailScreen>
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF696CFF).withOpacity(0.1),
+                  color: const Color(0xFF2563EB).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
                   _getHistoryIcon(history.action),
                   size: 20,
-                  color: const Color(0xFF696CFF),
+                  color: const Color(0xFF2563EB),
                 ),
               ),
               const SizedBox(width: 12),

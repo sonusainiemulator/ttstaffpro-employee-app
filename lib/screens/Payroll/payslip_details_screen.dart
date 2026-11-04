@@ -77,7 +77,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen>
             _buildActionButton(
               icon: Iconsax.document_download,
               label: language.lblDownloadPDF,
-              color: const Color(0xFF696CFF),
+              color: const Color(0xFF2563EB),
               isDark: isDark,
               onTap: () async {
                 Navigator.pop(context);
@@ -187,7 +187,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen>
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -316,14 +316,14 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen>
         gradient: LinearGradient(
           colors: isDark
               ? [const Color(0xFF1F2937), const Color(0xFF374151)]
-              : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+              : [const Color(0xFF2563EB), const Color(0xFF16324F)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: (isDark ? Colors.black : const Color(0xFF696CFF))
+            color: (isDark ? Colors.black : const Color(0xFF2563EB))
                 .withOpacity(0.3),
             blurRadius: 12,
             offset: const Offset(0, 6),
@@ -453,7 +453,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen>
         ),
         indicator: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+            colors: [Color(0xFF2563EB), Color(0xFF16324F)],
           ),
           borderRadius: BorderRadius.circular(12),
         ),
@@ -649,15 +649,15 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen>
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withOpacity(0.2),
-                  const Color(0xFF5457E6).withOpacity(0.1),
+                  const Color(0xFF2563EB).withOpacity(0.2),
+                  const Color(0xFF16324F).withOpacity(0.1),
                 ],
               ),
             ),
             child: Icon(
               icon,
               size: 50,
-              color: const Color(0xFF696CFF).withOpacity(0.7),
+              color: const Color(0xFF2563EB).withOpacity(0.7),
             ),
           ),
           const SizedBox(height: 24),
@@ -715,8 +715,8 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen>
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withOpacity(0.1),
-                  const Color(0xFF5457E6).withOpacity(0.05),
+                  const Color(0xFF2563EB).withOpacity(0.1),
+                  const Color(0xFF16324F).withOpacity(0.05),
                 ],
               ),
               borderRadius: const BorderRadius.only(
@@ -731,7 +731,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen>
                   height: 36,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                      colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -829,7 +829,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(color: Color(0xFF696CFF)),
+          const CircularProgressIndicator(color: Color(0xFF2563EB)),
           const SizedBox(height: 16),
           Text(
             language.lblLoadingPayslipDetails,
@@ -883,7 +883,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen>
               icon: const Icon(Icons.refresh),
               label: Text(language.lblRetry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
@@ -949,12 +949,12 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen>
                   height: 50,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                      colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                     ),
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF696CFF).withOpacity(0.3),
+                        color: const Color(0xFF2563EB).withOpacity(0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),

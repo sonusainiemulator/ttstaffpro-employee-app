@@ -65,7 +65,7 @@ class _CreateDocumentRequestScreenState
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -199,15 +199,15 @@ class _CreateDocumentRequestScreenState
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        const Color(0xFF696CFF).withValues(alpha: 0.2),
-                        const Color(0xFF5457E6).withValues(alpha: 0.1),
+                        const Color(0xFF2563EB).withValues(alpha: 0.2),
+                        const Color(0xFF16324F).withValues(alpha: 0.1),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
                     Iconsax.document,
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                     size: 20,
                   ),
                 ),
@@ -295,7 +295,7 @@ class _CreateDocumentRequestScreenState
                     const Icon(
                       Iconsax.document_text,
                       size: 20,
-                      color: Color(0xFF696CFF),
+                      color: Color(0xFF2563EB),
                     ),
                     const SizedBox(width: 12),
                     Text(
@@ -333,7 +333,7 @@ class _CreateDocumentRequestScreenState
                 : Colors.white,
             icon: const Icon(
               Iconsax.arrow_down_1,
-              color: Color(0xFF696CFF),
+              color: Color(0xFF2563EB),
               size: 20,
             ),
             borderRadius: BorderRadius.circular(14),
@@ -463,7 +463,7 @@ class _CreateDocumentRequestScreenState
                 : const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                    colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                   ),
             color: _isSubmitting ? Colors.grey.withValues(alpha: 0.5) : null,
             borderRadius: BorderRadius.circular(14),

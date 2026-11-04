@@ -90,8 +90,8 @@ class _ServerUnreachableScreenState extends State<ServerUnreachableScreen> {
                                 const Color(0xFF111827),
                               ]
                             : [
-                                const Color(0xFF696CFF),
-                                const Color(0xFF5457E6),
+                                const Color(0xFF2563EB),
+                                const Color(0xFF16324F),
                               ],
                       ),
                       borderRadius: BorderRadius.circular(24),
@@ -179,12 +179,12 @@ class _ServerUnreachableScreenState extends State<ServerUnreachableScreen> {
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF696CFF).withOpacity(0.1),
+                                color: const Color(0xFF2563EB).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: const Icon(
                                 Icons.info_outline_rounded,
-                                color: Color(0xFF696CFF),
+                                color: Color(0xFF2563EB),
                                 size: 20,
                               ),
                             ),
@@ -254,8 +254,8 @@ class _ServerUnreachableScreenState extends State<ServerUnreachableScreen> {
                                       strokeWidth: 2,
                                       valueColor: AlwaysStoppedAnimation<Color>(
                                         appStore.isDarkModeOn
-                                            ? const Color(0xFF696CFF)
-                                            : const Color(0xFF696CFF),
+                                            ? const Color(0xFF2563EB)
+                                            : const Color(0xFF2563EB),
                                       ),
                                     ),
                                   ),
@@ -277,7 +277,7 @@ class _ServerUnreachableScreenState extends State<ServerUnreachableScreen> {
                         : ElevatedButton(
                             onPressed: checkStatus,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF696CFF),
+                              backgroundColor: const Color(0xFF2563EB),
                               foregroundColor: Colors.white,
                               elevation: 0,
                               padding: const EdgeInsets.symmetric(
@@ -287,7 +287,7 @@ class _ServerUnreachableScreenState extends State<ServerUnreachableScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
-                              shadowColor: const Color(0xFF696CFF).withOpacity(0.3),
+                              shadowColor: const Color(0xFF2563EB).withOpacity(0.3),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

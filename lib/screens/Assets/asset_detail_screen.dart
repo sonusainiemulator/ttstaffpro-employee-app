@@ -75,7 +75,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -218,20 +218,20 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor:
-                          AlwaysStoppedAnimation<Color>(Color(0xFF696CFF)),
+                          AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
                     ),
                   ),
                   errorWidget: (context, url, error) => const Icon(
                     Iconsax.box,
                     size: 100,
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                   ),
                 ),
               )
             : const Icon(
                 Iconsax.box,
                 size: 100,
-                color: Color(0xFF696CFF),
+                color: Color(0xFF2563EB),
               ),
       ),
     );
@@ -259,7 +259,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
           child: TabBar(
             controller: _tabController,
             indicator: BoxDecoration(
-              color: const Color(0xFF696CFF),
+              color: const Color(0xFF2563EB),
               borderRadius: BorderRadius.circular(10),
             ),
             indicatorSize: TabBarIndicatorSize.tab,
@@ -577,7 +577,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
                     _showAllIssues(asset);
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF696CFF),
+                    foregroundColor: const Color(0xFF2563EB),
                   ),
                   child: Text(
                     'View all ${_assetStore.maintenanceHistory.length} issues',
@@ -630,7 +630,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
       child: const Center(
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF696CFF)),
+          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
         ),
       ),
     );
@@ -817,7 +817,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 valueColor: AlwaysStoppedAnimation<Color>(
-                                    Color(0xFF696CFF)),
+                                    Color(0xFF2563EB)),
                               ),
                             ),
                           );
@@ -929,7 +929,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
           ),
           trailing: IconButton(
             icon: const Icon(Iconsax.arrow_down),
-            color: const Color(0xFF696CFF),
+            color: const Color(0xFF2563EB),
             onPressed: () => _downloadDocument(document),
           ),
         ),
@@ -1041,7 +1041,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
                 height: 12,
                 decoration: BoxDecoration(
                   color: assignment.isCurrentlyAssigned
-                      ? const Color(0xFF696CFF)
+                      ? const Color(0xFF2563EB)
                       : (appStore.isDarkModeOn
                           ? Colors.grey[600]
                           : Colors.grey[400]),
@@ -1096,7 +1096,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: assignment.isCurrentlyAssigned
-                              ? const Color(0xFF696CFF)
+                              ? const Color(0xFF2563EB)
                               : (appStore.isDarkModeOn
                                   ? Colors.grey[400]
                                   : const Color(0xFF6B7280)),
@@ -1473,7 +1473,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
     return const Center(
       child: CircularProgressIndicator(
         strokeWidth: 2,
-        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF696CFF)),
+        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
       ),
     );
   }
@@ -1505,7 +1505,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen>
           ElevatedButton(
             onPressed: _loadAssetDetails,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF696CFF),
+              backgroundColor: const Color(0xFF2563EB),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

@@ -187,7 +187,7 @@ class _AttendanceRegularizationListScreenState
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF696CFF),
+                          backgroundColor: const Color(0xFF2563EB),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -223,14 +223,14 @@ class _AttendanceRegularizationListScreenState
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: selected
-              ? const Color(0xFF696CFF)
+              ? const Color(0xFF2563EB)
               : (appStore.isDarkModeOn
                   ? const Color(0xFF111827)
                   : const Color(0xFFF3F4F6)),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: selected
-                ? const Color(0xFF696CFF)
+                ? const Color(0xFF2563EB)
                 : (appStore.isDarkModeOn
                     ? Colors.grey[700]!
                     : const Color(0xFFE5E7EB)),
@@ -371,8 +371,8 @@ class _AttendanceRegularizationListScreenState
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          const Color(0xFF696CFF).withOpacity(0.8),
-                          const Color(0xFF5457E6).withOpacity(0.6),
+                          const Color(0xFF2563EB).withOpacity(0.8),
+                          const Color(0xFF16324F).withOpacity(0.6),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(12),
@@ -556,7 +556,7 @@ class _AttendanceRegularizationListScreenState
                         ),
                       ),
                       style: TextButton.styleFrom(
-                        foregroundColor: const Color(0xFF696CFF),
+                        foregroundColor: const Color(0xFF2563EB),
                       ),
                     ),
                     TextButton.icon(
@@ -714,7 +714,7 @@ class _AttendanceRegularizationListScreenState
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -849,10 +849,10 @@ class _AttendanceRegularizationListScreenState
                                 margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF696CFF).withOpacity(0.1),
+                                  color: const Color(0xFF2563EB).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: const Color(0xFF696CFF).withOpacity(0.3),
+                                    color: const Color(0xFF2563EB).withOpacity(0.3),
                                     width: 1,
                                   ),
                                 ),
@@ -861,7 +861,7 @@ class _AttendanceRegularizationListScreenState
                                     const Icon(
                                       Iconsax.filter,
                                       size: 16,
-                                      color: Color(0xFF696CFF),
+                                      color: Color(0xFF2563EB),
                                     ),
                                     const SizedBox(width: 8),
                                     Expanded(
@@ -928,9 +928,9 @@ class _AttendanceRegularizationListScreenState
                                               shape: BoxShape.circle,
                                               gradient: LinearGradient(
                                                 colors: [
-                                                  const Color(0xFF696CFF)
+                                                  const Color(0xFF2563EB)
                                                       .withOpacity(0.2),
-                                                  const Color(0xFF696CFF)
+                                                  const Color(0xFF2563EB)
                                                       .withOpacity(0.1),
                                                 ],
                                               ),
@@ -938,7 +938,7 @@ class _AttendanceRegularizationListScreenState
                                             child: Icon(
                                               Iconsax.calendar_edit,
                                               size: 60,
-                                              color: const Color(0xFF696CFF)
+                                              color: const Color(0xFF2563EB)
                                                   .withOpacity(0.7),
                                             ),
                                           ),
@@ -995,7 +995,7 @@ class _AttendanceRegularizationListScreenState
             _store.getCounts();
           }
         },
-        backgroundColor: const Color(0xFF696CFF),
+        backgroundColor: const Color(0xFF2563EB),
         icon: const Icon(Iconsax.add, color: Colors.white),
         label: Text(
           language.lblCreateRequest,
@@ -1017,7 +1017,7 @@ class _AttendanceRegularizationListScreenState
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: selected
-                ? const Color(0xFF696CFF)
+                ? const Color(0xFF2563EB)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
           ),

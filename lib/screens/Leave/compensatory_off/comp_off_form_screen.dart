@@ -174,7 +174,7 @@ class _CompOffFormScreenState extends State<CompOffFormScreen> {
               gradient: LinearGradient(
                 colors: appStore.isDarkModeOn
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -241,7 +241,7 @@ class _CompOffFormScreenState extends State<CompOffFormScreen> {
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                       gradient: const LinearGradient(
-                                        colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                                        colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                                       ),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -291,7 +291,7 @@ class _CompOffFormScreenState extends State<CompOffFormScreen> {
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                       gradient: const LinearGradient(
-                                        colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                                        colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                                       ),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
@@ -490,9 +490,9 @@ class _CompOffFormScreenState extends State<CompOffFormScreen> {
                           child: ElevatedButton(
                             onPressed: _isSubmitting ? null : _submitForm,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF696CFF),
+                              backgroundColor: const Color(0xFF2563EB),
                               disabledBackgroundColor:
-                                  const Color(0xFF696CFF).withOpacity(0.5),
+                                  const Color(0xFF2563EB).withOpacity(0.5),
                               shape: buildButtonCorner(),
                               elevation: 0,
                             ),

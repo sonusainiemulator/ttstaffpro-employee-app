@@ -194,7 +194,7 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
                       _loadData();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF696CFF),
+                      backgroundColor: const Color(0xFF2563EB),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -254,14 +254,14 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: selected
-              ? const Color(0xFF696CFF)
+              ? const Color(0xFF2563EB)
               : (appStore.isDarkModeOn
                   ? const Color(0xFF111827)
                   : const Color(0xFFF3F4F6)),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: selected
-                ? const Color(0xFF696CFF)
+                ? const Color(0xFF2563EB)
                 : (appStore.isDarkModeOn
                     ? Colors.grey[700]!
                     : const Color(0xFFE5E7EB)),
@@ -506,7 +506,7 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
                             fontWeight: FontWeight.bold,
                             color: compOff.isUsed
                                 ? Colors.grey
-                                : const Color(0xFF696CFF),
+                                : const Color(0xFF2563EB),
                           ),
                         ),
                         const SizedBox(width: 4),
@@ -774,8 +774,8 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
           borderRadius: BorderRadius.circular(16),
           gradient: LinearGradient(
             colors: [
-              const Color(0xFF696CFF).withOpacity(0.1),
-              const Color(0xFF5457E6).withOpacity(0.05),
+              const Color(0xFF2563EB).withOpacity(0.1),
+              const Color(0xFF16324F).withOpacity(0.05),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -803,8 +803,8 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xFF696CFF),
-                        Color(0xFF5457E6),
+                        Color(0xFF2563EB),
+                        Color(0xFF16324F),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(10),
@@ -934,7 +934,7 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -998,10 +998,10 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
                                   horizontal: 16, vertical: 8),
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF696CFF).withOpacity(0.1),
+                                color: const Color(0xFF2563EB).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: const Color(0xFF696CFF).withOpacity(0.3),
+                                  color: const Color(0xFF2563EB).withOpacity(0.3),
                                   width: 1,
                                 ),
                               ),
@@ -1010,7 +1010,7 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
                                   const Icon(
                                     Iconsax.filter,
                                     size: 16,
-                                    color: Color(0xFF696CFF),
+                                    color: Color(0xFF2563EB),
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
@@ -1078,7 +1078,7 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
             ),
           ).then((_) => _loadData());
         },
-        backgroundColor: const Color(0xFF696CFF),
+        backgroundColor: const Color(0xFF2563EB),
         icon: const Icon(Iconsax.add, color: Colors.white),
         label: Text(
           language.lblRequestCompOff,
@@ -1146,7 +1146,7 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
                   style: const TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF696CFF),
+                  backgroundColor: const Color(0xFF2563EB),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -1230,7 +1230,7 @@ class _CompOffListScreenState extends State<CompOffListScreen> {
                     valueColor: AlwaysStoppedAnimation(
                       appStore.isDarkModeOn
                           ? Colors.white
-                          : const Color(0xFF696CFF),
+                          : const Color(0xFF2563EB),
                     ),
                   ),
                 ),

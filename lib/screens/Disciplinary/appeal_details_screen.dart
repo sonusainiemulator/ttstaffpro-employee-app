@@ -236,13 +236,13 @@ class _AppealDetailsScreenState extends State<AppealDetailsScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  (iconColor ?? const Color(0xFF696CFF)).withOpacity(0.2),
-                  (iconColor ?? const Color(0xFF696CFF)).withOpacity(0.1),
+                  (iconColor ?? const Color(0xFF2563EB)).withOpacity(0.2),
+                  (iconColor ?? const Color(0xFF2563EB)).withOpacity(0.1),
                 ],
               ),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, size: 20, color: iconColor ?? const Color(0xFF696CFF)),
+            child: Icon(icon, size: 20, color: iconColor ?? const Color(0xFF2563EB)),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -310,7 +310,7 @@ class _AppealDetailsScreenState extends State<AppealDetailsScreen> {
                   Icon(
                     icon,
                     size: 20,
-                    color: const Color(0xFF696CFF),
+                    color: const Color(0xFF2563EB),
                   ),
                   const SizedBox(width: 8),
                 ],
@@ -374,7 +374,7 @@ class _AppealDetailsScreenState extends State<AppealDetailsScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -493,7 +493,7 @@ class _AppealDetailsScreenState extends State<AppealDetailsScreen> {
                   style: const TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF696CFF),
+                  backgroundColor: const Color(0xFF2563EB),
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -675,7 +675,7 @@ class _AppealDetailsScreenState extends State<AppealDetailsScreen> {
                               children: [
                                 const Icon(
                                   Iconsax.document,
-                                  color: Color(0xFF696CFF),
+                                  color: Color(0xFF2563EB),
                                   size: 20,
                                 ),
                                 const SizedBox(width: 12),
@@ -710,7 +710,7 @@ class _AppealDetailsScreenState extends State<AppealDetailsScreen> {
                                 const Icon(
                                   Icons.arrow_forward_ios,
                                   size: 16,
-                                  color: Color(0xFF696CFF),
+                                  color: Color(0xFF2563EB),
                                 ),
                               ],
                             ),
@@ -875,7 +875,7 @@ class _AppealDetailsScreenState extends State<AppealDetailsScreen> {
                                       const Icon(
                                         Iconsax.user,
                                         size: 16,
-                                        color: Color(0xFF696CFF),
+                                        color: Color(0xFF2563EB),
                                       ),
                                       const SizedBox(width: 8),
                                       Text(

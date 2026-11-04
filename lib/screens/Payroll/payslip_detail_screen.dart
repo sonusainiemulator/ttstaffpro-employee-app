@@ -51,7 +51,7 @@ class _PayslipDetailScreenState extends State<PayslipDetailScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -119,7 +119,7 @@ class _PayslipDetailScreenState extends State<PayslipDetailScreen> {
         onPressed: _isDownloading ? null : _downloadPayslip,
         backgroundColor: _isDownloading
             ? Colors.grey
-            : const Color(0xFF696CFF),
+            : const Color(0xFF2563EB),
         foregroundColor: Colors.white,
         icon: _isDownloading
             ? SizedBox(
@@ -411,12 +411,12 @@ class _PayslipDetailScreenState extends State<PayslipDetailScreen> {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+          colors: [Color(0xFF2563EB), Color(0xFF16324F)],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF696CFF).withOpacity(0.3),
+            color: const Color(0xFF2563EB).withOpacity(0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -679,12 +679,12 @@ class _PayslipDetailScreenState extends State<PayslipDetailScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF696CFF).withOpacity(0.1),
+                  color: const Color(0xFF2563EB).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
                   Iconsax.calendar,
-                  color: Color(0xFF696CFF),
+                  color: Color(0xFF2563EB),
                   size: 20,
                 ),
               ),

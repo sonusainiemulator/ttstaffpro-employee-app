@@ -31,7 +31,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -164,8 +164,8 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withOpacity(0.8),
-                  const Color(0xFF5457E6),
+                  const Color(0xFF2563EB).withOpacity(0.8),
+                  const Color(0xFF16324F),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -200,7 +200,7 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF696CFF),
+                  color: Color(0xFF2563EB),
                 ),
               ),
             ],
@@ -433,12 +433,12 @@ class _PayslipDetailsScreenState extends State<PayslipDetailsScreen> {
           height: 50,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+              colors: [Color(0xFF2563EB), Color(0xFF16324F)],
             ),
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF696CFF).withOpacity(0.3),
+                color: const Color(0xFF2563EB).withOpacity(0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),

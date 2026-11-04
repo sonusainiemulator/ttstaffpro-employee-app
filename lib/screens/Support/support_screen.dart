@@ -26,7 +26,7 @@ class _SupportScreenState extends State<SupportScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -208,8 +208,8 @@ class _SupportScreenState extends State<SupportScreen> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        const Color(0xFF696CFF).withOpacity(0.8),
-                        const Color(0xFF5457E6),
+                        const Color(0xFF2563EB).withOpacity(0.8),
+                        const Color(0xFF16324F),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,

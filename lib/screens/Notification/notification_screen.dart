@@ -48,7 +48,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -120,7 +120,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       onRefresh: () => Future.sync(
         () => _store.pagingController.refresh(),
       ),
-      color: const Color(0xFF696CFF),
+      color: const Color(0xFF2563EB),
       child: PagedListView<int, NotificationModel>(
         padding: const EdgeInsets.only(
           left: 16,
@@ -137,7 +137,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             padding: const EdgeInsets.all(16),
             alignment: Alignment.center,
             child: const CircularProgressIndicator(
-              color: Color(0xFF696CFF),
+              color: Color(0xFF2563EB),
             ),
           ),
           itemBuilder: (context, notification, index) {
@@ -158,7 +158,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isUnread
-              ? const Color(0xFF696CFF).withOpacity(0.3)
+              ? const Color(0xFF2563EB).withOpacity(0.3)
               : (isDark ? Colors.grey[700]! : const Color(0xFFE5E7EB)),
           width: 1.5,
         ),
@@ -215,7 +215,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               height: 8,
                               margin: const EdgeInsets.only(left: 8),
                               decoration: const BoxDecoration(
-                                color: Color(0xFF696CFF),
+                                color: Color(0xFF2563EB),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -294,8 +294,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            const Color(0xFF696CFF).withOpacity(0.8),
-            const Color(0xFF5457E6),
+            const Color(0xFF2563EB).withOpacity(0.8),
+            const Color(0xFF16324F),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -322,8 +322,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withOpacity(0.2),
-                  const Color(0xFF5457E6).withOpacity(0.2),
+                  const Color(0xFF2563EB).withOpacity(0.2),
+                  const Color(0xFF16324F).withOpacity(0.2),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -332,7 +332,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             child: Icon(
               Iconsax.notification,
               size: 60,
-              color: const Color(0xFF696CFF).withOpacity(0.7),
+              color: const Color(0xFF2563EB).withOpacity(0.7),
             ),
           ),
           const SizedBox(height: 24),

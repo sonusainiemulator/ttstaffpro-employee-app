@@ -134,7 +134,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(
-                        color: Color(0xFF696CFF),
+                        color: Color(0xFF2563EB),
                         width: 2,
                       ),
                     ),
@@ -203,7 +203,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(
-                          color: Color(0xFF696CFF),
+                          color: Color(0xFF2563EB),
                           width: 2,
                         ),
                       ),
@@ -255,7 +255,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                            colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -304,7 +304,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -369,7 +369,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                                                 vertical: 6,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: const Color(0xFF696CFF),
+                                                color: const Color(0xFF2563EB),
                                                 borderRadius: BorderRadius.circular(20),
                                               ),
                                               child: Row(
@@ -406,7 +406,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                                                 vertical: 6,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: const Color(0xFF696CFF),
+                                                color: const Color(0xFF2563EB),
                                                 borderRadius: BorderRadius.circular(20),
                                               ),
                                               child: Row(
@@ -494,7 +494,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: const Color(0xFF696CFF),
+        backgroundColor: const Color(0xFF2563EB),
         onPressed: () async {
           await const ExpenseCreateScreen().launch(context);
           _store.pagingController.refresh();
@@ -534,8 +534,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF696CFF).withValues(alpha: 0.2),
-                    const Color(0xFF5457E6).withValues(alpha: 0.1),
+                    const Color(0xFF2563EB).withValues(alpha: 0.2),
+                    const Color(0xFF16324F).withValues(alpha: 0.1),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -545,7 +545,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               child: Icon(
                 Iconsax.money_2,
                 size: 60,
-                color: const Color(0xFF696CFF).withValues(alpha: 0.7),
+                color: const Color(0xFF2563EB).withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 24),

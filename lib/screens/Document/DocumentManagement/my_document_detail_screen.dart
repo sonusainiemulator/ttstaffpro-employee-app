@@ -65,7 +65,7 @@ class _MyDocumentDetailScreenState extends State<MyDocumentDetailScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
               ),
             ),
             child: SafeArea(
@@ -219,7 +219,7 @@ class _MyDocumentDetailScreenState extends State<MyDocumentDetailScreen> {
             height: 80,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                colors: [Color(0xFF2563EB), Color(0xFF16324F)],
               ),
               borderRadius: BorderRadius.circular(16),
             ),
@@ -250,15 +250,15 @@ class _MyDocumentDetailScreenState extends State<MyDocumentDetailScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: const Color(0xFF696CFF).withOpacity(0.1),
+                color: const Color(0xFF2563EB).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: const Color(0xFF696CFF).withOpacity(0.3),
+                  color: const Color(0xFF2563EB).withOpacity(0.3),
                 ),
               ),
               child: Text(
                 _document!.number!,
-                style: boldTextStyle(size: 12, color: const Color(0xFF696CFF)),
+                style: boldTextStyle(size: 12, color: const Color(0xFF2563EB)),
               ),
             ),
           ],
@@ -289,7 +289,7 @@ class _MyDocumentDetailScreenState extends State<MyDocumentDetailScreen> {
                 height: 32,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                    colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                   ),
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -569,7 +569,7 @@ class _MyDocumentDetailScreenState extends State<MyDocumentDetailScreen> {
                 height: 32,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                    colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                   ),
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -637,7 +637,7 @@ class _MyDocumentDetailScreenState extends State<MyDocumentDetailScreen> {
                 height: 32,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                    colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                   ),
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -668,7 +668,7 @@ class _MyDocumentDetailScreenState extends State<MyDocumentDetailScreen> {
           child: ElevatedButton(
             onPressed: _isDownloading ? null : _downloadDocument,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF696CFF),
+              backgroundColor: const Color(0xFF2563EB),
               foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(
@@ -772,7 +772,7 @@ class _MyDocumentDetailScreenState extends State<MyDocumentDetailScreen> {
           ElevatedButton(
             onPressed: _loadDocument,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF696CFF),
+              backgroundColor: const Color(0xFF2563EB),
               foregroundColor: Colors.white,
               elevation: 0,
               shape: RoundedRectangleBorder(

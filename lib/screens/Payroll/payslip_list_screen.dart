@@ -264,7 +264,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
         decoration: BoxDecoration(
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                  colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                 )
               : null,
           color: isSelected
@@ -304,7 +304,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -489,7 +489,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                       onRefresh: () async {
                         await payrollStore.refreshPayrollData();
                       },
-                      color: const Color(0xFF696CFF),
+                      color: const Color(0xFF2563EB),
                       child: ListView.builder(
                         controller: _scrollController,
                         padding: const EdgeInsets.only(
@@ -523,7 +523,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: CircularProgressIndicator(color: const Color(0xFF696CFF)),
+        child: CircularProgressIndicator(color: const Color(0xFF2563EB)),
       ),
     );
   }
@@ -567,7 +567,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
               icon: const Icon(Icons.refresh, size: 18),
               label: Text(language.lblRetry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
@@ -589,12 +589,12 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+          colors: [Color(0xFF2563EB), Color(0xFF16324F)],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF696CFF).withValues(alpha: 0.3),
+            color: const Color(0xFF2563EB).withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -661,8 +661,8 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        const Color(0xFF696CFF).withValues(alpha: 0.8),
-                        const Color(0xFF5457E6),
+                        const Color(0xFF2563EB).withValues(alpha: 0.8),
+                        const Color(0xFF16324F),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -670,7 +670,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF696CFF).withValues(alpha: 0.3),
+                        color: const Color(0xFF2563EB).withValues(alpha: 0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -737,7 +737,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                             ),
                             decoration: BoxDecoration(
                               color: const Color(
-                                0xFF696CFF,
+                                0xFF2563EB,
                               ).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(6),
                             ),
@@ -746,7 +746,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF696CFF),
+                                color: Color(0xFF2563EB),
                               ),
                             ),
                           ),
@@ -759,13 +759,13 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
                 // Download Button
                 Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFF696CFF).withValues(alpha: 0.1),
+                    color: const Color(0xFF2563EB).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: IconButton(
                     icon: const Icon(
                       Iconsax.document_download,
-                      color: Color(0xFF696CFF),
+                      color: Color(0xFF2563EB),
                       size: 20,
                     ),
                     onPressed: () async {
@@ -809,15 +809,15 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withValues(alpha: 0.2),
-                  const Color(0xFF5457E6).withValues(alpha: 0.1),
+                  const Color(0xFF2563EB).withValues(alpha: 0.2),
+                  const Color(0xFF16324F).withValues(alpha: 0.1),
                 ],
               ),
             ),
             child: Icon(
               Iconsax.document_text,
               size: 70,
-              color: const Color(0xFF696CFF).withValues(alpha: 0.7),
+              color: const Color(0xFF2563EB).withValues(alpha: 0.7),
             ),
           ),
           const SizedBox(height: 32),
@@ -859,7 +859,7 @@ class _PayslipListScreenState extends State<PayslipListScreen> {
               icon: const Icon(Icons.refresh, size: 18),
               label: Text(language.lblClearFilters),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,

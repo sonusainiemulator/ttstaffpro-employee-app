@@ -60,10 +60,12 @@ class _InOutComponentState extends State<InOutComponent> {
 
   void init() {
     auth.isDeviceSupported().then(
-          (bool isSupported) => setState(() => _supportState = isSupported
-              ? _SupportState.supported
-              : _SupportState.unsupported),
-        );
+      (bool isSupported) => setState(
+        () => _supportState = isSupported
+            ? _SupportState.supported
+            : _SupportState.unsupported,
+      ),
+    );
   }
 
   Future _authenticate() async {
@@ -74,25 +76,26 @@ class _InOutComponentState extends State<InOutComponent> {
       });
 
       authenticated = await auth.authenticate(
-          localizedReason: language.lblScanYourFingerprintToCheckIn,
-          authMessages: <AuthMessages>[
-            /*        IOSAuthMessages(
+        localizedReason: language.lblScanYourFingerprintToCheckIn,
+        authMessages: <AuthMessages>[
+          /*        IOSAuthMessages(
               cancelButton: language.lblCancel,
               goToSettingsButton: language.lblSettings,
               goToSettingsDescription: language.lblPleaseSetUpYourTouchId,
               lockOut: language.lblPleaseReEnableYourTouchId,
             ),*/
-            AndroidAuthMessages(
-                signInTitle: language.lblFingerprintAuthentication,
-                //fingerprintRequiredTitle: "Connect to Login",
-                cancelButton: language.lblCancel,
-                goToSettingsButton: language.lblSettings,
-                goToSettingsDescription: 'Please setup your fingerprint',
-                biometricRequiredTitle:
-                    language.lblAuthenticateWithFingerprintOrPasswordToProceed
-                //fingerprintSuccess: "Authentication Successfully authenticated",
-                ),
-          ]);
+          AndroidAuthMessages(
+            signInTitle: language.lblFingerprintAuthentication,
+            //fingerprintRequiredTitle: "Connect to Login",
+            cancelButton: language.lblCancel,
+            goToSettingsButton: language.lblSettings,
+            goToSettingsDescription: 'Please setup your fingerprint',
+            biometricRequiredTitle:
+                language.lblAuthenticateWithFingerprintOrPasswordToProceed,
+            //fingerprintSuccess: "Authentication Successfully authenticated",
+          ),
+        ],
+      );
       _authorized = authenticated;
       setState(() {
         _isAuthenticating = false;
@@ -146,111 +149,108 @@ class _InOutComponentState extends State<InOutComponent> {
           color: Colors.black.withOpacity(0.5),
           child: Center(
             child: Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          child: Container(
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              color: appStore.isDarkModeOn
-                  ? const Color(0xFF1F2937)
-                  : Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(appStore.isDarkModeOn ? 0.4 : 0.1),
-                  blurRadius: 20,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Pulsating Circle Animation
-                TweenAnimationBuilder<double>(
-                  tween: Tween(begin: 0.8, end: 1.0),
-                  duration: const Duration(milliseconds: 800),
-                  curve: Curves.easeInOut,
-                  builder: (context, value, child) {
-                    return Transform.scale(
-                      scale: value,
-                      child: Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xFF696CFF),
-                              Color(0xFF5457E6),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF696CFF).withOpacity(0.3),
-                              blurRadius: 20 * value,
-                              spreadRadius: 5 * value,
-                            ),
-                          ],
-                        ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Rotating spinner
-                            SizedBox(
-                              width: 80,
-                              height: 80,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 3,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white.withOpacity(0.5),
-                                ),
-                                backgroundColor: Colors.transparent,
-                              ),
-                            ),
-                            // Center icon
-                            Icon(
-                              icon,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                          ],
-                        ),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              child: Container(
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                  color: appStore.isDarkModeOn
+                      ? const Color(0xFF1F2937)
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(
+                        appStore.isDarkModeOn ? 0.4 : 0.1,
                       ),
-                    );
-                  },
-                  onEnd: () {
-                    // Animation loop - no context needed
-                  },
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                24.height,
-                Text(
-                  message,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: appStore.isDarkModeOn
-                        ? Colors.white
-                        : const Color(0xFF111827),
-                  ),
-                  textAlign: TextAlign.center,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Pulsating Circle Animation
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.8, end: 1.0),
+                      duration: const Duration(milliseconds: 800),
+                      curve: Curves.easeInOut,
+                      builder: (context, value, child) {
+                        return Transform.scale(
+                          scale: value,
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [Color(0xFF2563EB), Color(0xFF16324F)],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(
+                                    0xFF2563EB,
+                                  ).withOpacity(0.3),
+                                  blurRadius: 20 * value,
+                                  spreadRadius: 5 * value,
+                                ),
+                              ],
+                            ),
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                // Rotating spinner
+                                SizedBox(
+                                  width: 80,
+                                  height: 80,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 3,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white.withOpacity(0.5),
+                                    ),
+                                    backgroundColor: Colors.transparent,
+                                  ),
+                                ),
+                                // Center icon
+                                Icon(icon, color: Colors.white, size: 32),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      onEnd: () {
+                        // Animation loop - no context needed
+                      },
+                    ),
+                    24.height,
+                    Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: appStore.isDarkModeOn
+                            ? Colors.white
+                            : const Color(0xFF111827),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    8.height,
+                    Text(
+                      'Please wait...',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: appStore.isDarkModeOn
+                            ? Colors.grey[400]
+                            : const Color(0xFF6B7280),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                8.height,
-                Text(
-                  'Please wait...',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: appStore.isDarkModeOn
-                        ? Colors.grey[400]
-                        : const Color(0xFF6B7280),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          ),
+              ),
             ),
           ),
         );
@@ -419,8 +419,9 @@ class _InOutComponentState extends State<InOutComponent> {
       toast('${language.lblInvalid} QR');
       return false;
     }
-    var verificationResult =
-        await globalAttendanceStore.validateQrCode(resultString);
+    var verificationResult = await globalAttendanceStore.validateQrCode(
+      resultString,
+    );
     if (verificationResult) {
       return true;
     }
@@ -437,8 +438,9 @@ class _InOutComponentState extends State<InOutComponent> {
       toast('${language.lblInvalid} QR');
       return false;
     }
-    var verificationResult =
-        await globalAttendanceStore.validateDynamicQrCode(resultString);
+    var verificationResult = await globalAttendanceStore.validateDynamicQrCode(
+      resultString,
+    );
     if (verificationResult) {
       return true;
     }
@@ -533,16 +535,14 @@ class _InOutComponentState extends State<InOutComponent> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: Text(
-              language.lblYes,
-              style: primaryTextStyle(color: white),
-            ),
+            child: Text(language.lblYes, style: primaryTextStyle(color: white)),
             onPressed: () async {
               Navigator.of(context).pop();
               _showLoadingDialog('${language.lblCheckOut}...');
               await globalAttendanceStore.checkInOut(
                 AttendanceStatus.checkOut,
-                earlyCheckoutReason: earlyCheckOutReasonController.text.isNotEmpty
+                earlyCheckoutReason:
+                    earlyCheckOutReasonController.text.isNotEmpty
                     ? earlyCheckOutReasonController.text
                     : null,
                 overtimeTask: isOvertimeTask,
@@ -570,7 +570,6 @@ class _InOutComponentState extends State<InOutComponent> {
     }
   }
 
-
   void startBreak() async {
     if (!isBreakModuleEnabled) {
       toast(language.lblBreakModuleIsNotEnabled);
@@ -593,13 +592,11 @@ class _InOutComponentState extends State<InOutComponent> {
         ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: appStore.appColorPrimary,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
-          child: Text(
-            language.lblYes,
-            style: primaryTextStyle(color: white),
-          ),
+          child: Text(language.lblYes, style: primaryTextStyle(color: white)),
           onPressed: () async {
             Navigator.of(context).pop();
             _showLoadingDialog('Starting Break...');
@@ -639,13 +636,18 @@ class _InOutComponentState extends State<InOutComponent> {
                   controller: earlyCheckOutReasonController,
                   focusNode: earlyCheckOutReasonFocus,
                   style: TextStyle(
-                      fontSize: fontSizeLargeMedium,
-                      fontFamily: fontRegular,
-                      color: appStore.textPrimaryColor),
+                    fontSize: fontSizeLargeMedium,
+                    fontFamily: fontRegular,
+                    color: appStore.textPrimaryColor,
+                  ),
                   decoration: newEditTextDecoration(
-                      Icons.text_fields, language.lblEarlyCheckOutReason,
-                      borderColor: appStore.isDarkModeOn ? white : Colors.grey.shade300, 
-                      bgColor: appStore.isDarkModeOn ? Colors.transparent : white),
+                    Icons.text_fields,
+                    language.lblEarlyCheckOutReason,
+                    borderColor: appStore.isDarkModeOn
+                        ? white
+                        : Colors.grey.shade300,
+                    bgColor: appStore.isDarkModeOn ? Colors.transparent : white,
+                  ),
                 ),
                 20.height,
                 Row(
@@ -672,15 +674,22 @@ class _InOutComponentState extends State<InOutComponent> {
                   TextFormField(
                     controller: overtimeNoteController,
                     style: TextStyle(
-                        fontSize: fontSizeLargeMedium,
-                        fontFamily: fontRegular,
-                        color: appStore.textPrimaryColor),
+                      fontSize: fontSizeLargeMedium,
+                      fontFamily: fontRegular,
+                      color: appStore.textPrimaryColor,
+                    ),
                     decoration: newEditTextDecoration(
-                        Icons.notes, 'Overtime Note',
-                        borderColor: appStore.isDarkModeOn ? white : Colors.grey.shade300, 
-                        bgColor: appStore.isDarkModeOn ? Colors.transparent : white),
+                      Icons.notes,
+                      'Overtime Note',
+                      borderColor: appStore.isDarkModeOn
+                          ? white
+                          : Colors.grey.shade300,
+                      bgColor: appStore.isDarkModeOn
+                          ? Colors.transparent
+                          : white,
+                    ),
                   ),
-                ]
+                ],
               ],
             ),
           );
@@ -757,13 +766,11 @@ class _InOutComponentState extends State<InOutComponent> {
         ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: appStore.appColorPrimary,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
-          child: Text(
-            language.lblYes,
-            style: primaryTextStyle(color: white),
-          ),
+          child: Text(language.lblYes, style: primaryTextStyle(color: white)),
           onPressed: () async {
             Navigator.of(context).pop();
             _showLoadingDialog('Resuming from Break...');
@@ -794,10 +801,10 @@ class _InOutComponentState extends State<InOutComponent> {
         child: globalAttendanceStore.isNew
             ? checkInWidget()
             : globalAttendanceStore.isOnBreak
-                ? onBreakWidget()
-                : globalAttendanceStore.isCheckedIn
-                    ? checkOutWidget()
-                    : allDoneWidget(),
+            ? onBreakWidget()
+            : globalAttendanceStore.isCheckedIn
+            ? checkOutWidget()
+            : allDoneWidget(),
       ),
     );
   }
@@ -821,18 +828,22 @@ class _InOutComponentState extends State<InOutComponent> {
 
         // Check-in Button
         _cleanButton(
-          label: globalAttendanceStore.attendanceType == AttendanceType.qr ||
-                  globalAttendanceStore.attendanceType == AttendanceType.dynamicQr
+          label:
+              globalAttendanceStore.attendanceType == AttendanceType.qr ||
+                  globalAttendanceStore.attendanceType ==
+                      AttendanceType.dynamicQr
               ? language.lblScanQRToCheckIn
               : globalAttendanceStore.attendanceType == AttendanceType.face
-                  ? language.lblScanFace
-                  : language.lblCheckIn,
-          icon: globalAttendanceStore.attendanceType == AttendanceType.qr ||
-                  globalAttendanceStore.attendanceType == AttendanceType.dynamicQr
+              ? language.lblScanFace
+              : language.lblCheckIn,
+          icon:
+              globalAttendanceStore.attendanceType == AttendanceType.qr ||
+                  globalAttendanceStore.attendanceType ==
+                      AttendanceType.dynamicQr
               ? Icons.qr_code_scanner_rounded
               : globalAttendanceStore.attendanceType == AttendanceType.face
-                  ? Icons.face
-                  : Iconsax.login,
+              ? Icons.face
+              : Iconsax.login,
           onTap: checkIn,
         ),
       ],
@@ -850,7 +861,9 @@ class _InOutComponentState extends State<InOutComponent> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.04),
+                    color: Colors.black.withOpacity(
+                      appStore.isDarkModeOn ? 0.3 : 0.04,
+                    ),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -875,7 +888,7 @@ class _InOutComponentState extends State<InOutComponent> {
           ),
           child: Row(
             children: [
-              const Icon(
+              Icon(
                 Iconsax.tick_circle,
                 color: AppDesignSystem.primaryColor,
                 size: 20,
@@ -904,8 +917,10 @@ class _InOutComponentState extends State<InOutComponent> {
               flex: isBreakModuleEnabled ? 3 : 1,
               child: _cleanButton(
                 label: language.lblCheckOut,
-                icon: globalAttendanceStore.attendanceType == AttendanceType.qr ||
-                        globalAttendanceStore.attendanceType == AttendanceType.dynamicQr
+                icon:
+                    globalAttendanceStore.attendanceType == AttendanceType.qr ||
+                        globalAttendanceStore.attendanceType ==
+                            AttendanceType.dynamicQr
                     ? Icons.qr_code_scanner_rounded
                     : Iconsax.logout,
                 onTap: checkOut,
@@ -936,11 +951,19 @@ class _InOutComponentState extends State<InOutComponent> {
               margin: const EdgeInsets.symmetric(horizontal: 24),
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: appStore.isDarkModeOn ? AppDesignSystem.neutral800 : white,
-                borderRadius: BorderRadius.circular(AppDesignSystem.radiusXLarge),
+                color: appStore.isDarkModeOn
+                    ? AppDesignSystem.neutral800
+                    : white,
+                borderRadius: BorderRadius.circular(
+                  AppDesignSystem.radiusXLarge,
+                ),
                 boxShadow: AppDesignSystem.shadowMedium,
                 border: Border.all(
-                  color: (appStore.isDarkModeOn ? white : AppDesignSystem.neutral200).withOpacity(0.05),
+                  color:
+                      (appStore.isDarkModeOn
+                              ? white
+                              : AppDesignSystem.neutral200)
+                          .withOpacity(0.05),
                   width: 1,
                 ),
               ),
@@ -958,12 +981,12 @@ class _InOutComponentState extends State<InOutComponent> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFF696CFF).withOpacity(0.1),
+                color: const Color(0xFF2563EB).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(
                 Iconsax.pause,
-                color: Color(0xFF696CFF),
+                color: Color(0xFF2563EB),
                 size: 18,
               ),
             ),
@@ -984,10 +1007,14 @@ class _InOutComponentState extends State<InOutComponent> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: appStore.isDarkModeOn ? AppDesignSystem.neutral700 : AppDesignSystem.neutral50,
+            color: appStore.isDarkModeOn
+                ? AppDesignSystem.neutral700
+                : AppDesignSystem.neutral50,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: (appStore.isDarkModeOn ? white : AppDesignSystem.neutral200).withOpacity(0.1),
+              color:
+                  (appStore.isDarkModeOn ? white : AppDesignSystem.neutral200)
+                      .withOpacity(0.1),
               width: 1,
             ),
           ),
@@ -999,7 +1026,10 @@ class _InOutComponentState extends State<InOutComponent> {
                 initialData: 0,
                 builder: (context, snap) {
                   final value = snap.data;
-                  final displayTime = StopWatchTimer.getDisplayTime(value!, milliSecond: false);
+                  final displayTime = StopWatchTimer.getDisplayTime(
+                    value!,
+                    milliSecond: false,
+                  );
                   return Text(
                     displayTime,
                     style: boldTextStyle(
@@ -1010,9 +1040,14 @@ class _InOutComponentState extends State<InOutComponent> {
                 },
               ),
               AppButton(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
                 color: AppDesignSystem.primaryColor,
-                shapeBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shapeBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
                 onTap: stopBreak,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -1044,7 +1079,9 @@ class _InOutComponentState extends State<InOutComponent> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.04),
+                    color: Colors.black.withOpacity(
+                      appStore.isDarkModeOn ? 0.3 : 0.04,
+                    ),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -1063,12 +1100,12 @@ class _InOutComponentState extends State<InOutComponent> {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: const Color(0xFF696CFF).withOpacity(0.1),
+            color: const Color(0xFF2563EB).withOpacity(0.1),
             shape: BoxShape.circle,
           ),
           child: const Icon(
             Iconsax.tick_circle,
-            color: Color(0xFF696CFF),
+            color: Color(0xFF2563EB),
             size: 36,
           ),
         ),
@@ -1107,7 +1144,7 @@ class _InOutComponentState extends State<InOutComponent> {
             children: [
               Row(
                 children: [
-                  const Icon(Iconsax.login, color: Color(0xFF696CFF), size: 16),
+                  const Icon(Iconsax.login, color: Color(0xFF2563EB), size: 16),
                   8.width,
                   Expanded(
                     child: Text(
@@ -1126,7 +1163,11 @@ class _InOutComponentState extends State<InOutComponent> {
               8.height,
               Row(
                 children: [
-                  const Icon(Iconsax.logout, color: Color(0xFF696CFF), size: 16),
+                  const Icon(
+                    Iconsax.logout,
+                    color: Color(0xFF2563EB),
+                    size: 16,
+                  ),
                   8.width,
                   Expanded(
                     child: Text(
@@ -1160,7 +1201,9 @@ class _InOutComponentState extends State<InOutComponent> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(appStore.isDarkModeOn ? 0.3 : 0.04),
+                    color: Colors.black.withOpacity(
+                      appStore.isDarkModeOn ? 0.3 : 0.04,
+                    ),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -1188,7 +1231,9 @@ class _InOutComponentState extends State<InOutComponent> {
         borderRadius: BorderRadius.circular(16),
         border: isSecondary
             ? Border.all(
-                color: (appStore.isDarkModeOn ? white : AppDesignSystem.neutral200).withOpacity(0.1),
+                color:
+                    (appStore.isDarkModeOn ? white : AppDesignSystem.neutral200)
+                        .withOpacity(0.1),
                 width: 1.5,
               )
             : null,
@@ -1232,8 +1277,4 @@ Text shiftText() {
   );
 }
 
-enum _SupportState {
-  unknown,
-  supported,
-  unsupported,
-}
+enum _SupportState { unknown, supported, unsupported }

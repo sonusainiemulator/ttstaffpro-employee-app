@@ -88,7 +88,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
       'finance policies': const Color(0xFFF59E0B),
       'security policies': const Color(0xFFEF4444),
     };
-    return colors[categoryName.toLowerCase()] ?? const Color(0xFF696CFF);
+    return colors[categoryName.toLowerCase()] ?? const Color(0xFF2563EB);
   }
 
   IconData _getCategoryIcon(String categoryName) {
@@ -169,7 +169,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
             Container(
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                  colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -375,7 +375,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -446,7 +446,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
   Widget _buildLoadingState() {
     return const Center(
       child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF696CFF)),
+        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
       ),
     );
   }
@@ -487,7 +487,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
               icon: const Icon(Iconsax.refresh),
               label: Text(language.lblRetry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
               ),
             ),
@@ -766,7 +766,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
   Widget _buildInfoRow(IconData icon, String label, String value, bool isDark) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: const Color(0xFF696CFF)),
+        Icon(icon, size: 20, color: const Color(0xFF2563EB)),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -895,7 +895,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
               const Icon(
                 Iconsax.document_text,
                 size: 20,
-                color: Color(0xFF696CFF),
+                color: Color(0xFF2563EB),
               ),
               const SizedBox(width: 8),
               Text(
@@ -959,7 +959,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
                 "strong": Style(fontWeight: FontWeight.bold),
                 "em": Style(fontStyle: FontStyle.italic),
                 "a": Style(
-                  color: const Color(0xFF696CFF),
+                  color: const Color(0xFF2563EB),
                   textDecoration: TextDecoration.underline,
                 ),
                 "blockquote": Style(
@@ -1026,7 +1026,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
         children: [
           Row(
             children: [
-              const Icon(Iconsax.document, size: 20, color: Color(0xFF696CFF)),
+              const Icon(Iconsax.document, size: 20, color: Color(0xFF2563EB)),
               const SizedBox(width: 8),
               Text(
                 language.lblAttachment,
@@ -1042,10 +1042,10 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF696CFF).withOpacity(0.1),
+              color: const Color(0xFF2563EB).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFF696CFF).withOpacity(0.3),
+                color: const Color(0xFF2563EB).withOpacity(0.3),
                 width: 1,
               ),
             ),
@@ -1054,13 +1054,13 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF696CFF).withOpacity(0.15),
+                    color: const Color(0xFF2563EB).withOpacity(0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Iconsax.document_text,
                     size: 24,
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -1097,7 +1097,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
                     gradient: _isDownloading
                         ? null
                         : const LinearGradient(
-                            colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                            colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                           ),
                     color: _isDownloading ? Colors.grey : null,
                     borderRadius: BorderRadius.circular(8),
@@ -1249,7 +1249,7 @@ class _HRPolicyDetailScreenState extends State<HRPolicyDetailScreen> {
                 height: 50,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                    colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                   ),
                   borderRadius: BorderRadius.circular(14),
                 ),

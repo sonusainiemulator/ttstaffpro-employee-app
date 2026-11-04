@@ -114,7 +114,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
                             borderSide: const BorderSide(
-                              color: Color(0xFF696CFF),
+                              color: Color(0xFF2563EB),
                               width: 2,
                             ),
                           ),
@@ -176,8 +176,8 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [
-                                    Color(0xFF696CFF),
-                                    Color(0xFF5457E6)
+                                    Color(0xFF2563EB),
+                                    Color(0xFF16324F)
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(12),
@@ -242,7 +242,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -322,7 +322,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
   Widget _buildContent(bool isDark) {
     return RefreshIndicator(
       onRefresh: () => Future.sync(() => _store.pagingController.refresh()),
-      color: const Color(0xFF696CFF),
+      color: const Color(0xFF2563EB),
       child: CustomScrollView(
         slivers: [
           // Filter Chips
@@ -339,7 +339,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF696CFF),
+                            color: const Color(0xFF2563EB),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
@@ -390,7 +390,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
                   child: CircularProgressIndicator(
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                   ),
                 ),
               ),
@@ -426,15 +426,15 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withOpacity(0.2),
-                  const Color(0xFF5457E6).withOpacity(0.1),
+                  const Color(0xFF2563EB).withOpacity(0.2),
+                  const Color(0xFF16324F).withOpacity(0.1),
                 ],
               ),
             ),
             child: Icon(
               Iconsax.calendar_2,
               size: 60,
-              color: const Color(0xFF696CFF).withOpacity(0.7),
+              color: const Color(0xFF2563EB).withOpacity(0.7),
             ),
           ),
           const SizedBox(height: 24),
@@ -688,7 +688,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
       case 'leave':
         return Colors.orange;
       case 'holiday':
-        return const Color(0xFF696CFF);
+        return const Color(0xFF2563EB);
       case 'weekend':
         return Colors.indigo;
       default:
@@ -999,7 +999,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
                   Iconsax.document,
                   language.lblForms,
                   data.formsCount,
-                  const Color(0xFF696CFF),
+                  const Color(0xFF2563EB),
                   isDark,
                 ),
             ],
@@ -1054,7 +1054,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
-        color: const Color(0xFF696CFF),
+        color: const Color(0xFF2563EB),
       ),
     );
   }
@@ -1074,7 +1074,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
           Icon(
             icon,
             size: 16,
-            color: const Color(0xFF696CFF),
+            color: const Color(0xFF2563EB),
           ),
           8.width,
           Text(
@@ -1257,7 +1257,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
             ElevatedButton(
               onPressed: () => _store.pagingController.refresh(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(

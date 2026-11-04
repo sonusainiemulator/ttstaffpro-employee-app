@@ -126,7 +126,7 @@ class _DemoModeBannerState extends State<DemoModeBanner>
                           children: [
                             const Icon(
                               Icons.email_outlined,
-                              color: Color(0xFF696CFF),
+                              color: Color(0xFF2563EB),
                               size: 16,
                             ),
                             6.width,
@@ -193,7 +193,7 @@ class _DemoModeBannerState extends State<DemoModeBanner>
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF696CFF),
+                        backgroundColor: const Color(0xFF2563EB),
                         foregroundColor: Colors.white,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
@@ -215,12 +215,12 @@ class _DemoModeBannerState extends State<DemoModeBanner>
                     Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF696CFF).withOpacity(0.1),
+                        color: const Color(0xFF2563EB).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: const Icon(
                         Icons.info_outline,
-                        color: Color(0xFF696CFF),
+                        color: Color(0xFF2563EB),
                         size: 18,
                       ),
                     ),
@@ -238,7 +238,7 @@ class _DemoModeBannerState extends State<DemoModeBanner>
                     const Spacer(),
                     const Icon(
                       Icons.expand_more,
-                      color: Color(0xFF696CFF),
+                      color: Color(0xFF2563EB),
                       size: 20,
                     ),
                   ],

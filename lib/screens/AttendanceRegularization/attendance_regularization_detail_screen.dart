@@ -181,13 +181,13 @@ class _AttendanceRegularizationDetailScreenState
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  (iconColor ?? const Color(0xFF696CFF)).withOpacity(0.2),
-                  (iconColor ?? const Color(0xFF696CFF)).withOpacity(0.1),
+                  (iconColor ?? const Color(0xFF2563EB)).withOpacity(0.2),
+                  (iconColor ?? const Color(0xFF2563EB)).withOpacity(0.1),
                 ],
               ),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, size: 20, color: iconColor ?? const Color(0xFF696CFF)),
+            child: Icon(icon, size: 20, color: iconColor ?? const Color(0xFF2563EB)),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -295,7 +295,7 @@ class _AttendanceRegularizationDetailScreenState
                 gradient: LinearGradient(
                   colors: isDark
                       ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                      : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                      : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -363,7 +363,7 @@ class _AttendanceRegularizationDetailScreenState
                 gradient: LinearGradient(
                   colors: isDark
                       ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                      : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                      : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -460,7 +460,7 @@ class _AttendanceRegularizationDetailScreenState
                                       style: const TextStyle(color: Colors.white),
                                     ),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFF696CFF),
+                                      backgroundColor: const Color(0xFF2563EB),
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 24, vertical: 12),
                                       shape: RoundedRectangleBorder(
@@ -486,7 +486,7 @@ class _AttendanceRegularizationDetailScreenState
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -571,8 +571,8 @@ class _AttendanceRegularizationDetailScreenState
                                       decoration: BoxDecoration(
                                         gradient: LinearGradient(
                                           colors: [
-                                            const Color(0xFF696CFF).withOpacity(0.8),
-                                            const Color(0xFF5457E6),
+                                            const Color(0xFF2563EB).withOpacity(0.8),
+                                            const Color(0xFF16324F),
                                           ],
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight,
@@ -664,8 +664,8 @@ class _AttendanceRegularizationDetailScreenState
                                             decoration: BoxDecoration(
                                               gradient: LinearGradient(
                                                 colors: [
-                                                  const Color(0xFF696CFF).withOpacity(0.8),
-                                                  const Color(0xFF5457E6),
+                                                  const Color(0xFF2563EB).withOpacity(0.8),
+                                                  const Color(0xFF16324F),
                                                 ],
                                                 begin: Alignment.topLeft,
                                                 end: Alignment.bottomRight,
@@ -1233,12 +1233,12 @@ class _AttendanceRegularizationDetailScreenState
                                         height: 50,
                                         decoration: BoxDecoration(
                                           gradient: const LinearGradient(
-                                            colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                                            colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                                           ),
                                           borderRadius: BorderRadius.circular(14),
                                           boxShadow: [
                                             BoxShadow(
-                                              color: const Color(0xFF696CFF).withOpacity(0.3),
+                                              color: const Color(0xFF2563EB).withOpacity(0.3),
                                               blurRadius: 8,
                                               offset: const Offset(0, 4),
                                             ),

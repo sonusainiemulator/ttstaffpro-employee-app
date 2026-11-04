@@ -94,12 +94,12 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
                         margin: const EdgeInsets.only(bottom: 12),
                         decoration: BoxDecoration(
                           color: _store.selectedCategoryId == null
-                              ? const Color(0xFF696CFF).withOpacity(0.1)
+                              ? const Color(0xFF2563EB).withOpacity(0.1)
                               : (isDark ? const Color(0xFF111827) : const Color(0xFFF9FAFB)),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: _store.selectedCategoryId == null
-                                ? const Color(0xFF696CFF)
+                                ? const Color(0xFF2563EB)
                                 : (isDark ? Colors.grey[700]! : const Color(0xFFE5E7EB)),
                             width: 1.5,
                           ),
@@ -111,7 +111,7 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
                               height: 40,
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                                  colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -148,7 +148,7 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
                             if (_store.selectedCategoryId == null)
                               const Icon(
                                 Iconsax.tick_circle,
-                                color: Color(0xFF696CFF),
+                                color: Color(0xFF2563EB),
                                 size: 24,
                               ),
                           ],
@@ -178,12 +178,12 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
                             margin: const EdgeInsets.only(bottom: 12),
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? const Color(0xFF696CFF).withOpacity(0.1)
+                                  ? const Color(0xFF2563EB).withOpacity(0.1)
                                   : (isDark ? const Color(0xFF111827) : const Color(0xFFF9FAFB)),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: isSelected
-                                    ? const Color(0xFF696CFF)
+                                    ? const Color(0xFF2563EB)
                                     : (isDark ? Colors.grey[700]! : const Color(0xFFE5E7EB)),
                                 width: 1.5,
                               ),
@@ -238,7 +238,7 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
                                 if (isSelected)
                                   const Icon(
                                     Iconsax.tick_circle,
-                                    color: Color(0xFF696CFF),
+                                    color: Color(0xFF2563EB),
                                     size: 24,
                                   ),
                               ],
@@ -305,7 +305,7 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
                           icon: Iconsax.document_text,
                           label: language.lblTotalPolicies,
                           value: _store.stats!.total.toString(),
-                          color: const Color(0xFF696CFF),
+                          color: const Color(0xFF2563EB),
                           isDark: isDark,
                         ),
                         12.height,
@@ -527,8 +527,8 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF696CFF).withOpacity(0.2),
-                    const Color(0xFF5457E6).withOpacity(0.1),
+                    const Color(0xFF2563EB).withOpacity(0.2),
+                    const Color(0xFF16324F).withOpacity(0.1),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -538,7 +538,7 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
               child: Icon(
                 Iconsax.document,
                 size: 60,
-                color: const Color(0xFF696CFF).withOpacity(0.7),
+                color: const Color(0xFF2563EB).withOpacity(0.7),
               ),
             ),
             const SizedBox(height: 24),
@@ -601,7 +601,7 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
               icon: const Icon(Iconsax.refresh, color: Colors.white),
               label: Text(language.lblRetry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
@@ -672,7 +672,7 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
               end: Alignment.bottomRight,
               colors: isDark
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -789,7 +789,7 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
                                             vertical: 6,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: const Color(0xFF696CFF),
+                                            color: const Color(0xFF2563EB),
                                             borderRadius: BorderRadius.circular(20),
                                           ),
                                           child: Row(
@@ -862,7 +862,7 @@ class _HRPoliciesScreenState extends State<HRPoliciesScreen>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showPolicyStats(context),
-        backgroundColor: const Color(0xFF696CFF),
+        backgroundColor: const Color(0xFF2563EB),
         child: const Icon(Iconsax.chart, color: Colors.white),
       ),
     );

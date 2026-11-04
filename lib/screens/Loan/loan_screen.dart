@@ -102,7 +102,7 @@ class _LoanScreenState extends State<LoanScreen> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                              color: Color(0xFF696CFF),
+                              color: Color(0xFF2563EB),
                               width: 2,
                             ),
                           ),
@@ -161,7 +161,7 @@ class _LoanScreenState extends State<LoanScreen> {
                             child: Container(
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                  colors: [Color(0xFF696CFF), Color(0xFF696CFF)],
+                                  colors: [Color(0xFF2563EB), Color(0xFF2563EB)],
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -323,8 +323,8 @@ class _LoanScreenState extends State<LoanScreen> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFF696CFF).withValues(alpha: 0.2),
-                    const Color(0xFF5457E6).withValues(alpha: 0.1),
+                    const Color(0xFF2563EB).withValues(alpha: 0.2),
+                    const Color(0xFF16324F).withValues(alpha: 0.1),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -334,7 +334,7 @@ class _LoanScreenState extends State<LoanScreen> {
               child: Icon(
                 Iconsax.money_4,
                 size: 60,
-                color: const Color(0xFF696CFF).withValues(alpha: 0.7),
+                color: const Color(0xFF2563EB).withValues(alpha: 0.7),
               ),
             ),
             const SizedBox(height: 24),
@@ -375,7 +375,7 @@ class _LoanScreenState extends State<LoanScreen> {
               end: Alignment.bottomRight,
               colors: isDark
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -454,7 +454,7 @@ class _LoanScreenState extends State<LoanScreen> {
                                       vertical: 6,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFF696CFF),
+                                      color: const Color(0xFF2563EB),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
                                     child: Row(
@@ -505,7 +505,7 @@ class _LoanScreenState extends State<LoanScreen> {
                                 padding: const EdgeInsets.all(16),
                                 child: CircularProgressIndicator(
                                   valueColor: const AlwaysStoppedAnimation<Color>(
-                                    Color(0xFF696CFF),
+                                    Color(0xFF2563EB),
                                   ),
                                 ),
                               ),
@@ -573,7 +573,7 @@ class _LoanScreenState extends State<LoanScreen> {
           await const LoanRequestScreen().launch(context);
           _store.pagingController.refresh();
         },
-        backgroundColor: const Color(0xFF696CFF),
+        backgroundColor: const Color(0xFF2563EB),
         icon: const Icon(Iconsax.add, color: Colors.white),
         label: Text(
           language.lblCreate,

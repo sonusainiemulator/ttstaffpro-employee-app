@@ -85,7 +85,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -222,7 +222,7 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: const Color(0xFF696CFF).withOpacity(0.1),
+                color: const Color(0xFF2563EB).withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: widget.asset.image != null
@@ -235,19 +235,19 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFF696CFF)),
+                                Color(0xFF2563EB)),
                           ),
                         ),
                         errorWidget: (context, url, error) => const Icon(
                           Iconsax.box,
-                          color: Color(0xFF696CFF),
+                          color: Color(0xFF2563EB),
                           size: 32,
                         ),
                       ),
                     )
                   : const Icon(
                       Iconsax.box,
-                      color: Color(0xFF696CFF),
+                      color: Color(0xFF2563EB),
                       size: 32,
                     ),
             ),
@@ -329,8 +329,8 @@ class _ReportIssueScreenState extends State<ReportIssueScreen> {
       child: ElevatedButton(
         onPressed: _isSubmitting ? null : _submitReport,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF696CFF),
-          disabledBackgroundColor: const Color(0xFF696CFF).withOpacity(0.5),
+          backgroundColor: const Color(0xFF2563EB),
+          disabledBackgroundColor: const Color(0xFF2563EB).withOpacity(0.5),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),

@@ -126,7 +126,7 @@ class _AppealFormScreenState extends State<AppealFormScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -342,12 +342,12 @@ class _AppealFormScreenState extends State<AppealFormScreen> {
                                                 Container(
                                                   padding: const EdgeInsets.all(8),
                                                   decoration: BoxDecoration(
-                                                    color: const Color(0xFF696CFF).withOpacity(0.1),
+                                                    color: const Color(0xFF2563EB).withOpacity(0.1),
                                                     borderRadius: BorderRadius.circular(8),
                                                   ),
                                                   child: const Icon(
                                                     Iconsax.attach_circle,
-                                                    color: Color(0xFF696CFF),
+                                                    color: Color(0xFF2563EB),
                                                     size: 20,
                                                   ),
                                                 ),
@@ -555,7 +555,7 @@ class _AppealFormScreenState extends State<AppealFormScreen> {
                                 child: ElevatedButton(
                                   onPressed: _isSubmitting ? null : _submitAppeal,
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF696CFF),
+                                    backgroundColor: const Color(0xFF2563EB),
                                     padding: const EdgeInsets.symmetric(vertical: 16),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),

@@ -116,7 +116,7 @@ class _AssignmentHistoryScreenState extends State<AssignmentHistoryScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -211,7 +211,7 @@ class _AssignmentHistoryScreenState extends State<AssignmentHistoryScreen> {
                 backgroundColor: appStore.isDarkModeOn
                     ? const Color(0xFF1F2937)
                     : Colors.white,
-                selectedColor: const Color(0xFF696CFF),
+                selectedColor: const Color(0xFF2563EB),
                 labelStyle: TextStyle(
                   color: isSelected
                       ? Colors.white
@@ -226,7 +226,7 @@ class _AssignmentHistoryScreenState extends State<AssignmentHistoryScreen> {
                   borderRadius: BorderRadius.circular(10),
                   side: BorderSide(
                     color: isSelected
-                        ? const Color(0xFF696CFF)
+                        ? const Color(0xFF2563EB)
                         : (appStore.isDarkModeOn
                             ? Colors.grey[700]!
                             : const Color(0xFFE5E7EB)),
@@ -261,7 +261,7 @@ class _AssignmentHistoryScreenState extends State<AssignmentHistoryScreen> {
 
         return RefreshIndicator(
           onRefresh: _onRefresh,
-          color: const Color(0xFF696CFF),
+          color: const Color(0xFF2563EB),
           child: ListView.builder(
             controller: _scrollController,
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -275,7 +275,7 @@ class _AssignmentHistoryScreenState extends State<AssignmentHistoryScreen> {
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor:
-                          AlwaysStoppedAnimation<Color>(Color(0xFF696CFF)),
+                          AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
                     ),
                   ),
                 );
@@ -322,7 +322,7 @@ class _AssignmentHistoryScreenState extends State<AssignmentHistoryScreen> {
                       width: 56,
                       height: 56,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF696CFF).withOpacity(0.1),
+                        color: const Color(0xFF2563EB).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: assignment.image != null
@@ -336,20 +336,20 @@ class _AssignmentHistoryScreenState extends State<AssignmentHistoryScreen> {
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xFF696CFF)),
+                                        Color(0xFF2563EB)),
                                   ),
                                 ),
                                 errorWidget: (context, url, error) =>
                                     const Icon(
                                   Iconsax.box,
-                                  color: Color(0xFF696CFF),
+                                  color: Color(0xFF2563EB),
                                   size: 28,
                                 ),
                               ),
                             )
                           : const Icon(
                               Iconsax.box,
-                              color: Color(0xFF696CFF),
+                              color: Color(0xFF2563EB),
                               size: 28,
                             ),
                     ),
@@ -616,7 +616,7 @@ class _AssignmentHistoryScreenState extends State<AssignmentHistoryScreen> {
           ElevatedButton(
             onPressed: _loadHistory,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF696CFF),
+              backgroundColor: const Color(0xFF2563EB),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

@@ -41,7 +41,7 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -197,12 +197,12 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+          colors: [Color(0xFF2563EB), Color(0xFF16324F)],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF696CFF).withOpacity(0.3),
+            color: const Color(0xFF2563EB).withOpacity(0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -519,7 +519,7 @@ class _SalaryStructureScreenState extends State<SalaryStructureScreen> {
               icon: const Icon(Iconsax.refresh),
               label: Text(language.lblRetry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),

@@ -142,7 +142,7 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
               ),
             ),
             child: SafeArea(
@@ -277,7 +277,7 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: const BorderSide(
-              color: Color(0xFF696CFF),
+              color: Color(0xFF2563EB),
               width: 1.5,
             ),
           ),
@@ -327,10 +327,10 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
             ),
           TextButton.icon(
             onPressed: _clearFilters,
-            icon: const Icon(Iconsax.close_circle, size: 16, color: Color(0xFF696CFF)),
+            icon: const Icon(Iconsax.close_circle, size: 16, color: Color(0xFF2563EB)),
             label: Text(
               language.lblClearAll,
-              style: const TextStyle(color: Color(0xFF696CFF), fontWeight: FontWeight.w600),
+              style: const TextStyle(color: Color(0xFF2563EB), fontWeight: FontWeight.w600),
             ),
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -349,21 +349,21 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
         style: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: Color(0xFF696CFF),
+          color: Color(0xFF2563EB),
         ),
       ),
       deleteIcon: const Icon(
         Iconsax.close_circle,
         size: 16,
-        color: Color(0xFF696CFF),
+        color: Color(0xFF2563EB),
       ),
       onDeleted: () {
         onDelete();
         _applyFilters();
       },
-      backgroundColor: const Color(0xFF696CFF).withOpacity(0.1),
+      backgroundColor: const Color(0xFF2563EB).withOpacity(0.1),
       side: const BorderSide(
-        color: Color(0xFF696CFF),
+        color: Color(0xFF2563EB),
         width: 1,
       ),
       shape: RoundedRectangleBorder(
@@ -427,8 +427,8 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        const Color(0xFF696CFF).withOpacity(0.2),
-                        const Color(0xFF5457E6).withOpacity(0.1),
+                        const Color(0xFF2563EB).withOpacity(0.2),
+                        const Color(0xFF16324F).withOpacity(0.1),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -437,7 +437,7 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
                   ),
                   child: Icon(
                     _getCategoryIcon(document.category),
-                    color: const Color(0xFF696CFF),
+                    color: const Color(0xFF2563EB),
                     size: 24,
                   ),
                 ),
@@ -522,21 +522,21 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
                   icon: const Icon(
                     Iconsax.document_download,
                     size: 16,
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                   ),
                   label: Text(
                     language.lblDownload,
                     style: const TextStyle(
-                      color: Color(0xFF696CFF),
+                      color: Color(0xFF2563EB),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xFF696CFF).withOpacity(0.1),
+                    backgroundColor: const Color(0xFF2563EB).withOpacity(0.1),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                       side: const BorderSide(
-                        color: Color(0xFF696CFF),
+                        color: Color(0xFF2563EB),
                         width: 1,
                       ),
                     ),
@@ -791,8 +791,8 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withOpacity(0.2),
-                  const Color(0xFF5457E6).withOpacity(0.1),
+                  const Color(0xFF2563EB).withOpacity(0.2),
+                  const Color(0xFF16324F).withOpacity(0.1),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -802,7 +802,7 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
             child: Icon(
               Iconsax.folder_open,
               size: 60,
-              color: const Color(0xFF696CFF).withOpacity(0.7),
+              color: const Color(0xFF2563EB).withOpacity(0.7),
             ),
           ),
           24.height,
@@ -1049,7 +1049,7 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
                       _applyFilters();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF696CFF),
+                      backgroundColor: const Color(0xFF2563EB),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
@@ -1080,18 +1080,18 @@ class _MyDocumentsListScreenState extends State<MyDocumentsListScreen> {
       label: Text(label),
       selected: isSelected,
       onSelected: (_) => onTap(),
-      selectedColor: const Color(0xFF696CFF).withOpacity(0.2),
+      selectedColor: const Color(0xFF2563EB).withOpacity(0.2),
       backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFFF3F4F6),
       labelStyle: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w600,
         color: isSelected
-            ? const Color(0xFF696CFF)
+            ? const Color(0xFF2563EB)
             : (isDark ? Colors.grey[400] : Colors.grey[700]),
       ),
       side: BorderSide(
         color: isSelected
-            ? const Color(0xFF696CFF)
+            ? const Color(0xFF2563EB)
             : (isDark ? Colors.grey[700]! : const Color(0xFFE5E7EB)),
         width: 1.5,
       ),

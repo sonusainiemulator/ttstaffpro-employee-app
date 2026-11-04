@@ -96,8 +96,8 @@ class LoanRequestItemWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                     gradient: LinearGradient(
                       colors: [
-                        const Color(0xFF696CFF).withValues(alpha: 0.2),
-                        const Color(0xFF5457E6).withValues(alpha: 0.1),
+                        const Color(0xFF2563EB).withValues(alpha: 0.2),
+                        const Color(0xFF16324F).withValues(alpha: 0.1),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -106,7 +106,7 @@ class LoanRequestItemWidget extends StatelessWidget {
                   child: const Icon(
                     Iconsax.money_4,
                     size: 24,
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -217,7 +217,7 @@ class LoanRequestItemWidget extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: const Color(0xFF696CFF),
+                              color: const Color(0xFF2563EB),
                             ),
                           ),
                           Text(

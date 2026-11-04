@@ -89,13 +89,13 @@ class _AppHeaderState extends State<AppHeader> {
               // Notification Icon
               Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF696CFF).withOpacity(0.1),
+                  color: const Color(0xFF2563EB).withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: IconButton(
                   icon: const Icon(
                     Iconsax.notification,
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                     size: 22,
                   ),
                   onPressed: () {

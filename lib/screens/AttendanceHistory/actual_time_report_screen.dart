@@ -176,7 +176,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
                     child: Container(
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                          colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -227,7 +227,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
           gradient: LinearGradient(
             colors: isDark
                 ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -324,7 +324,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
     final data = reportData!;
     return RefreshIndicator(
       onRefresh: _loadReport,
-      color: const Color(0xFF696CFF),
+      color: const Color(0xFF2563EB),
       child: CustomScrollView(
         slivers: [
           // Summary Cards
@@ -341,7 +341,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF696CFF),
+                    color: const Color(0xFF2563EB),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -430,7 +430,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
               8.width,
               _summaryPill('Half Day', s.halfDays, Colors.orange, isDark),
               8.width,
-              _summaryPill('Holiday', s.holidayDays, const Color(0xFF696CFF), isDark),
+              _summaryPill('Holiday', s.holidayDays, const Color(0xFF2563EB), isDark),
             ],
           ),
           12.height,
@@ -499,7 +499,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
                   'Compliance',
                   '${s.avgComplianceScore.toStringAsFixed(0)}%',
                   Iconsax.chart_2,
-                  const Color(0xFF696CFF),
+                  const Color(0xFF2563EB),
                   isDark,
                 ),
               ),
@@ -595,7 +595,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
     Color cardAccent = Colors.green;
     if (r.isAbsent) {
       cardAccent = Colors.red;
-    } else if (r.isHoliday) cardAccent = const Color(0xFF696CFF);
+    } else if (r.isHoliday) cardAccent = const Color(0xFF2563EB);
     else if (r.isWeekend) cardAccent = Colors.indigo;
     else if (r.isHalfDay) cardAccent = Colors.orange;
     else if (r.lateMinutes > 0) cardAccent = Colors.amber;
@@ -999,7 +999,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
         color = Colors.orange;
         break;
       case 'holiday':
-        color = const Color(0xFF696CFF);
+        color = const Color(0xFF2563EB);
         break;
       case 'weekend':
         color = Colors.indigo;
@@ -1049,7 +1049,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
       style: const TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.bold,
-        color: Color(0xFF696CFF),
+        color: Color(0xFF2563EB),
       ),
     );
   }
@@ -1061,7 +1061,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 15, color: const Color(0xFF696CFF)),
+          Icon(icon, size: 15, color: const Color(0xFF2563EB)),
           8.width,
           Text(
             '$label: ',
@@ -1097,7 +1097,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
             size: 64,
             color: isDark
                 ? Colors.grey[600]
-                : const Color(0xFF696CFF).withOpacity(0.5),
+                : const Color(0xFF2563EB).withOpacity(0.5),
           ),
           20.height,
           Text(
@@ -1121,7 +1121,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
             icon: const Icon(Iconsax.filter),
             label: const Text('Change Period'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF696CFF),
+              backgroundColor: const Color(0xFF2563EB),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),
@@ -1151,7 +1151,7 @@ class _ActualTimeReportScreenState extends State<ActualTimeReportScreen>
             icon: const Icon(Icons.refresh),
             label: const Text('Retry'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF696CFF),
+              backgroundColor: const Color(0xFF2563EB),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),

@@ -109,7 +109,7 @@ class _PayrollRecordDetailScreenState
     return SliverAppBar(
       expandedHeight: 200,
       pinned: true,
-      backgroundColor: const Color(0xFF696CFF),
+      backgroundColor: const Color(0xFF2563EB),
       foregroundColor: Colors.white,
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.only(left: 16, bottom: 16, right: 16),
@@ -126,7 +126,7 @@ class _PayrollRecordDetailScreenState
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+              colors: [Color(0xFF2563EB), Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -199,7 +199,7 @@ class _PayrollRecordDetailScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _cardHeader(Iconsax.wallet_money, const Color(0xFF696CFF),
+          _cardHeader(Iconsax.wallet_money, const Color(0xFF2563EB),
               language.lblSalaryBreakdown),
           const SizedBox(height: 16),
           _salaryRow(language.lblBasicSalary, _fmt(record.basicSalary)),
@@ -287,7 +287,7 @@ class _PayrollRecordDetailScreenState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _cardHeader(
-              Iconsax.calendar, const Color(0xFF696CFF), language.lblAttendanceSummary),
+              Iconsax.calendar, const Color(0xFF2563EB), language.lblAttendanceSummary),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -486,7 +486,7 @@ class _PayrollRecordDetailScreenState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _cardHeader(Iconsax.calendar_1, const Color(0xFF696CFF),
+          _cardHeader(Iconsax.calendar_1, const Color(0xFF2563EB),
               language.lblPayrollCycle),
           const SizedBox(height: 16),
           if (record.payPeriod != null)
@@ -716,7 +716,7 @@ class _PayrollRecordDetailScreenState
               icon: const Icon(Iconsax.refresh),
               label: Text(language.lblRetry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
               ),
             ),

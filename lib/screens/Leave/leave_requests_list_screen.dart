@@ -276,7 +276,7 @@ class _LeaveRequestsListScreenState extends State<LeaveRequestsListScreen> {
                     _loadData();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF696CFF),
+                    backgroundColor: const Color(0xFF2563EB),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -310,14 +310,14 @@ class _LeaveRequestsListScreenState extends State<LeaveRequestsListScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: selected
-              ? const Color(0xFF696CFF)
+              ? const Color(0xFF2563EB)
               : (appStore.isDarkModeOn
                   ? const Color(0xFF111827)
                   : const Color(0xFFF3F4F6)),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: selected
-                ? const Color(0xFF696CFF)
+                ? const Color(0xFF2563EB)
                 : (appStore.isDarkModeOn
                     ? Colors.grey[700]!
                     : const Color(0xFFE5E7EB)),
@@ -458,15 +458,15 @@ class _LeaveRequestsListScreenState extends State<LeaveRequestsListScreen> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          const Color(0xFF696CFF).withOpacity(0.2),
-                          const Color(0xFF5457E6).withOpacity(0.1),
+                          const Color(0xFF2563EB).withOpacity(0.2),
+                          const Color(0xFF16324F).withOpacity(0.1),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Iconsax.calendar,
-                      color: Color(0xFF696CFF),
+                      color: Color(0xFF2563EB),
                       size: 24,
                     ),
                   ),
@@ -722,7 +722,7 @@ class _LeaveRequestsListScreenState extends State<LeaveRequestsListScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -796,10 +796,10 @@ class _LeaveRequestsListScreenState extends State<LeaveRequestsListScreen> {
                               margin: const EdgeInsets.all(16),
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF696CFF).withOpacity(0.1),
+                                color: const Color(0xFF2563EB).withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: const Color(0xFF696CFF).withOpacity(0.3),
+                                  color: const Color(0xFF2563EB).withOpacity(0.3),
                                   width: 1,
                                 ),
                               ),
@@ -808,7 +808,7 @@ class _LeaveRequestsListScreenState extends State<LeaveRequestsListScreen> {
                                   const Icon(
                                     Iconsax.filter,
                                     size: 16,
-                                    color: Color(0xFF696CFF),
+                                    color: Color(0xFF2563EB),
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
@@ -880,7 +880,7 @@ class _LeaveRequestsListScreenState extends State<LeaveRequestsListScreen> {
             ),
           ).then((_) => _loadData());
         },
-        backgroundColor: const Color(0xFF696CFF),
+        backgroundColor: const Color(0xFF2563EB),
         icon: const Icon(Iconsax.add, color: Colors.white),
         label: Text(
           language.lblNewRequest,
@@ -948,7 +948,7 @@ class _LeaveRequestsListScreenState extends State<LeaveRequestsListScreen> {
                   style: const TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF696CFF),
+                  backgroundColor: const Color(0xFF2563EB),
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
@@ -1032,7 +1032,7 @@ class _LeaveRequestsListScreenState extends State<LeaveRequestsListScreen> {
                     valueColor: AlwaysStoppedAnimation(
                       appStore.isDarkModeOn
                           ? Colors.white
-                          : const Color(0xFF696CFF),
+                          : const Color(0xFF2563EB),
                     ),
                   ),
                 ),

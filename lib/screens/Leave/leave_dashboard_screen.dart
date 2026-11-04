@@ -50,7 +50,7 @@ class _LeaveDashboardScreenState extends State<LeaveDashboardScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -134,7 +134,7 @@ class _LeaveDashboardScreenState extends State<LeaveDashboardScreen> {
             ),
           ).then((_) => _loadData());
         },
-        backgroundColor: const Color(0xFF696CFF),
+        backgroundColor: const Color(0xFF2563EB),
         icon: const Icon(Iconsax.add, color: Colors.white),
         label: Text(
           language.lblNewLeave,
@@ -158,12 +158,12 @@ class _LeaveDashboardScreenState extends State<LeaveDashboardScreen> {
           end: Alignment.bottomRight,
           colors: appStore.isDarkModeOn
               ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-              : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+              : [const Color(0xFF2563EB), const Color(0xFF16324F)],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF696CFF).withOpacity(0.3),
+            color: const Color(0xFF2563EB).withOpacity(0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -386,7 +386,7 @@ class _LeaveDashboardScreenState extends State<LeaveDashboardScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF696CFF).withOpacity(0.1),
+                        color: const Color(0xFF2563EB).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -394,7 +394,7 @@ class _LeaveDashboardScreenState extends State<LeaveDashboardScreen> {
                         style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF696CFF),
+                          color: Color(0xFF2563EB),
                         ),
                       ),
                     ),
@@ -1067,7 +1067,7 @@ class _LeaveDashboardScreenState extends State<LeaveDashboardScreen> {
               child: Text(
                 language.lblViewAll,
                 style: const TextStyle(
-                  color: Color(0xFF696CFF),
+                  color: Color(0xFF2563EB),
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -1174,12 +1174,12 @@ class _LeaveDashboardScreenState extends State<LeaveDashboardScreen> {
           end: Alignment.bottomRight,
           colors: appStore.isDarkModeOn
               ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-              : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+              : [const Color(0xFF2563EB), const Color(0xFF16324F)],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF696CFF).withOpacity(0.3),
+            color: const Color(0xFF2563EB).withOpacity(0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

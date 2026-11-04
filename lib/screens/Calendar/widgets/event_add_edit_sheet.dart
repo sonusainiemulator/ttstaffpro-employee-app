@@ -151,7 +151,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
           shape: BoxShape.circle,
           border: Border.all(
               color: isSelected
-                  ? const Color(0xFF696CFF)
+                  ? const Color(0xFF2563EB)
                   : (isDefault
                       ? (isDark ? Colors.grey[700]! : const Color(0xFFE5E7EB))
                       : color),
@@ -159,8 +159,8 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
           gradient: isDefault
               ? LinearGradient(
                   colors: [
-                    const Color(0xFF696CFF).withValues(alpha: 0.2),
-                    const Color(0xFF5457E6).withValues(alpha: 0.1)
+                    const Color(0xFF2563EB).withValues(alpha: 0.2),
+                    const Color(0xFF16324F).withValues(alpha: 0.1)
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight)
@@ -170,7 +170,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
             ? Icon(
                 Iconsax.color_swatch,
                 size: 20,
-                color: const Color(0xFF696CFF),
+                color: const Color(0xFF2563EB),
               )
             : null,
       ),
@@ -181,7 +181,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
       String label, IconData icon, bool isDark) {
     return InputDecoration(
       labelText: label,
-      prefixIcon: Icon(icon, color: const Color(0xFF696CFF), size: 20),
+      prefixIcon: Icon(icon, color: const Color(0xFF2563EB), size: 20),
       filled: true,
       fillColor: isDark ? const Color(0xFF1F2937) : const Color(0xFFF9FAFB),
       border: OutlineInputBorder(
@@ -201,7 +201,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(
-          color: Color(0xFF696CFF),
+          color: Color(0xFF2563EB),
           width: 2,
         ),
       ),
@@ -238,7 +238,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -326,9 +326,9 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                                               decoration: BoxDecoration(
                                                 gradient: LinearGradient(
                                                   colors: [
-                                                    const Color(0xFF696CFF)
+                                                    const Color(0xFF2563EB)
                                                         .withValues(alpha: 0.2),
-                                                    const Color(0xFF5457E6)
+                                                    const Color(0xFF16324F)
                                                         .withValues(alpha: 0.1)
                                                   ],
                                                 ),
@@ -337,7 +337,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                                               ),
                                               child: const Icon(
                                                 Iconsax.calendar_edit,
-                                                color: Color(0xFF696CFF),
+                                                color: Color(0xFF2563EB),
                                                 size: 20,
                                               ),
                                             ),
@@ -449,7 +449,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                                                         const Icon(
                                                             Iconsax.calendar,
                                                             color: Color(
-                                                                0xFF696CFF),
+                                                                0xFF2563EB),
                                                             size: 20),
                                                         const SizedBox(
                                                             width: 12),
@@ -519,7 +519,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                                                         const Icon(
                                                             Iconsax.calendar,
                                                             color: Color(
-                                                                0xFF696CFF),
+                                                                0xFF2563EB),
                                                             size: 20),
                                                         const SizedBox(
                                                             width: 12),
@@ -597,7 +597,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                                                   onChanged: (val) => _store
                                                       .toggleAllDay(val),
                                                   activeThumbColor:
-                                                      const Color(0xFF696CFF),
+                                                      const Color(0xFF2563EB),
                                                 ),
                                               ],
                                             ),
@@ -629,7 +629,7 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                                             ),
                                             buttonIcon: const Icon(
                                                 Iconsax.people,
-                                                color: Color(0xFF696CFF),
+                                                color: Color(0xFF2563EB),
                                                 size: 20),
                                             decoration: BoxDecoration(
                                               color: isDark
@@ -655,17 +655,17 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                                                 _store.selectedAttendees
                                                     .remove(value);
                                               },
-                                              chipColor: const Color(0xFF696CFF)
+                                              chipColor: const Color(0xFF2563EB)
                                                   .withOpacity(0.1),
                                               textStyle: TextStyle(
                                                 color: isDark
                                                     ? Colors.white
-                                                    : const Color(0xFF696CFF),
+                                                    : const Color(0xFF2563EB),
                                               ),
                                               decoration: BoxDecoration(
                                                 border: Border.all(
                                                   color:
-                                                      const Color(0xFF696CFF),
+                                                      const Color(0xFF2563EB),
                                                   width: 1,
                                                 ),
                                                 borderRadius:
@@ -750,8 +750,8 @@ class _EventAddEditSheetState extends State<EventAddEditSheet> {
                                           decoration: BoxDecoration(
                                             gradient: const LinearGradient(
                                               colors: [
-                                                Color(0xFF696CFF),
-                                                Color(0xFF5457E6)
+                                                Color(0xFF2563EB),
+                                                Color(0xFF16324F)
                                               ],
                                             ),
                                             borderRadius:

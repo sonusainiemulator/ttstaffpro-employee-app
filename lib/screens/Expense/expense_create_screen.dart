@@ -55,7 +55,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF696CFF),
+              primary: Color(0xFF2563EB),
               onPrimary: Colors.white,
             ),
           ),
@@ -100,7 +100,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -250,7 +250,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                     height: 36,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                        colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -343,7 +343,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                     children: [
                       const Icon(
                         Iconsax.calendar_1,
-                        color: Color(0xFF696CFF),
+                        color: Color(0xFF2563EB),
                         size: 20,
                       ),
                       const SizedBox(width: 12),
@@ -412,7 +412,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                 ),
                 prefixIcon: Icon(
                   Iconsax.category,
-                  color: Color(0xFF696CFF),
+                  color: Color(0xFF2563EB),
                   size: 20,
                 ),
                 border: InputBorder.none,
@@ -494,7 +494,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                 ),
                 prefixIcon: const Icon(
                   Iconsax.money,
-                  color: Color(0xFF696CFF),
+                  color: Color(0xFF2563EB),
                   size: 20,
                 ),
                 border: InputBorder.none,
@@ -566,7 +566,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                   padding: EdgeInsets.only(bottom: 40),
                   child: Icon(
                     Iconsax.note_text,
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                     size: 20,
                   ),
                 ),
@@ -692,7 +692,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
               : const Color(0xFFF9FAFB),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: const Color(0xFF696CFF),
+            color: const Color(0xFF2563EB),
             width: 1.5,
             style: BorderStyle.solid,
           ),
@@ -704,7 +704,7 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
               height: 56,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                  colors: [Color(0xFF2563EB), Color(0xFF16324F)],
                 ),
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -848,8 +848,8 @@ class _ExpenseCreateScreenState extends State<ExpenseCreateScreen> {
                   }
                 },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF696CFF),
-            disabledBackgroundColor: const Color(0xFF696CFF).withOpacity(0.5),
+            backgroundColor: const Color(0xFF2563EB),
+            disabledBackgroundColor: const Color(0xFF2563EB).withOpacity(0.5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
             ),

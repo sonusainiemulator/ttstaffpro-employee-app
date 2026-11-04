@@ -164,12 +164,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF696CFF).withOpacity(0.1),
+                        color: const Color(0xFF2563EB).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
                         Icons.language,
-                        color: Color(0xFF696CFF),
+                        color: Color(0xFF2563EB),
                         size: 24,
                       ),
                     ),
@@ -242,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                           ),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? const Color(0xFF696CFF).withOpacity(0.08)
+                                ? const Color(0xFF2563EB).withOpacity(0.08)
                                 : Colors.transparent,
                           ),
                           child: Row(
@@ -282,7 +282,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                         ? FontWeight.w600
                                         : FontWeight.w500,
                                     color: isSelected
-                                        ? const Color(0xFF696CFF)
+                                        ? const Color(0xFF2563EB)
                                         : appStore.isDarkModeOn
                                             ? Colors.white
                                             : const Color(0xFF111827),
@@ -294,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                 Container(
                                   padding: const EdgeInsets.all(4),
                                   decoration: const BoxDecoration(
-                                    color: Color(0xFF696CFF),
+                                    color: Color(0xFF2563EB),
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(

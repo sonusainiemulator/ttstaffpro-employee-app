@@ -5,7 +5,6 @@ import 'package:nb_utils/nb_utils.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../main.dart';
-import 'app_colors.dart';
 import 'app_constants.dart';
 
 Widget buildShimmer(double height, double width) {
@@ -15,57 +14,71 @@ Widget buildShimmer(double height, double width) {
     child: Shimmer.fromColors(
       baseColor: Colors.grey[400]!.withOpacity(0.3),
       highlightColor: Colors.grey[100]!.withOpacity(0.5),
-      child: Card(
-        shape: buildRoundedCorner(),
-        color: Colors.white,
-      ),
+      child: Card(shape: buildRoundedCorner(), color: Colors.white),
     ),
   );
 }
 
 RoundedRectangleBorder buildRoundedCorner({double? radius}) {
   return RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(radius ?? 10));
+    borderRadius: BorderRadius.circular(radius ?? 12),
+  );
 }
 
 RoundedRectangleBorder buildCardCorner({double? radius}) {
   return RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(radius ?? 16));
+    borderRadius: BorderRadius.circular(radius ?? 16),
+  );
 }
 
 RoundedRectangleBorder buildButtonCorner({double? radius}) {
   return RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(radius ?? 10));
+    borderRadius: BorderRadius.circular(radius ?? 12),
+  );
 }
 
 RoundedRectangleBorder bottomSheetShape() {
   return const RoundedRectangleBorder(
-    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
   );
 }
 
 // EditText rounded Style
-Padding editTextStyle(var hintText,
-    {isPassword = true, TextEditingController? controller}) {
+Padding editTextStyle(
+  var hintText, {
+  isPassword = true,
+  TextEditingController? controller,
+}) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
+    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
     child: TextFormField(
       style: const TextStyle(
-          fontSize: fontSizeLargeMedium, fontFamily: fontRegular),
+        fontSize: fontSizeLargeMedium,
+        fontFamily: fontRegular,
+      ),
       obscureText: isPassword,
       controller: controller,
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.fromLTRB(24, 18, 24, 18),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         hintText: hintText,
         filled: true,
-        fillColor: appStore.isDarkModeOn ? cardDarkColor : white,
+        fillColor: appStore.isDarkModeOn
+            ? cardDarkColor
+            : const Color(0xFFF8FAFC),
         enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(40),
-            borderSide:
-                const BorderSide(color: editTextBackground, width: 0.0)),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: appStore.isDarkModeOn
+                ? Colors.white.withValues(alpha: 0.12)
+                : const Color(0xFFE2E8F0),
+          ),
+        ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(40),
-          borderSide: const BorderSide(color: editTextBackground, width: 0.0),
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: appStore.appColorPrimary, width: 1.5),
         ),
       ),
     ),
@@ -74,19 +87,27 @@ Padding editTextStyle(var hintText,
 
 // Login/SignUp HeadingElement
 Text formHeading(var label) {
-  return Text(label,
-      style: TextStyle(
-          color: appStore.textPrimaryColor, fontSize: 30, fontFamily: fontBold),
-      textAlign: TextAlign.center);
+  return Text(
+    label,
+    style: TextStyle(
+      color: appStore.textPrimaryColor,
+      fontSize: 30,
+      fontFamily: fontBold,
+    ),
+    textAlign: TextAlign.center,
+  );
 }
 
 Text formSubHeadingForm(var label) {
-  return Text(label,
-      style: TextStyle(
-          color: appStore.textSecondaryColor,
-          fontSize: 20,
-          fontFamily: fontBold),
-      textAlign: TextAlign.center);
+  return Text(
+    label,
+    style: TextStyle(
+      color: appStore.textSecondaryColor,
+      fontSize: 20,
+      fontFamily: fontBold,
+    ),
+    textAlign: TextAlign.center,
+  );
 }
 
 class CustomTheme extends StatelessWidget {
@@ -96,14 +117,14 @@ class CustomTheme extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final parentTheme = Theme.of(context);
     return Theme(
-      data: appStore.isDarkModeOn
-          ? ThemeData.dark().copyWith(
-              colorScheme: ColorScheme.fromSwatch()
-                  .copyWith(secondary: appStore.appColorPrimary)
-                  .copyWith(surface: context.scaffoldBackgroundColor),
-            )
-          : ThemeData.light(),
+      data: parentTheme.copyWith(
+        colorScheme: parentTheme.colorScheme.copyWith(
+          primary: appStore.appColorPrimary,
+          secondary: appStore.appColorPrimary,
+        ),
+      ),
       child: child!,
     );
   }
@@ -132,8 +153,9 @@ Widget text(
       color: textColor ?? appStore.textSecondaryColor,
       height: 1.5,
       letterSpacing: latterSpacing,
-      decoration:
-          lineThrough ? TextDecoration.lineThrough : TextDecoration.none,
+      decoration: lineThrough
+          ? TextDecoration.lineThrough
+          : TextDecoration.none,
     ),
   );
 }
@@ -146,40 +168,55 @@ Widget shadowButton(String name) {
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
     color: appStore.appColorPrimary,
     onPressed: () => {toast("Hi 2")},
-    child: text(name,
-        fontSize: fontSizeLargeMedium,
-        textColor: white,
-        fontFamily: fontMedium),
+    child: text(
+      name,
+      fontSize: fontSizeLargeMedium,
+      textColor: white,
+      fontFamily: fontMedium,
+    ),
   );
 }
 
-AppBar appBar(BuildContext context, String title,
-    {Function? backPress,
-    Color? appBarBgColor,
-    Color? textColor,
-    bool hideBack = false,
-    List<Widget>? actions}) {
+AppBar appBar(
+  BuildContext context,
+  String title, {
+  Function? backPress,
+  Color? appBarBgColor,
+  Color? textColor,
+  bool hideBack = false,
+  List<Widget>? actions,
+}) {
+  final theme = Theme.of(context);
+  final foregroundColor = textColor ?? theme.colorScheme.onSurface;
+
   return AppBar(
     automaticallyImplyLeading: false,
-    backgroundColor: appBarBgColor ?? Colors.transparent,
+    backgroundColor: appBarBgColor ?? theme.colorScheme.surface,
+    foregroundColor: foregroundColor,
     elevation: 0,
+    surfaceTintColor: Colors.transparent,
+    scrolledUnderElevation: 0,
+    centerTitle: false,
     title: Text(
       title,
-      style: TextStyle(color: textColor),
+      style: theme.textTheme.titleLarge?.copyWith(
+        color: foregroundColor,
+        fontWeight: FontWeight.w600,
+      ),
     ),
     leading: hideBack
         ? null
-        : Container(
-            margin: const EdgeInsets.all(8),
-            decoration: boxDecorationWithRoundedCorners(
-              backgroundColor: context.cardColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.grey.withOpacity(0.2),
-              ),
-            ),
-            child: Icon(Icons.arrow_back, color: appStore.textPrimaryColor),
-          ).onTap(backPress ?? () => finish(context)),
+        : IconButton(
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+            icon: Icon(Icons.arrow_back_rounded, color: foregroundColor),
+            onPressed: () {
+              if (backPress != null) {
+                backPress();
+              } else {
+                Navigator.maybePop(context);
+              }
+            },
+          ),
     actions: actions,
   );
 }
@@ -188,11 +225,12 @@ void changeStatusColor(Color color) async {
   setStatusBarColor(color);
 }
 
-BoxDecoration boxDecoration(
-    {double radius = 2,
-    Color color = Colors.transparent,
-    Color? bgColor,
-    var showShadow = false}) {
+BoxDecoration boxDecoration({
+  double radius = 2,
+  Color color = Colors.transparent,
+  Color? bgColor,
+  var showShadow = false,
+}) {
   return BoxDecoration(
     color: bgColor ?? appStore.scaffoldBackground,
     boxShadow: showShadow
@@ -204,10 +242,7 @@ BoxDecoration boxDecoration(
 }
 
 Widget divider() {
-  return const Divider(
-    height: 0.7,
-    color: Colors.grey,
-  );
+  return const Divider(height: 0.7, color: Colors.grey);
 }
 
 Widget weekWidget(String text, Color bgColor) {
@@ -217,10 +252,7 @@ Widget weekWidget(String text, Color bgColor) {
     child: Padding(
       padding: const EdgeInsets.all(2.0),
       child: Center(
-        child: Text(
-          text,
-          style: primaryTextStyle(color: white, size: 12),
-        ),
+        child: Text(text, style: primaryTextStyle(color: white, size: 12)),
       ),
     ),
   ).paddingRight(4);
@@ -230,15 +262,9 @@ Widget itemRowWidget(String title, value) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(
-        title,
-        style: primaryTextStyle(color: white),
-      ),
+      Text(title, style: primaryTextStyle(color: white)),
       10.width,
-      Text(
-        value,
-        style: primaryTextStyle(color: white),
-      ),
+      Text(value, style: primaryTextStyle(color: white)),
     ],
   );
 }
@@ -247,15 +273,9 @@ Widget itemRowTWidget(String title, value, Color textColor) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Text(
-        title,
-        style: primaryTextStyle(color: textColor),
-      ),
+      Text(title, style: primaryTextStyle(color: textColor)),
       10.width,
-      Text(
-        value,
-        style: primaryTextStyle(color: textColor),
-      ),
+      Text(value, style: primaryTextStyle(color: textColor)),
     ],
   );
 }
@@ -294,30 +314,29 @@ Widget settingItem(String name, double width, {IconData? icon, var pad = 8.0}) {
             height: width / 7.5,
             padding: const EdgeInsets.all(7),
             decoration: icon != null
-                ? boxDecoration(
-                    radius: 4,
-                    bgColor: appStore.scaffoldBackground,
-                  )
+                ? boxDecoration(radius: 4, bgColor: appStore.scaffoldBackground)
                 : null,
             child: icon != null ? Icon(icon) : const SizedBox(),
           ),
-          text(name,
-              textColor: appStore.textPrimaryColor,
-              fontFamily: fontMedium,
-              fontSize: fontSizeLargeMedium)
+          text(
+            name,
+            textColor: appStore.textPrimaryColor,
+            fontFamily: fontMedium,
+            fontSize: fontSizeLargeMedium,
+          ),
         ],
       ),
     ),
   );
 }
 
-InputDecoration editTextDecoration(IconData icon, String title,
-    {String? errorText}) {
+InputDecoration editTextDecoration(
+  IconData icon,
+  String title, {
+  String? errorText,
+}) {
   return InputDecoration(
-    prefixIcon: Icon(
-      icon,
-      color: appStore.iconColor,
-    ),
+    prefixIcon: Icon(icon, color: appStore.iconColor),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(20.0),
       borderSide: BorderSide(color: appStore.iconColor!),
@@ -340,19 +359,23 @@ InputDecoration editTextDecoration(IconData icon, String title,
   );
 }
 
-InputDecoration newEditTextDecoration(IconData icon, String title,
-    {String? hint,
-    Color? bgColor,
-    Color? borderColor,
-    EdgeInsets? padding,
-    String? errorText}) {
+InputDecoration newEditTextDecoration(
+  IconData icon,
+  String title, {
+  String? hint,
+  Color? bgColor,
+  Color? borderColor,
+  EdgeInsets? padding,
+  String? errorText,
+}) {
   return InputDecoration(
     contentPadding:
         padding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
     counter: const Offstage(),
     focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: borderColor ?? appStore.appColorPrimary)),
+      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide(color: borderColor ?? appStore.appColorPrimary),
+    ),
     enabledBorder: OutlineInputBorder(
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       borderSide: BorderSide(color: Colors.grey.withOpacity(0.4)),
@@ -375,19 +398,22 @@ InputDecoration newEditTextDecoration(IconData icon, String title,
   );
 }
 
-InputDecoration newEditTextNoIconDecoration(String title,
-    {String? hint,
-    Color? bgColor,
-    Color? borderColor,
-    EdgeInsets? padding,
-    String? errorText}) {
+InputDecoration newEditTextNoIconDecoration(
+  String title, {
+  String? hint,
+  Color? bgColor,
+  Color? borderColor,
+  EdgeInsets? padding,
+  String? errorText,
+}) {
   return InputDecoration(
     contentPadding:
         padding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
     counter: const Offstage(),
     focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: borderColor ?? appStore.appColorPrimary)),
+      borderRadius: BorderRadius.circular(16),
+      borderSide: BorderSide(color: borderColor ?? appStore.appColorPrimary),
+    ),
     enabledBorder: OutlineInputBorder(
       borderRadius: const BorderRadius.all(Radius.circular(16)),
       borderSide: BorderSide(color: Colors.grey.withOpacity(0.4)),
@@ -439,9 +465,10 @@ class FooterSignature extends StatelessWidget {
                 Text(
                   " by $companyName",
                   style: TextStyle(
-                      fontSize: 14,
-                      color: textColor,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 14,
+                    color: textColor,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -458,7 +485,6 @@ class FooterSignature extends StatelessWidget {
 }
 
 Widget profileImageWidget({double size = 20, double indSize = 15}) {
-
   return Stack(
     children: [
       Container(
@@ -506,12 +532,14 @@ Widget profileImageWidget({double size = 20, double indSize = 15}) {
   );
 }
 
-Widget userProfileWidget(String name,
-    {double size = 20,
-    double indSize = 15,
-    String? imageUrl,
-    String status = 'unknown',
-    bool hideStatus = false}) {
+Widget userProfileWidget(
+  String name, {
+  double size = 20,
+  double indSize = 15,
+  String? imageUrl,
+  String status = 'unknown',
+  bool hideStatus = false,
+}) {
   final Map<String, Color> statusColors = {
     'online': Colors.green,
     'offline': Colors.grey,
@@ -564,10 +592,7 @@ Widget userProfileWidget(String name,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: statusColors[status] ?? Colors.grey,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 1.5,
-                  ),
+                  border: Border.all(color: Colors.white, width: 1.5),
                 ),
               ),
       ),
@@ -609,10 +634,7 @@ Widget buildActionButton({
       children: [
         Icon(icon, color: color, size: 20),
         6.width,
-        Text(
-          label,
-          style: primaryTextStyle(color: color, size: 12),
-        ),
+        Text(label, style: primaryTextStyle(color: color, size: 12)),
       ],
     ).paddingSymmetric(vertical: 6),
   );
@@ -625,13 +647,7 @@ Widget statusWidget(String status) {
       color: _getStatusColor(status),
       borderRadius: BorderRadius.circular(8),
     ),
-    child: Text(
-      status,
-      style: boldTextStyle(
-        size: 12,
-        color: white,
-      ),
-    ),
+    child: Text(status, style: boldTextStyle(size: 12, color: white)),
   );
 }
 
@@ -650,35 +666,33 @@ Color _getStatusColor(String status) {
   }
 }
 
-Widget buildUserHeader(String name,
-    {String? status,
-    String? imageUrl,
-    String? designation,
-    bool hideStatus = false}) {
+Widget buildUserHeader(
+  String name, {
+  String? status,
+  String? imageUrl,
+  String? designation,
+  bool hideStatus = false,
+}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.center,
     mainAxisSize: MainAxisSize.min,
     children: [
-      userProfileWidget(name,
-          size: 15,
-          indSize: 15,
-          imageUrl: imageUrl,
-          status: status ?? 'unknown',
-          hideStatus: hideStatus),
+      userProfileWidget(
+        name,
+        size: 15,
+        indSize: 15,
+        imageUrl: imageUrl,
+        status: status ?? 'unknown',
+        hideStatus: hideStatus,
+      ),
       8.width,
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            name,
-            style: boldTextStyle(size: 16),
-          ),
+          Text(name, style: boldTextStyle(size: 16)),
           if (designation != null)
-            Text(
-              'Designation',
-              style: secondaryTextStyle(size: 12),
-            ),
+            Text('Designation', style: secondaryTextStyle(size: 12)),
         ],
       ),
     ],
@@ -756,18 +770,18 @@ class CustomTextField extends StatelessWidget {
             decoration: BoxDecoration(
               color: enabled
                   ? (appStore.isDarkModeOn
-                      ? const Color(0xFF1F2937)
-                      : const Color(0xFFF9FAFB))
+                        ? const Color(0xFF1F2937)
+                        : const Color(0xFFF9FAFB))
                   : (appStore.isDarkModeOn
-                      ? const Color(0xFF111827)
-                      : const Color(0xFFF3F4F6)),
+                        ? const Color(0xFF111827)
+                        : const Color(0xFFF3F4F6)),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: errorText != null && errorText!.isNotEmpty
                     ? const Color(0xFFEF4444)
                     : (appStore.isDarkModeOn
-                        ? const Color(0xFF374151)
-                        : const Color(0xFFE5E7EB)),
+                          ? const Color(0xFF374151)
+                          : const Color(0xFFE5E7EB)),
                 width: 1.5,
               ),
             ),
@@ -798,11 +812,7 @@ class CustomTextField extends StatelessWidget {
                       : Colors.grey[500],
                 ),
                 prefixIcon: prefixIcon != null
-                    ? Icon(
-                        prefixIcon,
-                        color: const Color(0xFF696CFF),
-                        size: 20,
-                      )
+                    ? Icon(prefixIcon, color: const Color(0xFF2563EB), size: 20)
                     : null,
                 suffixIcon: suffixIcon,
                 border: InputBorder.none,

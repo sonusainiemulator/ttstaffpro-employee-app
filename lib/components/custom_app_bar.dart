@@ -96,7 +96,7 @@ class CustomAppBar extends StatelessWidget {
             colors: gradientColors ??
                 (appStore.isDarkModeOn
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)]),
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)]),
           ),
         ),
         child: SafeArea(
@@ -389,8 +389,8 @@ class AppBarStatsCard extends StatelessWidget {
 class AppBarGradients {
   // Payroll - Purple gradient
   static const List<Color> payroll = [
-    Color(0xFF696CFF),
-    Color(0xFF5457E6),
+    Color(0xFF2563EB),
+    Color(0xFF16324F),
   ];
 
   // Attendance - Blue gradient

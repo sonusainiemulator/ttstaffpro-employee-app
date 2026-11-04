@@ -136,7 +136,7 @@ class _SplashScreenState extends State<SplashScreen> {
             end: Alignment.bottomRight,
             colors: isDark
                 ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                : [const Color(0xFF696CFF), const Color(0xFF8B7EFF)], // Premium Primary Gradient
+                : [const Color(0xFF2563EB), const Color(0xFF60A5FA)], // Premium Primary Gradient
           ),
         ),
         child: Stack(

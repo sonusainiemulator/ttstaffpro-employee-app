@@ -144,7 +144,7 @@ class _AttendanceRegularizationFormScreenState
                                     ? Iconsax.calendar_tick
                                     : Iconsax.calendar_remove,
                                 color: canSelect
-                                    ? const Color(0xFF696CFF)
+                                    ? const Color(0xFF2563EB)
                                     : Colors.grey,
                               ),
                               title: Text(
@@ -215,7 +215,7 @@ class _AttendanceRegularizationFormScreenState
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF696CFF),
+              primary: Color(0xFF2563EB),
               onPrimary: Colors.white,
             ),
           ),
@@ -273,7 +273,7 @@ class _AttendanceRegularizationFormScreenState
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -366,9 +366,9 @@ class _AttendanceRegularizationFormScreenState
                                                     decoration: BoxDecoration(
                                                       gradient: LinearGradient(
                                                         colors: [
-                                                          const Color(0xFF696CFF)
+                                                          const Color(0xFF2563EB)
                                                               .withOpacity(0.2),
-                                                          const Color(0xFF5457E6)
+                                                          const Color(0xFF16324F)
                                                               .withOpacity(0.1)
                                                         ],
                                                       ),
@@ -378,7 +378,7 @@ class _AttendanceRegularizationFormScreenState
                                                     ),
                                                     child: const Icon(
                                                       Iconsax.calendar_edit,
-                                                      color: Color(0xFF696CFF),
+                                                      color: Color(0xFF2563EB),
                                                       size: 20,
                                                     ),
                                                   ),
@@ -451,7 +451,7 @@ class _AttendanceRegularizationFormScreenState
                                                         color: isEditMode
                                                             ? Colors.grey
                                                             : const Color(
-                                                                0xFF696CFF),
+                                                                0xFF2563EB),
                                                         size: 20,
                                                       ),
                                                       const SizedBox(width: 12),
@@ -524,7 +524,7 @@ class _AttendanceRegularizationFormScreenState
                                                   decoration: InputDecoration(
                                                     prefixIcon: const Icon(
                                                       Iconsax.document,
-                                                      color: Color(0xFF696CFF),
+                                                      color: Color(0xFF2563EB),
                                                       size: 20,
                                                     ),
                                                     border: InputBorder.none,
@@ -643,7 +643,7 @@ class _AttendanceRegularizationFormScreenState
                                                                       Iconsax
                                                                           .clock,
                                                                       color: Color(
-                                                                          0xFF696CFF),
+                                                                          0xFF2563EB),
                                                                       size: 20,
                                                                     ),
                                                                     const SizedBox(
@@ -751,7 +751,7 @@ class _AttendanceRegularizationFormScreenState
                                                                       Iconsax
                                                                           .clock,
                                                                       color: Color(
-                                                                          0xFF696CFF),
+                                                                          0xFF2563EB),
                                                                       size: 20,
                                                                     ),
                                                                     const SizedBox(
@@ -852,7 +852,7 @@ class _AttendanceRegularizationFormScreenState
                                                       child: Icon(
                                                         Iconsax.message_text,
                                                         color:
-                                                            Color(0xFF696CFF),
+                                                            Color(0xFF2563EB),
                                                         size: 20,
                                                       ),
                                                     ),
@@ -918,7 +918,7 @@ class _AttendanceRegularizationFormScreenState
                                                       const Icon(
                                                         Iconsax.document_upload,
                                                         color:
-                                                            Color(0xFF696CFF),
+                                                            Color(0xFF2563EB),
                                                         size: 24,
                                                       ),
                                                       const SizedBox(width: 12),
@@ -1049,8 +1049,8 @@ class _AttendanceRegularizationFormScreenState
                                               decoration: BoxDecoration(
                                                 gradient: const LinearGradient(
                                                   colors: [
-                                                    Color(0xFF696CFF),
-                                                    Color(0xFF5457E6)
+                                                    Color(0xFF2563EB),
+                                                    Color(0xFF16324F)
                                                   ],
                                                 ),
                                                 borderRadius:
@@ -1058,7 +1058,7 @@ class _AttendanceRegularizationFormScreenState
                                                 boxShadow: [
                                                   BoxShadow(
                                                     color: const Color(
-                                                            0xFF696CFF)
+                                                            0xFF2563EB)
                                                         .withOpacity(0.3),
                                                     blurRadius: 8,
                                                     offset: const Offset(0, 4),

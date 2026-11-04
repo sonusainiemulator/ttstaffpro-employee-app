@@ -84,8 +84,8 @@ class PolicyItemWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFF696CFF).withOpacity(0.8),
-                          const Color(0xFF5457E6).withOpacity(0.8),
+                          const Color(0xFF2563EB).withOpacity(0.8),
+                          const Color(0xFF16324F).withOpacity(0.8),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,

@@ -119,7 +119,7 @@ class _OrgChooseScreenState extends State<OrgChooseScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -225,15 +225,15 @@ class _OrgChooseScreenState extends State<OrgChooseScreen> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      const Color(0xFF696CFF).withOpacity(0.2),
-                      const Color(0xFF5457E6).withOpacity(0.1)
+                      const Color(0xFF2563EB).withOpacity(0.2),
+                      const Color(0xFF16324F).withOpacity(0.1)
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Iconsax.buildings,
-                  color: Color(0xFF696CFF),
+                  color: Color(0xFF2563EB),
                   size: 20,
                 ),
               ),
@@ -301,7 +301,7 @@ class _OrgChooseScreenState extends State<OrgChooseScreen> {
               decoration: InputDecoration(
                 prefixIcon: const Icon(
                   Iconsax.building,
-                  color: Color(0xFF696CFF),
+                  color: Color(0xFF2563EB),
                   size: 20,
                 ),
                 border: InputBorder.none,
@@ -368,12 +368,12 @@ class _OrgChooseScreenState extends State<OrgChooseScreen> {
         height: 50,
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+            colors: [Color(0xFF2563EB), Color(0xFF16324F)],
           ),
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF696CFF).withOpacity(0.3),
+              color: const Color(0xFF2563EB).withOpacity(0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),

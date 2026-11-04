@@ -66,7 +66,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -159,9 +159,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                   decoration: BoxDecoration(
                                                     gradient: LinearGradient(
                                                       colors: [
-                                                        const Color(0xFF696CFF)
+                                                        const Color(0xFF2563EB)
                                                             .withOpacity(0.2),
-                                                        const Color(0xFF5457E6)
+                                                        const Color(0xFF16324F)
                                                             .withOpacity(0.1)
                                                       ],
                                                     ),
@@ -171,7 +171,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                   ),
                                                   child: const Icon(
                                                     Iconsax.lock,
-                                                    color: Color(0xFF696CFF),
+                                                    color: Color(0xFF2563EB),
                                                     size: 20,
                                                   ),
                                                 ),
@@ -232,7 +232,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                 decoration: InputDecoration(
                                                   prefixIcon: const Icon(
                                                     Iconsax.lock_1,
-                                                    color: Color(0xFF696CFF),
+                                                    color: Color(0xFF2563EB),
                                                     size: 20,
                                                   ),
                                                   suffixIcon: IconButton(
@@ -320,7 +320,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                 decoration: InputDecoration(
                                                   prefixIcon: const Icon(
                                                     Iconsax.lock,
-                                                    color: Color(0xFF696CFF),
+                                                    color: Color(0xFF2563EB),
                                                     size: 20,
                                                   ),
                                                   suffixIcon: IconButton(
@@ -409,7 +409,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                                 decoration: InputDecoration(
                                                   prefixIcon: const Icon(
                                                     Iconsax.password_check,
-                                                    color: Color(0xFF696CFF),
+                                                    color: Color(0xFF2563EB),
                                                     size: 20,
                                                   ),
                                                   suffixIcon: IconButton(
@@ -538,15 +538,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                           decoration: BoxDecoration(
                                             gradient: const LinearGradient(
                                               colors: [
-                                                Color(0xFF696CFF),
-                                                Color(0xFF5457E6)
+                                                Color(0xFF2563EB),
+                                                Color(0xFF16324F)
                                               ],
                                             ),
                                             borderRadius:
                                                 BorderRadius.circular(14),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: const Color(0xFF696CFF)
+                                                color: const Color(0xFF2563EB)
                                                     .withOpacity(0.3),
                                                 blurRadius: 8,
                                                 offset: const Offset(0, 4),

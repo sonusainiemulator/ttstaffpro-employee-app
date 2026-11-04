@@ -111,7 +111,7 @@ class _HolidayScreenState extends State<HolidayScreen>
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
                             borderSide: const BorderSide(
-                              color: Color(0xFF696CFF),
+                              color: Color(0xFF2563EB),
                               width: 2,
                             ),
                           ),
@@ -164,7 +164,7 @@ class _HolidayScreenState extends State<HolidayScreen>
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(14),
                             borderSide: const BorderSide(
-                              color: Color(0xFF696CFF),
+                              color: Color(0xFF2563EB),
                               width: 2,
                             ),
                           ),
@@ -250,8 +250,8 @@ class _HolidayScreenState extends State<HolidayScreen>
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [
-                                    Color(0xFF696CFF),
-                                    Color(0xFF5457E6),
+                                    Color(0xFF2563EB),
+                                    Color(0xFF16324F),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(12),
@@ -313,7 +313,7 @@ class _HolidayScreenState extends State<HolidayScreen>
               gradient: LinearGradient(
                 colors: isDark
                     ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                    : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                    : [const Color(0xFF2563EB), const Color(0xFF16324F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -392,7 +392,7 @@ class _HolidayScreenState extends State<HolidayScreen>
                                   : Colors.white,
                               child: TabBar(
                                 controller: _tabController,
-                                indicatorColor: const Color(0xFF696CFF),
+                                indicatorColor: const Color(0xFF2563EB),
                                 labelColor: isDark
                                     ? Colors.white
                                     : const Color(0xFF111827),
@@ -478,7 +478,7 @@ class _HolidayScreenState extends State<HolidayScreen>
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF696CFF),
+                              color: const Color(0xFF2563EB),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
@@ -515,7 +515,7 @@ class _HolidayScreenState extends State<HolidayScreen>
                               vertical: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF696CFF),
+                              color: const Color(0xFF2563EB),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
@@ -562,12 +562,12 @@ class _HolidayScreenState extends State<HolidayScreen>
                 subtitle: language.lblNoHolidaysFoundForThisYear,
               ),
               firstPageProgressIndicatorBuilder: (context) => const Center(
-                child: CircularProgressIndicator(color: Color(0xFF696CFF)),
+                child: CircularProgressIndicator(color: Color(0xFF2563EB)),
               ),
               newPageProgressIndicatorBuilder: (context) => const Center(
                 child: Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: CircularProgressIndicator(color: Color(0xFF696CFF)),
+                  child: CircularProgressIndicator(color: Color(0xFF2563EB)),
                 ),
               ),
               itemBuilder: (context, holiday, index) =>
@@ -584,7 +584,7 @@ class _HolidayScreenState extends State<HolidayScreen>
       builder: (_) {
         if (_store.isLoadingUpcoming) {
           return const Center(
-            child: CircularProgressIndicator(color: Color(0xFF696CFF)),
+            child: CircularProgressIndicator(color: Color(0xFF2563EB)),
           );
         }
 
@@ -598,7 +598,7 @@ class _HolidayScreenState extends State<HolidayScreen>
 
         return RefreshIndicator(
           onRefresh: () => _store.fetchUpcomingHolidays(),
-          color: const Color(0xFF696CFF),
+          color: const Color(0xFF2563EB),
           child: ListView.builder(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             itemCount: _store.upcomingHolidays.length,
@@ -617,13 +617,13 @@ class _HolidayScreenState extends State<HolidayScreen>
         if (_store.groupedHolidays == null) {
           _store.fetchGroupedHolidays();
           return const Center(
-            child: CircularProgressIndicator(color: Color(0xFF696CFF)),
+            child: CircularProgressIndicator(color: Color(0xFF2563EB)),
           );
         }
 
         if (_store.isLoadingGrouped) {
           return const Center(
-            child: CircularProgressIndicator(color: Color(0xFF696CFF)),
+            child: CircularProgressIndicator(color: Color(0xFF2563EB)),
           );
         }
 
@@ -637,7 +637,7 @@ class _HolidayScreenState extends State<HolidayScreen>
 
         return RefreshIndicator(
           onRefresh: () => _store.fetchGroupedHolidays(),
-          color: const Color(0xFF696CFF),
+          color: const Color(0xFF2563EB),
           child: ListView.builder(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
             itemCount: _store.groupedHolidays!.length,
@@ -680,15 +680,15 @@ class _HolidayScreenState extends State<HolidayScreen>
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  const Color(0xFF696CFF).withOpacity(0.2),
-                  const Color(0xFF5457E6).withOpacity(0.1),
+                  const Color(0xFF2563EB).withOpacity(0.2),
+                  const Color(0xFF16324F).withOpacity(0.1),
                 ],
               ),
             ),
             child: Icon(
               icon,
               size: 60,
-              color: const Color(0xFF696CFF).withOpacity(0.7),
+              color: const Color(0xFF2563EB).withOpacity(0.7),
             ),
           ),
           24.height,
@@ -713,12 +713,12 @@ class _HolidayScreenState extends State<HolidayScreen>
     final month = date.monthName;
 
     // Parse color from API or use default
-    Color cardColor = const Color(0xFF696CFF);
+    Color cardColor = const Color(0xFF2563EB);
     if (holiday.color != null && holiday.color!.isNotEmpty) {
       try {
         cardColor = Color(int.parse(holiday.color!.replaceFirst('#', '0xFF')));
       } catch (e) {
-        cardColor = const Color(0xFF696CFF);
+        cardColor = const Color(0xFF2563EB);
       }
     }
 
@@ -937,7 +937,7 @@ class _HolidayScreenState extends State<HolidayScreen>
                           Icon(
                             Iconsax.info_circle,
                             size: 16,
-                            color: const Color(0xFF696CFF),
+                            color: const Color(0xFF2563EB),
                           ),
                           8.width,
                           Text('${language.lblDescription}:', style: boldTextStyle(size: 14)),
@@ -975,7 +975,7 @@ class _HolidayScreenState extends State<HolidayScreen>
                           Icon(
                             Iconsax.note,
                             size: 16,
-                            color: const Color(0xFF696CFF),
+                            color: const Color(0xFF2563EB),
                           ),
                           8.width,
                           Text('${language.lblNotes}:', style: boldTextStyle(size: 14)),
@@ -994,7 +994,7 @@ class _HolidayScreenState extends State<HolidayScreen>
           Container(
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF696CFF), Color(0xFF5457E6)],
+                colors: [Color(0xFF2563EB), Color(0xFF16324F)],
               ),
               borderRadius: BorderRadius.circular(12),
             ),

@@ -179,7 +179,7 @@ class _PayslipsListScreenState extends State<PayslipsListScreen> {
               _loadPayslips();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF696CFF),
+              backgroundColor: const Color(0xFF2563EB),
               foregroundColor: Colors.white,
             ),
             child: Text(language.lblApply),
@@ -200,7 +200,7 @@ class _PayslipsListScreenState extends State<PayslipsListScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -252,7 +252,7 @@ class _PayslipsListScreenState extends State<PayslipsListScreen> {
                                     child: Padding(
                                       padding: EdgeInsets.all(16),
                                       child: CircularProgressIndicator(
-                                        color: Color(0xFF696CFF),
+                                        color: Color(0xFF2563EB),
                                       ),
                                     ),
                                   );
@@ -359,12 +359,12 @@ class _PayslipsListScreenState extends State<PayslipsListScreen> {
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            color: const Color(0xFF696CFF).withOpacity(0.1),
+            color: const Color(0xFF2563EB).withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: const Icon(
             Iconsax.receipt_item,
-            color: Color(0xFF696CFF),
+            color: Color(0xFF2563EB),
             size: 28,
           ),
         ),
@@ -439,7 +439,7 @@ class _PayslipsListScreenState extends State<PayslipsListScreen> {
             const Icon(
               Iconsax.arrow_right_3,
               size: 16,
-              color: Color(0xFF696CFF),
+              color: Color(0xFF2563EB),
             ),
           ],
         ),
@@ -549,7 +549,7 @@ class _PayslipsListScreenState extends State<PayslipsListScreen> {
               icon: const Icon(Iconsax.refresh),
               label: Text(language.lblRetry),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,

@@ -280,7 +280,7 @@ class _ModifiersScreenState extends State<ModifiersScreen> {
               _applyFilters();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF696CFF),
+              backgroundColor: const Color(0xFF2563EB),
               foregroundColor: Colors.white,
             ),
             child: const Text('Apply'),
@@ -301,7 +301,7 @@ class _ModifiersScreenState extends State<ModifiersScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -544,12 +544,12 @@ class _ModifiersScreenState extends State<ModifiersScreen> {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: const Color(0xFF696CFF).withOpacity(0.1),
+              color: const Color(0xFF2563EB).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
               Iconsax.wallet_2,
-              color: Color(0xFF696CFF),
+              color: Color(0xFF2563EB),
               size: 28,
             ),
           ),
@@ -843,7 +843,7 @@ class _ModifiersScreenState extends State<ModifiersScreen> {
                 icon: const Icon(Iconsax.refresh),
                 label: const Text('Clear Filters'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF696CFF),
+                  backgroundColor: const Color(0xFF2563EB),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
@@ -908,7 +908,7 @@ class _ModifiersScreenState extends State<ModifiersScreen> {
               icon: const Icon(Iconsax.refresh),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF696CFF),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),

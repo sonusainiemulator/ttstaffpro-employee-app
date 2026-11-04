@@ -1,4 +1,9 @@
 # Changelog
+## [1.3.9] - 2026-11-04
+
+### Changed
+- Redesigned the employee app's shared visual system, attendance-first Home screen, navigation, and module surfaces while preserving existing workflows and organization-enabled features.
+
 ## [1.3.8] - 2026-11-04
 
 ### Fixed (App Review follow-up audit)

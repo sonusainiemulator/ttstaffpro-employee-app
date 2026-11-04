@@ -87,14 +87,14 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: _selectedYear == year
-                          ? const Color(0xFF696CFF).withOpacity(0.15)
+                          ? const Color(0xFF2563EB).withOpacity(0.15)
                           : (appStore.isDarkModeOn
                               ? const Color(0xFF111827)
                               : const Color(0xFFF9FAFB)),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: _selectedYear == year
-                            ? const Color(0xFF696CFF)
+                            ? const Color(0xFF2563EB)
                             : (appStore.isDarkModeOn
                                 ? Colors.grey[700]!
                                 : const Color(0xFFE5E7EB)),
@@ -106,7 +106,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                         Icon(
                           Iconsax.calendar,
                           color: _selectedYear == year
-                              ? const Color(0xFF696CFF)
+                              ? const Color(0xFF2563EB)
                               : (appStore.isDarkModeOn
                                   ? Colors.grey[400]
                                   : const Color(0xFF6B7280)),
@@ -121,7 +121,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                                   ? FontWeight.bold
                                   : FontWeight.w500,
                               color: _selectedYear == year
-                                  ? const Color(0xFF696CFF)
+                                  ? const Color(0xFF2563EB)
                                   : (appStore.isDarkModeOn
                                       ? Colors.white
                                       : const Color(0xFF111827)),
@@ -131,7 +131,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                         if (_selectedYear == year)
                           const Icon(
                             Iconsax.tick_circle,
-                            color: Color(0xFF696CFF),
+                            color: Color(0xFF2563EB),
                           ),
                       ],
                     ),
@@ -281,7 +281,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
 
     // Color palette for different leave types
     final colors = [
-      const Color(0xFF696CFF),
+      const Color(0xFF2563EB),
       Colors.green,
       Colors.orange,
       Colors.blue,
@@ -321,12 +321,12 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF696CFF).withOpacity(0.15),
+                    color: const Color(0xFF2563EB).withOpacity(0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
                     Iconsax.chart_21,
-                    color: Color(0xFF696CFF),
+                    color: Color(0xFF2563EB),
                     size: 20,
                   ),
                 ),
@@ -726,7 +726,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
               end: Alignment.bottomRight,
               colors: appStore.isDarkModeOn
                   ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                  : [const Color(0xFF696CFF), const Color(0xFF5457E6)],
+                  : [const Color(0xFF2563EB), const Color(0xFF16324F)],
             ),
           ),
           child: SafeArea(
@@ -858,7 +858,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                   style: const TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF696CFF),
+                  backgroundColor: const Color(0xFF2563EB),
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -929,27 +929,27 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      const Color(0xFF696CFF).withOpacity(0.2),
-                      const Color(0xFF5457E6).withOpacity(0.1),
+                      const Color(0xFF2563EB).withOpacity(0.2),
+                      const Color(0xFF16324F).withOpacity(0.1),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0xFF696CFF).withOpacity(0.3),
+                    color: const Color(0xFF2563EB).withOpacity(0.3),
                     width: 1.5,
                   ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Iconsax.calendar, color: Color(0xFF696CFF), size: 20),
+                    const Icon(Iconsax.calendar, color: Color(0xFF2563EB), size: 20),
                     const SizedBox(width: 8),
                     Text(
                       '${language.lblYear} $_selectedYear',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF696CFF),
+                        color: Color(0xFF2563EB),
                       ),
                     ),
                   ],
@@ -990,7 +990,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                   language.lblTotal,
                   (stats.totalPending + stats.totalApproved + stats.totalRejected)
                       .toString(),
-                  const Color(0xFF696CFF),
+                  const Color(0xFF2563EB),
                   Iconsax.document_text,
                 ),
               ],
