@@ -37,7 +37,7 @@
 	<key>NSAppleMusicUsageDescription</key>
 	<string>We need access to your media library to attach audio files as proof of expense or leave requests.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>We need your camera permission to share the update and also to mark a visit a the place you were visiting.</string>
+	<string>TT Staff Pro uses the camera to take your profile photo, scan asset QR codes, and complete face attendance check-in and registration.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>TT Staff Pro uses Face ID to verify your identity before recording attendance check-in and check-out.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -46,12 +46,8 @@
 	<string>TT Staff Pro uses your location only while using the app to record attendance check-in/check-out coordinates and verify presence at client or worksite locations. Location is accessed only when you actively perform these actions within the app.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need your microphone permission to record voice notes as proof of expense or leave requests.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>We need your motion sensor permission to know whether your walking or in transport, this information is only disclosed to admin and hr.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need gallery permission to pick images as proof of expense request to verify by your hr or admin.</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>We need speech recognition permission to convert your voice notes into text for expense or leave requests.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -97,7 +93,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>aps-environment</key>
-	<string>development</string>
 </dict>
 </plist>

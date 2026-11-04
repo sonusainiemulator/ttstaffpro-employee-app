@@ -1,4 +1,15 @@
 # Changelog
+## [1.3.8] - 2026-11-04
+
+### Fixed (App Review follow-up audit)
+- **Passkey sign-in on iOS**: added the Associated Domains entitlement `webcredentials:ttstaffpro.in` to `RunnerDebug.entitlements` and the new `RunnerRelease.entitlements`. The site must also serve `apple-app-site-association` for `DPVZF7DM83.com.ttstaffpro.employee`.
+- **Push notifications in App Store builds**: Release had no entitlements file, so `aps-environment` was missing. `RunnerRelease.entitlements` sets `production`, and the misplaced `aps-environment` key was removed from `Info.plist`.
+- **Camera purpose string**: rewritten to match real use (profile photo, asset QR scanning, face attendance), and the "a the place" typo is gone.
+- **Unused permission declarations removed**: `NSMotionUsageDescription` and `NSSpeechRecognitionUsageDescription`. No feature uses them. The Podfile sets `PERMISSION_SENSORS` and `PERMISSION_SPEECH_RECOGNIZER` to `0`, so the binary no longer references those APIs.
+
+### Changed
+- Version bumped to `1.3.8+20261105`.
+
 ## [1.3.7] - 2026-11-04
 
 ### Fixed (App Review Guideline 2.1(a) – crash on launch)
