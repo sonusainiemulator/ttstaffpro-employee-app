@@ -2,13 +2,15 @@
 ## [1.3.8] - 2026-11-04
 
 ### Fixed (App Review follow-up audit)
-- **Passkey sign-in on iOS**: added the Associated Domains entitlement `webcredentials:ttstaffpro.in` to `RunnerDebug.entitlements` and the new `RunnerRelease.entitlements`. The site must also serve `apple-app-site-association` for `DPVZF7DM83.com.ttstaffpro.employee`.
+- **Passkey sign-in on iOS**: added the Associated Domains entitlement `webcredentials:ttstaffpro.in` to `RunnerDebug.entitlements` and the new `RunnerRelease.entitlements`. The association file for `DPVZF7DM83.com.ttstaffpro.employee` is deployed to `/www/wwwroot/ttstaffpro.in/public/.well-known/apple-app-site-association` on the production server (served at `https://ttstaffpro.in/.well-known/apple-app-site-association`).
 - **Push notifications in App Store builds**: Release had no entitlements file, so `aps-environment` was missing. `RunnerRelease.entitlements` sets `production`, and the misplaced `aps-environment` key was removed from `Info.plist`.
 - **Camera purpose string**: rewritten to match real use (profile photo, asset QR scanning, face attendance), and the "a the place" typo is gone.
 - **Unused permission declarations removed**: `NSMotionUsageDescription` and `NSSpeechRecognitionUsageDescription`. No feature uses them. The Podfile sets `PERMISSION_SENSORS` and `PERMISSION_SPEECH_RECOGNIZER` to `0`, so the binary no longer references those APIs.
 
 ### Changed
 - Version bumped to `1.3.8+20261105`.
+- **App Store Connect upload (v1.3.8+20261105)**: archived and exported the App Store IPA, passed App Store Connect validation with no errors, then uploaded it (Delivery UUID: `3c7b4bc3-6466-4a64-96b9-b6735a2ab1e3`).
+- **Resubmitted for App Review**: withdrew 1.3.7 (review submission `2f6d93a3-440e-4870-8d14-54b0a4e4bee8`), changed the App Store version record to `1.3.8`, attached build `20261105`, and submitted review submission `2c62b95d-223c-4ca0-a465-147576a1ba72` (Waiting for Review). Release type remains **AFTER_APPROVAL**.
 
 ## [1.3.7] - 2026-11-04
 
