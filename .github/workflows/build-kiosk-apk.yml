@@ -137,10 +137,10 @@ jobs:
         if: steps.plan.outputs.type == 'release'
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.ref_name }}
-          name: TTStaffPro Kiosk ${{ github.ref_name }}
+          tag: ${{ inputs.release_tag }}
+          name: TTStaffPro Kiosk ${{ inputs.release_tag }}
           body: |
-            Production **release APK** for `${{ github.ref_name }}`.
+            Production **release APK** for `${{ inputs.release_tag }}`.
 
             - Artifact: `${{ steps.stage.outputs.artifact }}`
           allowUpdates: true

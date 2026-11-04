@@ -1,4 +1,17 @@
 # Changelog
+## [1.3.10] - 2026-11-04
+
+### Fixed (CI/CD pipelines)
+- **Android Beta CI/CD build**: every run failed because the active Gradle script pinned the Android Gradle Plugin to 8.9.1, below Flutter's minimum of 8.11.1. Bumped to 8.11.1, the version the kiosk app already builds with.
+- **Release signing**: the release build type used the debug key, so the uploaded AAB would not match the upload keystore that CI decodes. It now uses `android/key.properties` when present and falls back to the debug key for local runs.
+- **Slack notifications**: the success and failure steps now pass `webhook-type: incoming-webhook`. The previous `INCOMING_WEBHOOK` value was rejected.
+- **Google Play upload**: `r0adkll/upload-google-play` has no `serviceAccountJsonKeyData` input. Replaced it with `serviceAccountJsonPlainText`.
+- **GitHub Release step**: the beta job now declares `permissions: contents: write` so `GITHUB_TOKEN` can create releases.
+- **Kiosk release workflow**: manual release runs published to a release named after the branch (`main`). They now use the `release_tag` input, as documented in the workflow header.
+
+### Changed
+- Version bumped to `1.3.10+20261107`.
+
 ## [1.3.9] - 2026-11-04
 
 ### Changed

@@ -11,6 +11,8 @@ jobs:
   build:
     name: Build and Deploy Beta
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repository
@@ -112,7 +114,7 @@ jobs:
       - name: Upload to Google Play Open Testing
         uses: r0adkll/upload-google-play@v1.1.3
         with:
-          serviceAccountJsonKeyData: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: com.ttstaffpro.employee
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           track: beta
@@ -123,6 +125,7 @@ jobs:
         if: success()
         uses: slackapi/slack-github-action@v2.1.1
         with:
+          webhook-type: incoming-webhook
           payload: >
             {
               "text": "✅ TTStaffPro Beta v${{ steps.version.outputs.VERSION_NAME }} deployed to Play Store!",
@@ -151,12 +154,12 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Notify Slack on Failure
         if: failure()
         uses: slackapi/slack-github-action@v2.1.1
         with:
+          webhook-type: incoming-webhook
           payload: >
             {
               "text": "❌ TTStaffPro Beta build FAILED on `${{ github.ref_name }}`",
@@ -182,4 +185,3 @@ jobs:
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
