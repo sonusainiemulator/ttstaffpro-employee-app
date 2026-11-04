@@ -1,4 +1,15 @@
 # Changelog
+## [1.3.7] - 2026-11-04
+
+### Fixed (App Review Guideline 2.1(a) – crash on launch)
+- **Adopted the UIScene lifecycle**: Apple requires apps built with the iOS 27 SDK (Xcode 27) to adopt UIScene, or they fail to launch. Build `1.3.6 (20261016)` was rejected after crashing on launch on iPad Air 11-inch (M3), iPadOS 27.2 (crash log: `EXC_BREAKPOINT` in `UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption`).
+  - `ios/Runner/Info.plist`: added `UIApplicationSceneManifest` with `FlutterSceneDelegate`.
+  - `ios/Runner/AppDelegate.swift`: conforms to `FlutterImplicitEngineDelegate`; plugin registration moved to `didInitializeImplicitFlutterEngine`.
+- **Added `NSFaceIDUsageDescription`**: attendance check-in uses `local_auth`, and iOS terminates the app on Face ID devices when this key is missing.
+
+### Changed
+- Version bumped to `1.3.7+20261104` for resubmission to App Store review.
+
 ## [1.3.6] - 2026-10-16
 
 ### Changed (App Store Production Release)
